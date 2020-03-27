@@ -1,7 +1,7 @@
 import React, { useEffect } from 'react';
 import ReactDOM from 'react-dom';
 import { BrowserRouter as Router, Switch, Route } from 'react-router-dom';
-import AppBar from './components/common/AppBar';
+import LandingPage from './components/layout/LandingPage';
 import Login from './components/auth/SignIn';
 import SignUp from './components/auth/SignUp';
 import Alert from './components/layout/Alert';
@@ -25,8 +25,7 @@ const App = () => {
       <Router>
         <Alert />
         <Switch>
-          <Route exact path='/' component={Login} />
-          <Route path='/dashboard' component={AppBar} />
+          <Route exact path='/' component={LandingPage} />
           <Route path='/signin' component={Login} />
           <Route path='/signup' component={SignUp} />
         </Switch>

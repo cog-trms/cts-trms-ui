@@ -6,7 +6,7 @@
   "scripts": {
     "webpack": "babel-node ./node_modules/webpack/bin/webpack",
     "start1": "babel-node ./node_modules/webpack-dev-server/bin/webpack-dev-server --open",
-    "start": "webpack-dev-server --open --hot --mode development",
+    "start": "webpack-dev-server --hot --inline --open --mode development",
     "build": "webpack --mode production",
     "lint": "eslint .",
     "lint:fix": "eslint --fix .",

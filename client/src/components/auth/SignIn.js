@@ -66,9 +66,11 @@ const SignIn = ({ login, isAuthenticated }) => {
     login({ email, password });
   };
 
+  //if user authenticated, then redirect to home page
   if (isAuthenticated) {
-    return <Redirect to='/dashboard' />;
+    return <Redirect to='/' />;
   }
+
   return (
     <Grid container component='main' className={classes.root}>
       <CssBaseline />
