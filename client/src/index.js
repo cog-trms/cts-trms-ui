@@ -26,6 +26,7 @@ const App = () => {
         <Alert />
         <Switch>
           <Route exact path='/' component={LandingPage} />
+          <Route path='/home' component={LandingPage} />
           <Route path='/signin' component={Login} />
           <Route path='/signup' component={SignUp} />
         </Switch>

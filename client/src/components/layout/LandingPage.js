@@ -145,8 +145,9 @@ const useStyles = makeStyles(theme => ({
 }));
 
 const LandingPage = ({ isAuthenticated, logout }) => {
+
+  //if not authenticated, then redirect to login
   if (!isAuthenticated) {
-    console.log('Logged out');
     return <Redirect to='/signin' />;
   }
 
@@ -177,7 +178,6 @@ const LandingPage = ({ isAuthenticated, logout }) => {
   const handleMenuClose = event => {
     setAnchorEl(null);
     if (event.target.id === 'logout') {
-      console.log('logout called');
       logout();
     }
     handleMobileMenuClose();
