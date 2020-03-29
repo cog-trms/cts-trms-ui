@@ -406,7 +406,6 @@ const LandingPage = ({ isAuthenticated, logout }) => {
 LandingPage.propTypes = {
   logout: PropTypes.func.isRequired,
   isAuthenticated: PropTypes.bool
-  // children: PropTypes.element.isRequired
 };
 
 const mapStateToProps = state => ({

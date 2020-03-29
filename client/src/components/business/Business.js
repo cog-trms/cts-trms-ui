@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import PropTypes from 'prop-types';
 import {
   Avatar,
@@ -22,6 +22,8 @@ import {
 } from '@material-ui/core';
 import { makeStyles } from '@material-ui/core/styles';
 // import BusinessTable from './BusinessTable';
+import { connect } from 'react-redux';
+import { loadBusiness } from '../../actions/business';
 
 const useStyles = makeStyles(theme => ({
   paper: {
@@ -38,8 +40,9 @@ const useStyles = makeStyles(theme => ({
     width: '100%', // Fix IE 11 issue.
     marginTop: theme.spacing(3)
   },
-  submit: {
-    margin: theme.spacing(3, 0, 2)
+  save: {
+    margin: theme.spacing(2, 0, 2),
+    width: 150
   },
   edit: {
     width: 20
@@ -51,23 +54,17 @@ const useStyles = makeStyles(theme => ({
     minWidth: 650
   },
   business: {
-    width: 200
-  },
-  description: {
-    minWidth: 700
+    width: 1100
   }
 }));
 
-const Business = () => {
+const Business = ({ loadBusiness, business }) => {
   const classes = useStyles();
-  function createData(name, description) {
-    return { name, description };
-  }
-  const rows = [
-    createData('CMT', 'dummy text'),
-    createData('IME', 'dummy text'),
-    createData('BFSI', 'dummy text')
-  ];
+
+  useEffect(() => {
+    loadBusiness();
+  }, []);
+  const rows = business || [];
   return (
     <Grid container spacing={3}>
       <Grid item xs={12} sm={4}>
@@ -81,24 +78,15 @@ const Business = () => {
         />
       </Grid>
       <Grid item xs={12} sm={4}>
-        <TextField
-          required
-          id='description'
-          name='description'
-          label='Description'
-          fullWidth
-          autoComplete='description'
-        />
-      </Grid>
-      <Grid item xs={12} sm={4}>
         <Button
-          type='submit'
+          type='button'
           fullWidth
           variant='contained'
           color='primary'
-          className={classes.submit}
+          className={classes.save}
+          // onClick={() => loadBusiness()}
         >
-          Submit
+          Save
         </Button>
       </Grid>
       <TableContainer component={Paper}>
@@ -106,10 +94,7 @@ const Business = () => {
           <TableHead>
             <TableRow>
               <TableCell className={classes.business} align='left'>
-                Business name
-              </TableCell>
-              <TableCell className={classes.description} align='left'>
-                Description
+                Business Unit
               </TableCell>
               <TableCell align='center'></TableCell>
               <TableCell align='center'></TableCell>
@@ -119,9 +104,8 @@ const Business = () => {
             {rows.map(row => (
               <TableRow key={row.name}>
                 <TableCell component='th' scope='row'>
-                  {row.name}
+                  {row.buName}
                 </TableCell>
-                <TableCell align='left'>{row.description}</TableCell>
                 <TableCell align='center'>
                   <Button
                     type='button'
@@ -152,5 +136,11 @@ const Business = () => {
     </Grid>
   );
 };
+Business.propTypes = {
+  loadBusiness: PropTypes.func.isRequired
+};
 
-export default Business;
+const mapStateToProps = state => ({
+  business: state.business.business
+});
+export default connect(mapStateToProps, { loadBusiness })(Business);

@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import PropTypes from 'prop-types';
 import {
   Avatar,
@@ -25,7 +25,8 @@ import {
   InputLabel
 } from '@material-ui/core';
 import { makeStyles } from '@material-ui/core/styles';
-// import BusinessTable from './BusinessTable';
+import { connect } from 'react-redux';
+import { loadAccount } from '../../actions/account';
 
 const useStyles = makeStyles(theme => ({
   paper: {
@@ -42,8 +43,9 @@ const useStyles = makeStyles(theme => ({
     width: '100%', // Fix IE 11 issue.
     marginTop: theme.spacing(3)
   },
-  submit: {
-    margin: theme.spacing(3, 0, 2)
+  save: {
+    margin: theme.spacing(2, 0, 2),
+    width: 150
   },
   edit: {
     width: 20
@@ -68,22 +70,19 @@ const useStyles = makeStyles(theme => ({
   }
 }));
 
-const Account = () => {
+const Account = ({ loadAccount, account }) => {
   const classes = useStyles();
-  const [age, setAge] = React.useState('');
+  // const [businessName, setBusinessName] = useState('');
 
-  const handleChange = event => {
-    setAge(event.target.value);
-  };
+  // const handleChange = event => {
+  //   setBusinessName(event.target.value);
+  // };
 
-  function createData(name, businessName, description) {
-    return { name, businessName, description };
-  }
+  useEffect(() => {
+    loadAccount();
+  }, []);
 
-  const rows = [
-    createData('Pearson', 'CMT', 'dummy text'),
-    createData('Comcast', 'IME', 'dummy text')
-  ];
+  const rows = account || [];
   return (
     <Grid container spacing={3}>
       <Grid item xs={12} sm={3}>
@@ -102,8 +101,8 @@ const Account = () => {
           <Select
             labelId='demo-simple-select-label'
             id='demo-simple-select'
-            value={age}
-            onChange={handleChange}
+            value={''}
+            // onChange={handleChange}
           >
             <MenuItem value={10}>CMT</MenuItem>
             <MenuItem value={20}>IME</MenuItem>
@@ -111,25 +110,25 @@ const Account = () => {
           </Select>
         </FormControl>
       </Grid>
-      <Grid item xs={12} sm={3}>
+      {/* <Grid item xs={12} sm={3}>
         <TextField
           required
           id='businessName'
           name='businessName'
-          label='Description'
+          label='businessName'
           fullWidth
           autoComplete='description'
         />
-      </Grid>
+      </Grid> */}
       <Grid item xs={12} sm={3}>
         <Button
-          type='submit'
+          type='button'
           fullWidth
           variant='contained'
           color='primary'
           className={classes.submit}
         >
-          Submit
+          Save
         </Button>
       </Grid>
       <TableContainer component={Paper}>
@@ -139,12 +138,12 @@ const Account = () => {
               <TableCell className={classes.account} align='left'>
                 Account name
               </TableCell>
-              <TableCell className={classes.account} align='left'>
+              {/* <TableCell className={classes.account} align='left'>
                 Business name
-              </TableCell>
-              <TableCell className={classes.description} align='left'>
+              </TableCell> */}
+              {/* <TableCell className={classes.description} align='left'>
                 Description
-              </TableCell>
+              </TableCell> */}
               <TableCell align='center'></TableCell>
               <TableCell align='center'></TableCell>
             </TableRow>
@@ -153,12 +152,12 @@ const Account = () => {
             {rows.map(row => (
               <TableRow key={row.name}>
                 <TableCell component='th' scope='row'>
-                  {row.name}
+                  {row.accountName}
                 </TableCell>
-                <TableCell component='th' scope='row'>
-                  {row.businessName}
-                </TableCell>
-                <TableCell align='left'>{row.description}</TableCell>
+                {/* <TableCell component='th' scope='row'>
+                  {row.user}
+                </TableCell> */}
+                {/* <TableCell align='left'>{row.businessUnit}</TableCell> */}
                 <TableCell align='center'>
                   <Button
                     type='button'
@@ -190,4 +189,12 @@ const Account = () => {
   );
 };
 
-export default Account;
+Account.propTypes = {
+  loadAccount: PropTypes.func.isRequired
+};
+
+const mapStateToProps = state => ({
+  account: state.account.account
+});
+
+export default connect(mapStateToProps, { loadAccount })(Account);

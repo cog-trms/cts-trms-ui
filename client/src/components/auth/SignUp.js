@@ -41,12 +41,12 @@ const useStyles = makeStyles(theme => ({
 
 const SignUp = ({ setAlert, register, isAuthenticated }) => {
   const [formData, setFormData] = useState({
-    firstName: 'aa',
-    lastName: 'bb',
-    email: 'aa@gmail.com',
-    mobileNumber: '123456789',
-    password: '123',
-    password2: '123'
+    firstName: '',
+    lastName: '',
+    email: '',
+    mobileNumber: '',
+    password: '',
+    password2: ''
   });
   const classes = useStyles();
   const {
@@ -72,7 +72,7 @@ const SignUp = ({ setAlert, register, isAuthenticated }) => {
   };
 
   if (isAuthenticated) {
-    return <Redirect to='/dashboard' />;
+    // return <Redirect to='/dashboard' />;
   }
 
   return (
@@ -133,7 +133,7 @@ const SignUp = ({ setAlert, register, isAuthenticated }) => {
                 required
                 fullWidth
                 id='mobileNumber'
-                label='Mobile number'
+                label='Mobile Number'
                 name='mobileNumber'
                 value={mobileNumber}
                 autoComplete='mobileNumber'
