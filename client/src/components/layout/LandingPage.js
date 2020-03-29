@@ -21,20 +21,21 @@ import {
 } from '@material-ui/core';
 import {
   AccountCircle,
+  AccountTree as AccountTreeIcon,
   BarChart as BarChartIcon,
+  BusinessCenter as BusinessCenterIcon,
   Dashboard as DashboardIcon,
   Menu as MenuIcon,
   Mail as MailIcon,
   MoveToInbox as InboxIcon,
   MoreVert as MoreIcon,
   ChevronLeft as ChevronLeftIcon,
-  ChevronRight as ChevronRightIcon,
-  Search as SearchIcon
+  ChevronRight as ChevronRightIcon
 } from '@material-ui/icons';
 import NotificationsIcon from '@material-ui/icons/Notifications';
 import { logout } from '../../actions/auth';
 import PropTypes from 'prop-types';
-import { Redirect } from 'react-router-dom';
+import { Redirect, Link } from 'react-router-dom';
 
 const drawerWidth = 240;
 
@@ -144,8 +145,7 @@ const useStyles = makeStyles(theme => ({
   }
 }));
 
-const LandingPage = ({ isAuthenticated, logout }) => {
-
+const LandingPage = ({ isAuthenticated, logout, children }) => {
   //if not authenticated, then redirect to login
   if (!isAuthenticated) {
     return <Redirect to='/signin' />;
@@ -158,6 +158,7 @@ const LandingPage = ({ isAuthenticated, logout }) => {
   const [mobileMoreAnchorEl, setMobileMoreAnchorEl] = React.useState(null);
   const isMenuOpen = Boolean(anchorEl);
   const isMobileMenuOpen = Boolean(mobileMoreAnchorEl);
+  const [menu, setMenu] = React.useState('dashboard');
 
   const handleDrawerOpen = () => {
     setOpen(true);
@@ -166,7 +167,9 @@ const LandingPage = ({ isAuthenticated, logout }) => {
   const handleDrawerClose = () => {
     setOpen(false);
   };
-
+  const handleMenuClick = menu => {
+    setMenu(menu);
+  };
   const handleProfileMenuOpen = event => {
     setAnchorEl(event.currentTarget);
   };
@@ -249,7 +252,17 @@ const LandingPage = ({ isAuthenticated, logout }) => {
       </MenuItem>
     </Menu>
   );
-
+  const renderContent = () => {
+    if (menu === 'dashboard') {
+      return <div>dashboard</div>;
+    }
+    if (menu === 'business') {
+      return <div>business</div>;
+    }
+    if (menu === 'account') {
+      return <div>business</div>;
+    }
+  };
   return (
     <div className={classes.root}>
       <CssBaseline />
@@ -272,19 +285,6 @@ const LandingPage = ({ isAuthenticated, logout }) => {
           <Typography variant='h6' noWrap={true}>
             Demand Portal
           </Typography>
-          <div className={classes.search}>
-            <div className={classes.searchIcon}>
-              <SearchIcon />
-            </div>
-            <InputBase
-              placeholder='Search…'
-              classes={{
-                root: classes.inputRoot,
-                input: classes.inputInput
-              }}
-              inputProps={{ 'aria-label': 'search' }}
-            />
-          </div>
           <div className={classes.grow} />
           <div className={classes.sectionDesktop}>
             <IconButton aria-label='show 4 new mails' color='inherit'>
@@ -341,27 +341,34 @@ const LandingPage = ({ isAuthenticated, logout }) => {
         </div>
         <Divider />
         <List>
-          {['Dashboard', 'Reports', 'Send email', 'Drafts'].map(
-            (text, index) => (
-              <ListItem button={true} key={text}>
-                <ListItemIcon>
-                  {index % 2 === 0 ? <DashboardIcon /> : <BarChartIcon />}
-                </ListItemIcon>
-                <ListItemText primary={text} />
-              </ListItem>
-            )
-          )}
-        </List>
-        <Divider />
-        <List>
-          {['All mail', 'Trash', 'Spam'].map((text, index) => (
-            <ListItem button={true} key={text}>
-              <ListItemIcon>
-                {index % 2 === 0 ? <InboxIcon /> : <MailIcon />}
-              </ListItemIcon>
-              <ListItemText primary={text} />
-            </ListItem>
-          ))}
+          <ListItem button={true} key={'Dashboard'} component={Link} to='/'>
+            <ListItemIcon>
+              <DashboardIcon />
+            </ListItemIcon>
+            <ListItemText primary={'Dashboard'} />
+          </ListItem>
+          <ListItem
+            button={true}
+            key={'Business'}
+            component={Link}
+            to='/business'
+          >
+            <ListItemIcon>
+              <BusinessCenterIcon />
+            </ListItemIcon>
+            <ListItemText primary={'Business'} />
+          </ListItem>
+          <ListItem
+            button={true}
+            key={'Account'}
+            component={Link}
+            to='/account'
+          >
+            <ListItemIcon>
+              <AccountTreeIcon />
+            </ListItemIcon>
+            <ListItemText primary={'Account'} />
+          </ListItem>
         </List>
       </Drawer>
       <main
@@ -370,35 +377,7 @@ const LandingPage = ({ isAuthenticated, logout }) => {
         })}
       >
         <div className={classes.drawerHeader} />
-        <Typography paragraph={true}>
-          Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do
-          eiusmod tempor incididunt ut labore et dolore magna aliqua. Rhoncus
-          dolor purus non enim praesent elementum facilisis leo vel. Risus at
-          ultrices mi tempus imperdiet. Semper risus in hendrerit gravida rutrum
-          quisque non tellus. Convallis convallis tellus id interdum velit
-          laoreet id donec ultrices. Odio morbi quis commodo odio aenean sed
-          adipiscing. Amet nisl suscipit adipiscing bibendum est ultricies
-          integer quis. Cursus euismod quis viverra nibh cras. Metus vulputate
-          eu scelerisque felis imperdiet proin fermentum leo. Mauris commodo
-          quis imperdiet massa tincidunt. Cras tincidunt lobortis feugiat
-          vivamus at augue. At augue eget arcu dictum varius duis at consectetur
-          lorem. Velit sed ullamcorper morbi tincidunt. Lorem donec massa sapien
-          faucibus et molestie ac.
-        </Typography>
-        <Typography paragraph={true}>
-          Consequat mauris nunc congue nisi vitae suscipit. Fringilla est
-          ullamcorper eget nulla facilisi etiam dignissim diam. Pulvinar
-          elementum integer enim neque volutpat ac tincidunt. Ornare suspendisse
-          sed nisi lacus sed viverra tellus. Purus sit amet volutpat consequat
-          mauris. Elementum eu facilisis sed odio morbi. Euismod lacinia at quis
-          risus sed vulputate odio. Morbi tincidunt ornare massa eget egestas
-          purus viverra accumsan in. In hendrerit gravida rutrum quisque non
-          tellus orci ac. Pellentesque nec nam aliquam sem et tortor. Habitant
-          morbi tristique senectus et. Adipiscing elit duis tristique
-          sollicitudin nibh sit. Ornare aenean euismod elementum nisi quis
-          eleifend. Commodo viverra maecenas accumsan lacus vel facilisis. Nulla
-          posuere sollicitudin aliquam ultrices sagittis orci a.
-        </Typography>
+        {children}
       </main>
       {renderMobileMenu}
       {renderMenu}
@@ -408,7 +387,8 @@ const LandingPage = ({ isAuthenticated, logout }) => {
 
 LandingPage.propTypes = {
   logout: PropTypes.func.isRequired,
-  isAuthenticated: PropTypes.bool
+  isAuthenticated: PropTypes.bool,
+  children: PropTypes.element.isRequired
 };
 
 const mapStateToProps = state => ({

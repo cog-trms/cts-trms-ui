@@ -51,8 +51,8 @@ const useStyles = makeStyles(theme => ({
 
 const SignIn = ({ login, isAuthenticated }) => {
   const [formData, setFormData] = useState({
-    email: '',
-    password: ''
+    email: 'abc@gmail.com',
+    password: 'Password1'
   });
   const classes = useStyles();
   const { email, password } = formData;
@@ -68,7 +68,7 @@ const SignIn = ({ login, isAuthenticated }) => {
 
   //if user authenticated, then redirect to home page
   if (isAuthenticated) {
-    return <Redirect to='/home' />;
+    return <Redirect to='/account' />;
   }
 
   return (

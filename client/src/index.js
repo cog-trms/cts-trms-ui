@@ -4,6 +4,9 @@ import { BrowserRouter as Router, Switch, Route } from 'react-router-dom';
 import LandingPage from './components/layout/LandingPage';
 import Login from './components/auth/SignIn';
 import SignUp from './components/auth/SignUp';
+import Dashboard from './components/layout/Dashboard';
+import Business from './components/business/Business';
+import Account from './components/account/Account';
 import Alert from './components/layout/Alert';
 import { loadUser } from './actions/auth';
 //Redux
@@ -24,12 +27,16 @@ const App = () => {
     <Provider store={store}>
       <Router>
         <Alert />
-        <Switch>
-          <Route exact path='/' component={LandingPage} />
-          <Route path='/home' component={LandingPage} />
-          <Route path='/signin' component={Login} />
-          <Route path='/signup' component={SignUp} />
-        </Switch>
+        <Route path='/signin' component={Login} />
+        <Route path='/signup' component={SignUp} />
+        <LandingPage>
+          <Switch>
+            <Route exact path='/' component={Dashboard} />
+            <Route path='/dashboard' component={Dashboard} />
+            <Route path='/business' component={Business} />
+            <Route path='/account' component={Account} />
+          </Switch>
+        </LandingPage>
       </Router>
     </Provider>
   );
