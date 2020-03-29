@@ -41,14 +41,22 @@ const useStyles = makeStyles(theme => ({
 
 const SignUp = ({ setAlert, register, isAuthenticated }) => {
   const [formData, setFormData] = useState({
-    first_name: '',
-    last_name: '',
-    email: '',
-    password: '',
-    password2: ''
+    firstName: 'aa',
+    lastName: 'bb',
+    email: 'aa@gmail.com',
+    mobileNumber: '123456789',
+    password: '123',
+    password2: '123'
   });
   const classes = useStyles();
-  const { first_name, last_name, email, password, password2 } = formData;
+  const {
+    firstName,
+    lastName,
+    email,
+    mobileNumber,
+    password,
+    password2
+  } = formData;
 
   const onChange = e => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
@@ -59,7 +67,7 @@ const SignUp = ({ setAlert, register, isAuthenticated }) => {
     if (password !== password2) {
       setAlert('Password does not match', 'danger', 3000);
     } else {
-      register({ first_name, last_name, email, password });
+      register({ firstName, lastName, email, mobileNumber, password });
     }
   };
 
@@ -82,8 +90,8 @@ const SignUp = ({ setAlert, register, isAuthenticated }) => {
             <Grid item xs={12} sm={6}>
               <TextField
                 autoComplete='fname'
-                name='first_name'
-                value={first_name}
+                name='firstName'
+                value={firstName}
                 variant='outlined'
                 required
                 fullWidth
@@ -100,8 +108,8 @@ const SignUp = ({ setAlert, register, isAuthenticated }) => {
                 fullWidth
                 id='lastName'
                 label='Last Name'
-                name='last_name'
-                value={last_name}
+                name='lastName'
+                value={lastName}
                 autoComplete='lname'
                 onChange={e => onChange(e)}
               />
@@ -116,6 +124,19 @@ const SignUp = ({ setAlert, register, isAuthenticated }) => {
                 name='email'
                 value={email}
                 autoComplete='email'
+                onChange={e => onChange(e)}
+              />
+            </Grid>
+            <Grid item xs={12}>
+              <TextField
+                variant='outlined'
+                required
+                fullWidth
+                id='mobileNumber'
+                label='Mobile number'
+                name='mobileNumber'
+                value={mobileNumber}
+                autoComplete='mobileNumber'
                 onChange={e => onChange(e)}
               />
             </Grid>

@@ -35,7 +35,18 @@ import {
 import NotificationsIcon from '@material-ui/icons/Notifications';
 import { logout } from '../../actions/auth';
 import PropTypes from 'prop-types';
-import { Redirect, Link } from 'react-router-dom';
+import {
+  BrowserRouter as Router,
+  Switch,
+  Route,
+  Redirect,
+  Link
+} from 'react-router-dom';
+import Login from '../auth/SignIn';
+import SignUp from '../auth/SignUp';
+import Dashboard from './Dashboard';
+import Business from '../business/Business';
+import Account from '../account/Account';
 
 const drawerWidth = 240;
 
@@ -145,7 +156,7 @@ const useStyles = makeStyles(theme => ({
   }
 }));
 
-const LandingPage = ({ isAuthenticated, logout, children }) => {
+const LandingPage = ({ isAuthenticated, logout }) => {
   //if not authenticated, then redirect to login
   if (!isAuthenticated) {
     return <Redirect to='/signin' />;
@@ -321,64 +332,71 @@ const LandingPage = ({ isAuthenticated, logout, children }) => {
           </div>
         </Toolbar>
       </AppBar>
-      <Drawer
-        className={classes.drawer}
-        variant='persistent'
-        anchor='left'
-        open={open}
-        classes={{
-          paper: classes.drawerPaper
-        }}
-      >
-        <div className={classes.drawerHeader}>
-          <IconButton onClick={handleDrawerClose}>
-            {theme.direction === 'ltr' ? (
-              <ChevronLeftIcon />
-            ) : (
-              <ChevronRightIcon />
-            )}
-          </IconButton>
-        </div>
-        <Divider />
-        <List>
-          <ListItem button={true} key={'Dashboard'} component={Link} to='/'>
-            <ListItemIcon>
-              <DashboardIcon />
-            </ListItemIcon>
-            <ListItemText primary={'Dashboard'} />
-          </ListItem>
-          <ListItem
-            button={true}
-            key={'Business'}
-            component={Link}
-            to='/business'
-          >
-            <ListItemIcon>
-              <BusinessCenterIcon />
-            </ListItemIcon>
-            <ListItemText primary={'Business'} />
-          </ListItem>
-          <ListItem
-            button={true}
-            key={'Account'}
-            component={Link}
-            to='/account'
-          >
-            <ListItemIcon>
-              <AccountTreeIcon />
-            </ListItemIcon>
-            <ListItemText primary={'Account'} />
-          </ListItem>
-        </List>
-      </Drawer>
-      <main
-        className={clsx(classes.content, {
-          [classes.contentShift]: open
-        })}
-      >
-        <div className={classes.drawerHeader} />
-        {children}
-      </main>
+      <Router>
+        <Drawer
+          className={classes.drawer}
+          variant='persistent'
+          anchor='left'
+          open={open}
+          classes={{
+            paper: classes.drawerPaper
+          }}
+        >
+          <div className={classes.drawerHeader}>
+            <IconButton onClick={handleDrawerClose}>
+              {theme.direction === 'ltr' ? (
+                <ChevronLeftIcon />
+              ) : (
+                <ChevronRightIcon />
+              )}
+            </IconButton>
+          </div>
+          <Divider />
+          <List>
+            <ListItem button={true} key={'Dashboard'} component={Link} to='/'>
+              <ListItemIcon>
+                <DashboardIcon />
+              </ListItemIcon>
+              <ListItemText primary={'Dashboard'} />
+            </ListItem>
+            <ListItem
+              button={true}
+              key={'Business'}
+              component={Link}
+              to='/business'
+            >
+              <ListItemIcon>
+                <BusinessCenterIcon />
+              </ListItemIcon>
+              <ListItemText primary={'Business'} />
+            </ListItem>
+            <ListItem
+              button={true}
+              key={'Account'}
+              component={Link}
+              to='/account'
+            >
+              <ListItemIcon>
+                <AccountTreeIcon />
+              </ListItemIcon>
+              <ListItemText primary={'Account'} />
+            </ListItem>
+          </List>
+        </Drawer>
+        <main
+          className={clsx(classes.content, {
+            [classes.contentShift]: open
+          })}
+        >
+          <div className={classes.drawerHeader} />
+          <Switch>
+            <Route path='/dashboard' component={Dashboard} />
+            <Route path='/business' component={Business} />
+            <Route path='/account' component={Account} />
+          </Switch>
+        </main>
+      </Router>
+
       {renderMobileMenu}
       {renderMenu}
     </div>
@@ -387,8 +405,8 @@ const LandingPage = ({ isAuthenticated, logout, children }) => {
 
 LandingPage.propTypes = {
   logout: PropTypes.func.isRequired,
-  isAuthenticated: PropTypes.bool,
-  children: PropTypes.element.isRequired
+  isAuthenticated: PropTypes.bool
+  // children: PropTypes.element.isRequired
 };
 
 const mapStateToProps = state => ({

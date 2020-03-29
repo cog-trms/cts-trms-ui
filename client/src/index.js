@@ -27,16 +27,11 @@ const App = () => {
     <Provider store={store}>
       <Router>
         <Alert />
-        <Route path='/signin' component={Login} />
-        <Route path='/signup' component={SignUp} />
-        <LandingPage>
-          <Switch>
-            <Route exact path='/' component={Dashboard} />
-            <Route path='/dashboard' component={Dashboard} />
-            <Route path='/business' component={Business} />
-            <Route path='/account' component={Account} />
-          </Switch>
-        </LandingPage>
+        <Switch>
+          <Route path='/signin' component={Login} />
+          <Route path='/signup' component={SignUp} />
+          <Route path='/' component={LandingPage} />
+        </Switch>
       </Router>
     </Provider>
   );

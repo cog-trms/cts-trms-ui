@@ -68,7 +68,7 @@ const SignIn = ({ login, isAuthenticated }) => {
 
   //if user authenticated, then redirect to home page
   if (isAuthenticated) {
-    return <Redirect to='/account' />;
+    return <Redirect to='/dashboard' />;
   }
 
   return (

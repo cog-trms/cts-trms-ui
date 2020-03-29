@@ -31,22 +31,30 @@ export const loadUser = () => async dispatch => {
 
 //Register User
 export const register = ({
-  first_name,
-  last_name,
   email,
+  firstName,
+  lastName,
+  mobileNumber,
   password
 }) => async dispatch => {
   const config = {
     headers: { 'Content-Type': 'application/json' }
   };
-  const body = JSON.stringify({ first_name, last_name, email, password });
+  const body = JSON.stringify({
+    email,
+    firstName,
+    lastName,
+    mobileNumber,
+    password
+  });
+
   try {
-    const res = await axios.post('/api/users', body, config);
-    // const res = await axios.post(
-    //   'http://localhost:8080/api/v1/user/signup',
-    //   body,
-    //   config
-    // );
+    // const res = await axios.post('/api/users', body, config);
+    const res = await axios.post(
+      'http://localhost:8080/api/v1/user/signup',
+      body,
+      config
+    );
 
     dispatch({ type: SIGNUP_SUCCESS, payload: res.data });
     dispatch(loadUser());
