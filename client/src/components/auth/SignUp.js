@@ -39,7 +39,7 @@ const useStyles = makeStyles(theme => ({
   }
 }));
 
-const SignUp = ({ setAlert, register, isAuthenticated }) => {
+const SignUp = ({ setAlert, register, isSignedUp }) => {
   const [formData, setFormData] = useState({
     firstName: '',
     lastName: '',
@@ -71,8 +71,8 @@ const SignUp = ({ setAlert, register, isAuthenticated }) => {
     }
   };
 
-  if (isAuthenticated) {
-    // return <Redirect to='/dashboard' />;
+  if (isSignedUp) {
+    return <Redirect to='/signin' />;
   }
 
   return (
@@ -197,11 +197,11 @@ const SignUp = ({ setAlert, register, isAuthenticated }) => {
 SignUp.propTypes = {
   setAlert: PropTypes.func.isRequired,
   register: PropTypes.func.isRequired,
-  isAuthenticated: PropTypes.bool
+  isSignedUp: PropTypes.bool
 };
 
 const mapStateToProps = state => ({
-  isAuthenticated: state.auth.isAuthenticated
+  isSignedUp: state.auth.isSignedUp
 });
 
 export default connect(mapStateToProps, { setAlert, register })(SignUp);

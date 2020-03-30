@@ -12,6 +12,7 @@ const initialState = {
   token: localStorage.getItem('token'),
   isAuthenticated: null,
   loading: true,
+  isSignedUp: false,
   user: null
 };
 export default function(state = initialState, action) {
@@ -25,6 +26,12 @@ export default function(state = initialState, action) {
         user: payload
       };
     case SIGNUP_SUCCESS:
+      return {
+        ...state,
+        ...payload,
+        isSignedUp: true,
+        loading: false
+      };
     case LOGIN_SUCCESS:
       localStorage.setItem('token', payload.token);
       return {

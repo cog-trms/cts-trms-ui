@@ -51,8 +51,8 @@ const useStyles = makeStyles(theme => ({
 
 const SignIn = ({ login, isAuthenticated }) => {
   const [formData, setFormData] = useState({
-    email: 'cc@gmail.com',
-    password: '123'
+    email: '',
+    password: ''
   });
   const classes = useStyles();
   const { email, password } = formData;

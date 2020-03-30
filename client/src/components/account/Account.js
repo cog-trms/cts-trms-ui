@@ -57,7 +57,7 @@ const useStyles = makeStyles(theme => ({
     minWidth: 650
   },
   account: {
-    width: 200
+    width: 1100
   },
   description: {
     minWidth: 700
