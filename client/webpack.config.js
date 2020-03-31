@@ -15,7 +15,7 @@ module.exports = {
     inline: true,
     contentBase: path.join(__dirname, 'src'),
     historyApiFallback: true,
-    port: 3000
+    port: 3001
     // proxy: { '/api/**': { target: 'http://localhost:8080', secure: false } }
   },
   module: {

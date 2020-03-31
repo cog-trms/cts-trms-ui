@@ -48,6 +48,7 @@
     "axios": "^0.19.2",
     "clsx": "^1.1.0",
     "config": "^3.3.0",
+    "material-table": "^1.57.2",
     "moment": "^2.24.0",
     "react": "^16.13.0",
     "react-dom": "^16.13.0",

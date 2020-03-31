@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, forwardRef } from 'react';
 import PropTypes from 'prop-types';
 import {
   Button,
@@ -13,11 +13,29 @@ import {
   Paper,
   InputBase
 } from '@material-ui/core';
+import {
+  AddBox,
+  ArrowDownward,
+  Check,
+  ChevronLeft,
+  ChevronRight,
+  Clear,
+  DeleteOutline,
+  Edit,
+  FilterList,
+  FirstPage,
+  LastPage,
+  Remove,
+  SaveAlt,
+  Search,
+  ViewColumn
+} from '@material-ui/icons';
 import SearchIcon from '@material-ui/icons/Search';
 import { fade, makeStyles } from '@material-ui/core/styles';
 import { connect } from 'react-redux';
 import { loadBusiness, saveBusiness } from '../../actions/business';
 import { Redirect } from 'react-router-dom';
+import MaterialTable from 'material-table';
 
 const useStyles = makeStyles(theme => ({
   paper: {
@@ -105,16 +123,23 @@ const Business = ({
   const classes = useStyles();
   const [businessName, setBusinessName] = useState('');
   const [result, setResult] = useState([]);
+  const [state, setState] = React.useState({
+    columns: [{ title: 'Business Unit', field: 'buName' }],
+    data: []
+  });
   useEffect(() => {
     loadBusiness();
   }, []);
 
+  useEffect(() => {
+    setState(state => ({ ...state, data: business }));
+  }, [business]);
+
   const onChange = e => {
     setBusinessName(e.target.value);
   };
-  const handleSave = () => {
-    debugger;
-    saveBusiness(businessName);
+  const handleSave = newData => {
+    saveBusiness(newData.buName);
   };
   const handleSearch = event => {
     event.preventDefault();
@@ -127,7 +152,34 @@ const Business = ({
     return result;
   };
   const rows = result && result.length > 0 ? result : business;
-
+  const tableIcons = {
+    Add: forwardRef((props, ref) => <AddBox {...props} ref={ref} />),
+    Check: forwardRef((props, ref) => <Check {...props} ref={ref} />),
+    Clear: forwardRef((props, ref) => <Clear {...props} ref={ref} />),
+    Delete: forwardRef((props, ref) => <DeleteOutline {...props} ref={ref} />),
+    DetailPanel: forwardRef((props, ref) => (
+      <ChevronRight {...props} ref={ref} />
+    )),
+    Edit: forwardRef((props, ref) => <Edit {...props} ref={ref} />),
+    Export: forwardRef((props, ref) => <SaveAlt {...props} ref={ref} />),
+    Filter: forwardRef((props, ref) => <FilterList {...props} ref={ref} />),
+    FirstPage: forwardRef((props, ref) => <FirstPage {...props} ref={ref} />),
+    LastPage: forwardRef((props, ref) => <LastPage {...props} ref={ref} />),
+    NextPage: forwardRef((props, ref) => <ChevronRight {...props} ref={ref} />),
+    PreviousPage: forwardRef((props, ref) => (
+      <ChevronLeft {...props} ref={ref} />
+    )),
+    ResetSearch: forwardRef((props, ref) => <Clear {...props} ref={ref} />),
+    Search: forwardRef((props, ref) => <Search {...props} ref={ref} />),
+    SortArrow: forwardRef((props, ref) => (
+      <ArrowDownward {...props} ref={ref} />
+    )),
+    ThirdStateCheck: forwardRef((props, ref) => (
+      <Remove {...props} ref={ref} />
+    )),
+    ViewColumn: forwardRef((props, ref) => <ViewColumn {...props} ref={ref} />)
+  };
+  console.log('data: ', state);
   return (
     <Grid container spacing={3}>
       <Grid item xs={12} sm={4}>
@@ -154,8 +206,60 @@ const Business = ({
           Save
         </Button>
       </Grid>
-
-      <TableContainer component={Paper}>
+      <div style={{ width: '100%' }}>
+        <MaterialTable
+          icons={tableIcons}
+          title='Editable Example'
+          columns={state.columns}
+          data={state.data}
+          editable={{
+            // onRowAdd: newData =>
+            //   new Promise(resolve => {
+            // setTimeout(() => {
+            //   resolve();
+            //   setState(prevState => {
+            //     const data = [...prevState.data];
+            //     data.push(newData);
+            //     return { ...prevState, data };
+            //   });
+            // }, 600);
+            // }),
+            onRowAdd: newData =>
+              handleSave(newData).then(() => {
+                setState(prevState => {
+                  const data = [...prevState.data];
+                  data.push(newData);
+                  return { ...prevState, data };
+                });
+              }),
+            onRowUpdate: (newData, oldData) =>
+              new Promise(resolve => {
+                setTimeout(() => {
+                  resolve();
+                  if (oldData) {
+                    setState(prevState => {
+                      const data = [...prevState.data];
+                      data[data.indexOf(oldData)] = newData;
+                      return { ...prevState, data };
+                    });
+                  }
+                }, 600);
+              }),
+            onRowDelete: oldData =>
+              new Promise(resolve => {
+                setTimeout(() => {
+                  resolve();
+                  setState(prevState => {
+                    const data = [...prevState.data];
+                    data.splice(data.indexOf(oldData), 1);
+                    return { ...prevState, data };
+                  });
+                }, 600);
+              })
+          }}
+        />
+      </div>
+      {/* <TableContainer component={Paper}>
         <Table className={classes.table} aria-label='simple table'>
           <TableHead>
             <TableRow>
@@ -184,7 +288,7 @@ const Business = ({
           <TableBody>
             {rows.map((row, index) => (
               <TableRow key={index}>
-                <TableCell component='th' scope='row'>
+                <TableCell component='th' scope='row' edit={}>
                   {row.buName}
                 </TableCell>
                 <TableCell align='center'>
@@ -213,7 +317,7 @@ const Business = ({
             ))}
           </TableBody>
         </Table>
-      </TableContainer>
+      </TableContainer> */}
     </Grid>
   );
 };
