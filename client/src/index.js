@@ -32,6 +32,8 @@ const App = () => {
           <Route path='/signup' component={SignUp} />
           <Route exact path='/' component={LandingPage} />
           <Route exact path='/dashboard' component={LandingPage} />
+          <Route path='/business' component={LandingPage} />
+          <Route path='/account' component={LandingPage} />
         </Switch>
       </Router>
     </Provider>

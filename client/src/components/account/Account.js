@@ -1,17 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import PropTypes from 'prop-types';
 import {
-  Avatar,
-  Box,
   Button,
-  Container,
-  CssBaseline,
-  Checkbox,
   Grid,
-  Link,
   TextField,
-  Typography,
-  FormControlLabel,
   Table,
   TableBody,
   TableCell,
@@ -22,11 +14,13 @@ import {
   MenuItem,
   Select,
   FormControl,
-  InputLabel
+  InputLabel,
+  InputBase
 } from '@material-ui/core';
-import { makeStyles } from '@material-ui/core/styles';
+import { fade, makeStyles } from '@material-ui/core/styles';
 import { connect } from 'react-redux';
 import { loadAccount } from '../../actions/account';
+import SearchIcon from '@material-ui/icons/Search';
 
 const useStyles = makeStyles(theme => ({
   paper: {
@@ -57,7 +51,8 @@ const useStyles = makeStyles(theme => ({
     minWidth: 650
   },
   account: {
-    width: 1100
+    width: 1100,
+    fontWeight: 'bold'
   },
   description: {
     minWidth: 700
@@ -67,22 +62,67 @@ const useStyles = makeStyles(theme => ({
   },
   selectEmpty: {
     marginTop: theme.spacing(2)
+  },
+  search: {
+    position: 'relative',
+    borderRadius: theme.shape.borderRadius,
+    backgroundColor: fade(theme.palette.common.white, 0.15),
+    '&:hover': {
+      backgroundColor: fade(theme.palette.common.white, 0.25)
+    },
+    marginLeft: 0,
+    width: '100%',
+    [theme.breakpoints.up('sm')]: {
+      marginLeft: theme.spacing(1),
+      width: 'auto'
+    }
+  },
+  searchIcon: {
+    padding: theme.spacing(0, 2),
+    height: '100%',
+    position: 'absolute',
+    pointerEvents: 'none',
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'center'
+  },
+  inputRoot: {
+    color: 'inherit'
+  },
+  inputInput: {
+    padding: theme.spacing(1, 1, 1, 0),
+    // vertical padding + font size from searchIcon
+    paddingLeft: `calc(1em + ${theme.spacing(4)}px)`,
+    transition: theme.transitions.create('width'),
+    width: '100%',
+    [theme.breakpoints.up('sm')]: {
+      width: '12ch',
+      '&:focus': {
+        width: '20ch'
+      }
+    }
   }
 }));
 
 const Account = ({ loadAccount, account }) => {
   const classes = useStyles();
-  // const [businessName, setBusinessName] = useState('');
-
-  // const handleChange = event => {
-  //   setBusinessName(event.target.value);
-  // };
+  const [result, setResult] = useState([]);
 
   useEffect(() => {
     loadAccount();
   }, []);
 
-  const rows = account || [];
+  const handleSearch = event => {
+    event.preventDefault();
+    const result = filterData(event.target.value);
+    setResult(result);
+  };
+
+  const filterData = searchText => {
+    const result = account.filter(item => item.accountName === searchText);
+    return result;
+  };
+  const rows = result && result.length > 0 ? result : account;
   return (
     <Grid container spacing={3}>
       <Grid item xs={12} sm={3}>
@@ -110,16 +150,6 @@ const Account = ({ loadAccount, account }) => {
           </Select>
         </FormControl>
       </Grid>
-      {/* <Grid item xs={12} sm={3}>
-        <TextField
-          required
-          id='businessName'
-          name='businessName'
-          label='businessName'
-          fullWidth
-          autoComplete='description'
-        />
-      </Grid> */}
       <Grid item xs={12} sm={3}>
         <Button
           type='button'
@@ -138,19 +168,29 @@ const Account = ({ loadAccount, account }) => {
               <TableCell className={classes.account} align='left'>
                 Account name
               </TableCell>
-              {/* <TableCell className={classes.account} align='left'>
-                Business name
-              </TableCell> */}
-              {/* <TableCell className={classes.description} align='left'>
-                Description
-              </TableCell> */}
+              <TableCell align='center'>
+                <div className={classes.search}>
+                  <div className={classes.searchIcon}>
+                    <SearchIcon />
+                  </div>
+                  <InputBase
+                    placeholder='Search…'
+                    classes={{
+                      root: classes.inputRoot,
+                      input: classes.inputInput
+                    }}
+                    inputProps={{ 'aria-label': 'search' }}
+                    onChange={handleSearch}
+                  />
+                </div>
+              </TableCell>
               <TableCell align='center'></TableCell>
               <TableCell align='center'></TableCell>
             </TableRow>
           </TableHead>
           <TableBody>
-            {rows.map(row => (
-              <TableRow key={row.name}>
+            {rows.map((row, index) => (
+              <TableRow key={index}>
                 <TableCell component='th' scope='row'>
                   {row.accountName}
                 </TableCell>

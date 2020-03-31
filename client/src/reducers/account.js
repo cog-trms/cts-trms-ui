@@ -2,7 +2,7 @@ import { ACCOUNT_LOADED, ACCOUNT_SAVE, ACCOUNT_FAIL } from '../actions/types';
 
 const initialState = {
   loading: true,
-  account: null
+  account: []
 };
 export default function(state = initialState, action) {
   const { type, payload } = action;

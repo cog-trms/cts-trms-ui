@@ -22,38 +22,27 @@ export const loadBusiness = () => async dispatch => {
 };
 
 //Save Business
-export const save = ({
-  email,
-  firstName,
-  lastName,
-  mobileNumber,
-  password
-}) => async dispatch => {
+export const saveBusiness = businessUnitName => async dispatch => {
   const config = {
     headers: { 'Content-Type': 'application/json' }
   };
   const body = JSON.stringify({
-    email,
-    firstName,
-    lastName,
-    mobileNumber,
-    password
+    businessUnitName
   });
 
   try {
     const res = await axios.post(
-      'http://localhost:8080/api/v1/user/signup',
+      'http://localhost:8080/api/v1/bu/',
       body,
       config
     );
-
-    dispatch({ type: SIGNUP_SUCCESS, payload: res.data });
-    // dispatch(loadUser());
+    dispatch({ type: BUSINESS_SAVE, payload: res.data });
+    dispatch(loadBusiness());
   } catch (err) {
     const errors = err.response.data.errors;
     if (errors) {
       errors.array.forEach(error => dispatch(setAlert(error.msg, 'danger')));
     }
-    dispatch({ type: SIGNUP_FAIL });
+    dispatch({ type: BUSINESS_FAIL });
   }
 };

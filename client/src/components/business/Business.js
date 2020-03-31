@@ -1,29 +1,23 @@
 import React, { useState, useEffect } from 'react';
 import PropTypes from 'prop-types';
 import {
-  Avatar,
-  Box,
   Button,
-  Container,
-  CssBaseline,
-  Checkbox,
   Grid,
-  Link,
   TextField,
-  Typography,
-  FormControlLabel,
   Table,
   TableBody,
   TableCell,
   TableContainer,
   TableHead,
   TableRow,
-  Paper
+  Paper,
+  InputBase
 } from '@material-ui/core';
-import { makeStyles } from '@material-ui/core/styles';
-// import BusinessTable from './BusinessTable';
+import SearchIcon from '@material-ui/icons/Search';
+import { fade, makeStyles } from '@material-ui/core/styles';
 import { connect } from 'react-redux';
-import { loadBusiness } from '../../actions/business';
+import { loadBusiness, saveBusiness } from '../../actions/business';
+import { Redirect } from 'react-router-dom';
 
 const useStyles = makeStyles(theme => ({
   paper: {
@@ -54,17 +48,86 @@ const useStyles = makeStyles(theme => ({
     minWidth: 650
   },
   business: {
-    width: 1100
+    width: 1100,
+    fontWeight: 'bold'
+  },
+  search: {
+    position: 'relative',
+    borderRadius: theme.shape.borderRadius,
+    backgroundColor: fade(theme.palette.common.white, 0.15),
+    '&:hover': {
+      backgroundColor: fade(theme.palette.common.white, 0.25)
+    },
+    marginLeft: 0,
+    width: '100%',
+    [theme.breakpoints.up('sm')]: {
+      marginLeft: theme.spacing(1),
+      width: 'auto'
+    }
+  },
+  searchIcon: {
+    padding: theme.spacing(0, 2),
+    height: '100%',
+    position: 'absolute',
+    pointerEvents: 'none',
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'center'
+  },
+  inputRoot: {
+    color: 'inherit'
+  },
+  inputInput: {
+    padding: theme.spacing(1, 1, 1, 0),
+    // vertical padding + font size from searchIcon
+    paddingLeft: `calc(1em + ${theme.spacing(4)}px)`,
+    transition: theme.transitions.create('width'),
+    width: '100%',
+    [theme.breakpoints.up('sm')]: {
+      width: '12ch',
+      '&:focus': {
+        width: '20ch'
+      }
+    }
   }
 }));
 
-const Business = ({ loadBusiness, business }) => {
-  const classes = useStyles();
+const Business = ({
+  isAuthenticated,
+  loadBusiness,
+  saveBusiness,
+  business
+}) => {
+  if (!isAuthenticated) {
+    return <Redirect to='/signin' />;
+  }
 
+  const classes = useStyles();
+  const [businessName, setBusinessName] = useState('');
+  const [result, setResult] = useState([]);
   useEffect(() => {
     loadBusiness();
   }, []);
-  const rows = business || [];
+
+  const onChange = e => {
+    setBusinessName(e.target.value);
+  };
+  const handleSave = () => {
+    debugger;
+    saveBusiness(businessName);
+  };
+  const handleSearch = event => {
+    event.preventDefault();
+    const result = filterData(event.target.value);
+    setResult(result);
+  };
+
+  const filterData = searchText => {
+    const result = business.filter(item => item.buName === searchText);
+    return result;
+  };
+  const rows = result && result.length > 0 ? result : business;
+
   return (
     <Grid container spacing={3}>
       <Grid item xs={12} sm={4}>
@@ -73,8 +136,10 @@ const Business = ({ loadBusiness, business }) => {
           id='businessName'
           name='businessName'
           label='Business name'
+          value={businessName}
           fullWidth
           autoComplete='businessName'
+          onChange={e => onChange(e)}
         />
       </Grid>
       <Grid item xs={12} sm={4}>
@@ -84,11 +149,12 @@ const Business = ({ loadBusiness, business }) => {
           variant='contained'
           color='primary'
           className={classes.save}
-          // onClick={() => loadBusiness()}
+          onClick={handleSave}
         >
           Save
         </Button>
       </Grid>
+
       <TableContainer component={Paper}>
         <Table className={classes.table} aria-label='simple table'>
           <TableHead>
@@ -97,12 +163,27 @@ const Business = ({ loadBusiness, business }) => {
                 Business Unit
               </TableCell>
               <TableCell align='center'></TableCell>
-              <TableCell align='center'></TableCell>
+              <TableCell align='center'>
+                <div className={classes.search}>
+                  <div className={classes.searchIcon}>
+                    <SearchIcon />
+                  </div>
+                  <InputBase
+                    placeholder='Search…'
+                    classes={{
+                      root: classes.inputRoot,
+                      input: classes.inputInput
+                    }}
+                    inputProps={{ 'aria-label': 'search' }}
+                    onChange={handleSearch}
+                  />
+                </div>
+              </TableCell>
             </TableRow>
           </TableHead>
           <TableBody>
-            {rows.map(row => (
-              <TableRow key={row.name}>
+            {rows.map((row, index) => (
+              <TableRow key={index}>
                 <TableCell component='th' scope='row'>
                   {row.buName}
                 </TableCell>
@@ -137,10 +218,14 @@ const Business = ({ loadBusiness, business }) => {
   );
 };
 Business.propTypes = {
-  loadBusiness: PropTypes.func.isRequired
+  loadBusiness: PropTypes.func.isRequired,
+  saveBusiness: PropTypes.func.isRequired
 };
 
 const mapStateToProps = state => ({
+  isAuthenticated: state.auth.isAuthenticated,
   business: state.business.business
 });
-export default connect(mapStateToProps, { loadBusiness })(Business);
+export default connect(mapStateToProps, { loadBusiness, saveBusiness })(
+  Business
+);

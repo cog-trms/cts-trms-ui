@@ -22,7 +22,7 @@ export const loadAccount = () => async dispatch => {
 };
 
 //Save Account
-export const save = ({
+export const saveAccount = ({
   email,
   firstName,
   lastName,
@@ -48,7 +48,7 @@ export const save = ({
     );
 
     dispatch({ type: SIGNUP_SUCCESS, payload: res.data });
-    // dispatch(loadUser());
+    dispatch(loadAccount());
   } catch (err) {
     const errors = err.response.data.errors;
     if (errors) {

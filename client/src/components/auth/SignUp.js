@@ -40,6 +40,10 @@ const useStyles = makeStyles(theme => ({
 }));
 
 const SignUp = ({ setAlert, register, isSignedUp }) => {
+  if (isSignedUp) {
+    return <Redirect to='/signin' />;
+  }
+
   const [formData, setFormData] = useState({
     firstName: '',
     lastName: '',
@@ -70,10 +74,6 @@ const SignUp = ({ setAlert, register, isSignedUp }) => {
       register({ firstName, lastName, email, mobileNumber, password });
     }
   };
-
-  if (isSignedUp) {
-    return <Redirect to='/signin' />;
-  }
 
   return (
     <Container component='main' maxWidth='xs'>

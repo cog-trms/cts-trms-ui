@@ -390,7 +390,8 @@ const LandingPage = ({ isAuthenticated, logout }) => {
         >
           <div className={classes.drawerHeader} />
           <Switch>
-            <Route path='/dashboard' component={Dashboard} />
+            <Route exact path='/' component={Dashboard} />
+            <Route exact path='/dashboard' component={Dashboard} />
             <Route path='/business' component={Business} />
             <Route path='/account' component={Account} />
           </Switch>
