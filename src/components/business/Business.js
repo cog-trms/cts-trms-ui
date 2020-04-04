@@ -33,7 +33,11 @@ import {
 import SearchIcon from '@material-ui/icons/Search';
 import { fade, makeStyles } from '@material-ui/core/styles';
 import { connect } from 'react-redux';
-import { loadBusiness, saveBusiness } from '../../actions/business';
+import {
+  loadBusiness,
+  saveBusiness,
+  updateBusiness
+} from '../../actions/business';
 import { Redirect } from 'react-router-dom';
 import MaterialTable from 'material-table';
 
@@ -114,6 +118,7 @@ const Business = ({
   isAuthenticated,
   loadBusiness,
   saveBusiness,
+  updateBusiness,
   business
 }) => {
   if (!isAuthenticated) {
@@ -138,8 +143,14 @@ const Business = ({
   const onChange = e => {
     setBusinessName(e.target.value);
   };
-  const handleSave = newData => {
-    saveBusiness(newData.buName);
+  const handleSave = ({ buName }) => {
+    debugger;
+    return saveBusiness(buName);
+  };
+
+  const handleUpdate = ({ id, buName }) => {
+    debugger;
+    return updateBusiness(id, buName);
   };
   const handleSearch = event => {
     event.preventDefault();
@@ -209,7 +220,7 @@ const Business = ({
       <div style={{ width: '100%' }}>
         <MaterialTable
           icons={tableIcons}
-          title='Editable Example'
+          title='Business Unit'
           columns={state.columns}
           data={state.data}
           editable={{
@@ -233,17 +244,26 @@ const Business = ({
                 });
               }),
             onRowUpdate: (newData, oldData) =>
-              new Promise(resolve => {
-                setTimeout(() => {
-                  resolve();
-                  if (oldData) {
-                    setState(prevState => {
-                      const data = [...prevState.data];
-                      data[data.indexOf(oldData)] = newData;
-                      return { ...prevState, data };
-                    });
-                  }
-                }, 600);
+              // new Promise(resolve => {
+              //   setTimeout(() => {
+              //     resolve();
+              //     if (oldData) {
+              //       setState(prevState => {
+              //         const data = [...prevState.data];
+              //         data[data.indexOf(oldData)] = newData;
+              //         return { ...prevState, data };
+              //       });
+              //     }
+              //   }, 600);
+              // }),
+              handleUpdate(newData, oldData).then(() => {
+                if (oldData) {
+                  setState(prevState => {
+                    const data = [...prevState.data];
+                    data[data.indexOf(oldData)] = newData;
+                    return { ...prevState, data };
+                  });
+                }
               }),
             onRowDelete: oldData =>
               new Promise(resolve => {
@@ -323,13 +343,16 @@ const Business = ({
 };
 Business.propTypes = {
   loadBusiness: PropTypes.func.isRequired,
-  saveBusiness: PropTypes.func.isRequired
+  saveBusiness: PropTypes.func.isRequired,
+  updateBusiness: PropTypes.func.isRequired
 };
 
 const mapStateToProps = state => ({
   isAuthenticated: state.auth.isAuthenticated,
   business: state.business.business
 });
-export default connect(mapStateToProps, { loadBusiness, saveBusiness })(
-  Business
-);
+export default connect(mapStateToProps, {
+  loadBusiness,
+  saveBusiness,
+  updateBusiness
+})(Business);

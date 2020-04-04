@@ -46,3 +46,30 @@ export const saveBusiness = businessUnitName => async dispatch => {
     dispatch({ type: BUSINESS_FAIL });
   }
 };
+
+//Update Business
+export const updateBusiness = (id, buName) => async dispatch => {
+  const config = {
+    headers: { 'Content-Type': 'application/json' }
+  };
+  const body = JSON.stringify({
+    id,
+    buName
+  });
+
+  try {
+    const res = await axios.put(
+      'http://localhost:8080/api/v1/bu/',
+      body,
+      config
+    );
+    dispatch({ type: BUSINESS_SAVE, payload: res.data });
+    dispatch(loadBusiness());
+  } catch (err) {
+    const errors = err.response.data.errors;
+    if (errors) {
+      errors.array.forEach(error => dispatch(setAlert(error.msg, 'danger')));
+    }
+    dispatch({ type: BUSINESS_FAIL });
+  }
+};
