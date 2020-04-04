@@ -199,30 +199,6 @@ const Business = ({
   console.log('data: ', state);
   return (
     <Grid container spacing={3}>
-      <Grid item xs={12} sm={4}>
-        <TextField
-          required
-          id='businessName'
-          name='businessName'
-          label='Business name'
-          value={businessName}
-          fullWidth
-          autoComplete='businessName'
-          onChange={e => onChange(e)}
-        />
-      </Grid>
-      <Grid item xs={12} sm={4}>
-        <Button
-          type='button'
-          fullWidth
-          variant='contained'
-          color='primary'
-          className={classes.save}
-          onClick={handleSave}
-        >
-          Save
-        </Button>
-      </Grid>
       <div style={{ width: '100%' }}>
         <MaterialTable
           icons={tableIcons}
@@ -256,16 +232,6 @@ const Business = ({
                   return { ...prevState, data };
                 });
               })
-            // new Promise(resolve => {
-            //   setTimeout(() => {
-            //     resolve();
-            //     setState(prevState => {
-            //       const data = [...prevState.data];
-            //       data.splice(data.indexOf(oldData), 1);
-            //       return { ...prevState, data };
-            //     });
-            //   }, 600);
-            // })
           }}
           onRowClick={(evt, selectedRow) => setSelectedRow(selectedRow)}
           options={{
