@@ -1,6 +1,6 @@
 import {
   BUSINESS_LOADED,
-  BUSINESS_SAVE,
+  BUSINESS_SUCCESS,
   BUSINESS_FAIL
 } from '../actions/types';
 

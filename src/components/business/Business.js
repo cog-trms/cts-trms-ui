@@ -30,13 +30,13 @@ import {
   Search,
   ViewColumn
 } from '@material-ui/icons';
-import SearchIcon from '@material-ui/icons/Search';
 import { fade, makeStyles } from '@material-ui/core/styles';
 import { connect } from 'react-redux';
 import {
   loadBusiness,
   saveBusiness,
-  updateBusiness
+  updateBusiness,
+  deleteBusiness
 } from '../../actions/business';
 import { Redirect } from 'react-router-dom';
 import MaterialTable from 'material-table';
@@ -119,6 +119,7 @@ const Business = ({
   loadBusiness,
   saveBusiness,
   updateBusiness,
+  deleteBusiness,
   business
 }) => {
   if (!isAuthenticated) {
@@ -132,6 +133,7 @@ const Business = ({
     columns: [{ title: 'Business Unit', field: 'buName' }],
     data: []
   });
+  const [selectedRow, setSelectedRow] = useState(null);
   useEffect(() => {
     loadBusiness();
   }, []);
@@ -151,6 +153,10 @@ const Business = ({
   const handleUpdate = ({ id, buName }) => {
     debugger;
     return updateBusiness(id, buName);
+  };
+
+  const handleDelete = ({ id }) => {
+    return deleteBusiness(id);
   };
   const handleSearch = event => {
     event.preventDefault();
@@ -224,17 +230,6 @@ const Business = ({
           columns={state.columns}
           data={state.data}
           editable={{
-            // onRowAdd: newData =>
-            //   new Promise(resolve => {
-            // setTimeout(() => {
-            //   resolve();
-            //   setState(prevState => {
-            //     const data = [...prevState.data];
-            //     data.push(newData);
-            //     return { ...prevState, data };
-            //   });
-            // }, 600);
-            // }),
             onRowAdd: newData =>
               handleSave(newData).then(() => {
                 setState(prevState => {
@@ -244,18 +239,6 @@ const Business = ({
                 });
               }),
             onRowUpdate: (newData, oldData) =>
-              // new Promise(resolve => {
-              //   setTimeout(() => {
-              //     resolve();
-              //     if (oldData) {
-              //       setState(prevState => {
-              //         const data = [...prevState.data];
-              //         data[data.indexOf(oldData)] = newData;
-              //         return { ...prevState, data };
-              //       });
-              //     }
-              //   }, 600);
-              // }),
               handleUpdate(newData, oldData).then(() => {
                 if (oldData) {
                   setState(prevState => {
@@ -266,85 +249,47 @@ const Business = ({
                 }
               }),
             onRowDelete: oldData =>
-              new Promise(resolve => {
-                setTimeout(() => {
-                  resolve();
-                  setState(prevState => {
-                    const data = [...prevState.data];
-                    data.splice(data.indexOf(oldData), 1);
-                    return { ...prevState, data };
-                  });
-                }, 600);
+              handleDelete(oldData).then(() => {
+                setState(prevState => {
+                  const data = [...prevState.data];
+                  data.splice(data.indexOf(oldData), 1);
+                  return { ...prevState, data };
+                });
               })
+            // new Promise(resolve => {
+            //   setTimeout(() => {
+            //     resolve();
+            //     setState(prevState => {
+            //       const data = [...prevState.data];
+            //       data.splice(data.indexOf(oldData), 1);
+            //       return { ...prevState, data };
+            //     });
+            //   }, 600);
+            // })
+          }}
+          onRowClick={(evt, selectedRow) => setSelectedRow(selectedRow)}
+          options={{
+            headerStyle: {
+              backgroundColor: '#01579b',
+              color: '#FFF'
+            },
+            rowStyle: rowData => ({
+              backgroundColor:
+                selectedRow && selectedRow.id === rowData.id
+                  ? '#DDF1FC'
+                  : '#FFF'
+            })
           }}
         />
       </div>
-      {/* <TableContainer component={Paper}>
-        <Table className={classes.table} aria-label='simple table'>
-          <TableHead>
-            <TableRow>
-              <TableCell className={classes.business} align='left'>
-                Business Unit
-              </TableCell>
-              <TableCell align='center'></TableCell>
-              <TableCell align='center'>
-                <div className={classes.search}>
-                  <div className={classes.searchIcon}>
-                    <SearchIcon />
-                  </div>
-                  <InputBase
-                    placeholder='Search…'
-                    classes={{
-                      root: classes.inputRoot,
-                      input: classes.inputInput
-                    }}
-                    inputProps={{ 'aria-label': 'search' }}
-                    onChange={handleSearch}
-                  />
-                </div>
-              </TableCell>
-            </TableRow>
-          </TableHead>
-          <TableBody>
-            {rows.map((row, index) => (
-              <TableRow key={index}>
-                <TableCell component='th' scope='row' edit={}>
-                  {row.buName}
-                </TableCell>
-                <TableCell align='center'>
-                  <Button
-                    type='button'
-                    fullWidth
-                    variant='contained'
-                    color='primary'
-                    className={classes.edit}
-                  >
-                    Edit
-                  </Button>
-                </TableCell>
-                <TableCell align='right'>
-                  <Button
-                    type='button'
-                    fullWidth
-                    variant='contained'
-                    color='primary'
-                    className={classes.delete}
-                  >
-                    Delete
-                  </Button>
-                </TableCell>
-              </TableRow>
-            ))}
-          </TableBody>
-        </Table>
-      </TableContainer> */}
     </Grid>
   );
 };
 Business.propTypes = {
   loadBusiness: PropTypes.func.isRequired,
   saveBusiness: PropTypes.func.isRequired,
-  updateBusiness: PropTypes.func.isRequired
+  updateBusiness: PropTypes.func.isRequired,
+  deleteBusiness: PropTypes.func.isRequired
 };
 
 const mapStateToProps = state => ({
@@ -354,5 +299,6 @@ const mapStateToProps = state => ({
 export default connect(mapStateToProps, {
   loadBusiness,
   saveBusiness,
-  updateBusiness
+  updateBusiness,
+  deleteBusiness
 })(Business);
