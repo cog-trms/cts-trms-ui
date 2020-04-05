@@ -40,6 +40,9 @@ import {
 } from '../../actions/business';
 import { Redirect } from 'react-router-dom';
 import MaterialTable from 'material-table';
+import BusinessModal from '../common/BusinessModal';
+import CloseIcon from '@material-ui/icons/Close';
+import { Modal, IconButton } from '@material-ui/core';
 
 const useStyles = makeStyles(theme => ({
   paper: {
@@ -134,6 +137,8 @@ const Business = ({
     data: []
   });
   const [selectedRow, setSelectedRow] = useState(null);
+  const [open, setOpen] = React.useState(false);
+
   useEffect(() => {
     loadBusiness();
   }, []);
@@ -146,12 +151,15 @@ const Business = ({
     setBusinessName(e.target.value);
   };
   const handleSave = ({ buName }) => {
-    debugger;
     return saveBusiness(buName);
   };
-
+  const handleClose = () => {
+    setOpen(false);
+  };
+  const handleEditClick = () => {
+    setOpen(true);
+  };
   const handleUpdate = ({ id, buName }) => {
-    debugger;
     return updateBusiness(id, buName);
   };
 
@@ -168,7 +176,9 @@ const Business = ({
     const result = business.filter(item => item.buName === searchText);
     return result;
   };
+
   const rows = result && result.length > 0 ? result : business;
+
   const tableIcons = {
     Add: forwardRef((props, ref) => <AddBox {...props} ref={ref} />),
     Check: forwardRef((props, ref) => <Check {...props} ref={ref} />),
@@ -196,8 +206,96 @@ const Business = ({
     )),
     ViewColumn: forwardRef((props, ref) => <ViewColumn {...props} ref={ref} />)
   };
-  console.log('data: ', state);
+
   return (
+    // <Grid container spacing={3}>
+    //   <Grid item xs={12} sm={4}>
+    //     <TextField
+    //       required
+    //       id='businessName'
+    //       name='businessName'
+    //       label='Business name'
+    //       value={businessName}
+    //       fullWidth
+    //       autoComplete='businessName'
+    //       onChange={e => onChange(e)}
+    //     />
+    //   </Grid>
+    //   <Grid item xs={12} sm={4}>
+    //     <Button
+    //       type='button'
+    //       fullWidth
+    //       variant='contained'
+    //       color='primary'
+    //       className={classes.save}
+    //       onClick={handleSave}
+    //     >
+    //       Save
+    //     </Button>
+    //   </Grid>
+
+    //   <TableContainer component={Paper}>
+    //     <Table className={classes.table} aria-label='simple table'>
+    //       <TableHead>
+    //         <TableRow>
+    //           <TableCell className={classes.business} align='left'>
+    //             Business Unit
+    //           </TableCell>
+    //           <TableCell align='center'></TableCell>
+    //           <TableCell align='center'>
+    //             <div className={classes.search}>
+    //               <div className={classes.searchIcon}>
+    //                 <Search />
+    //               </div>
+    //               <InputBase
+    //                 placeholder='Search…'
+    //                 classes={{
+    //                   root: classes.inputRoot,
+    //                   input: classes.inputInput
+    //                 }}
+    //                 inputProps={{ 'aria-label': 'search' }}
+    //                 onChange={handleSearch}
+    //               />
+    //             </div>
+    //           </TableCell>
+    //         </TableRow>
+    //       </TableHead>
+    //       <TableBody>
+    //         {rows.map((row, index) => (
+    //           <TableRow key={index}>
+    //             <TableCell component='th' scope='row'>
+    //               {row.buName}
+    //             </TableCell>
+    //             <TableCell align='center'>
+    //               <Button
+    //                 type='button'
+    //                 fullWidth
+    //                 variant='contained'
+    //                 color='primary'
+    //                 className={classes.edit}
+    //                 onClick={handleEditClick}
+    //               >
+    //                 Edit
+    //               </Button>
+    //             </TableCell>
+    //             <TableCell align='right'>
+    //               <Button
+    //                 type='button'
+    //                 fullWidth
+    //                 variant='contained'
+    //                 color='primary'
+    //                 className={classes.delete}
+    //               >
+    //                 Delete
+    //               </Button>
+    //             </TableCell>
+    //           </TableRow>
+    //         ))}
+    //       </TableBody>
+    //     </Table>
+    //   </TableContainer>
+    //   <BusinessModal open={open} handleClose={handleClose} />
+    // </Grid>
     <Grid container spacing={3}>
       <div style={{ width: '100%' }}>
         <MaterialTable
@@ -236,7 +334,7 @@ const Business = ({
           onRowClick={(evt, selectedRow) => setSelectedRow(selectedRow)}
           options={{
             headerStyle: {
-              backgroundColor: '#01579b',
+              backgroundColor: '#04A4F9',
               color: '#FFF'
             },
             rowStyle: rowData => ({

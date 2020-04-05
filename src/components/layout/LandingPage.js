@@ -30,7 +30,9 @@ import {
   MoveToInbox as InboxIcon,
   MoreVert as MoreIcon,
   ChevronLeft as ChevronLeftIcon,
-  ChevronRight as ChevronRightIcon
+  ChevronRight as ChevronRightIcon,
+  GroupWork as GroupWorkIcon,
+  Group as GroupIcon
 } from '@material-ui/icons';
 import NotificationsIcon from '@material-ui/icons/Notifications';
 import { logout } from '../../actions/auth';
@@ -380,6 +382,23 @@ const LandingPage = ({ isAuthenticated, logout }) => {
                 <AccountTreeIcon />
               </ListItemIcon>
               <ListItemText primary={'Account'} />
+            </ListItem>
+            <ListItem
+              button={true}
+              key={'Program'}
+              component={Link}
+              to='/program'
+            >
+              <ListItemIcon>
+                <GroupWorkIcon />
+              </ListItemIcon>
+              <ListItemText primary={'Program'} />
+            </ListItem>
+            <ListItem button={true} key={'Team'} component={Link} to='/team'>
+              <ListItemIcon>
+                <GroupIcon />
+              </ListItemIcon>
+              <ListItemText primary={'Team'} />
             </ListItem>
           </List>
         </Drawer>

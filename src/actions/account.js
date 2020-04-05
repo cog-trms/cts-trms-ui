@@ -9,7 +9,9 @@ export const loadAccount = () => async dispatch => {
     setAuthToken(localStorage.token);
   }
   try {
-    const res = await axios.get('http://localhost:8080/api/v1/account/all');
+    const res = await axios.get(
+      'http://localhost:8080/api/v1/accounts/account/all'
+    );
     dispatch({
       type: ACCOUNT_LOADED,
       payload: res.data.payload
@@ -22,32 +24,28 @@ export const loadAccount = () => async dispatch => {
 };
 
 //Save Account
-export const saveAccount = ({
-  email,
-  firstName,
-  lastName,
-  mobileNumber,
-  password
-}) => async dispatch => {
+export const saveAccount = (
+  accountName,
+  businessUnitId,
+  userId
+) => async dispatch => {
   const config = {
     headers: { 'Content-Type': 'application/json' }
   };
   const body = JSON.stringify({
-    email,
-    firstName,
-    lastName,
-    mobileNumber,
-    password
+    accountName,
+    businessUnitId,
+    userId
   });
-
+  debugger;
   try {
     const res = await axios.post(
-      'http://localhost:8080/api/v1/user/signup',
+      'http://localhost:8080/api/v1/accounts/account',
       body,
       config
     );
 
-    dispatch({ type: SIGNUP_SUCCESS, payload: res.data });
+    dispatch({ type: ACCOUNT_SAVE, payload: res.data });
     dispatch(loadAccount());
   } catch (err) {
     const errors = err.response.data.errors;
