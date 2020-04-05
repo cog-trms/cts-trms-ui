@@ -1,38 +1,36 @@
 import axios from 'axios';
 import { setAlert } from './alert';
 import {
-  ACCOUNT_LOADED,
-  ACCOUNT_SAVE,
-  ACCOUNT_FAIL,
-  ACCOUNT_UPDATE,
-  ACCOUNT_UPDATE_FAIL,
-  ACCOUNT_DELETE,
-  ACCOUNT_DELETE_FAIL
+  TEAM_LOADED,
+  TEAM_SAVE,
+  TEAM_FAIL,
+  TEAM_UPDATE,
+  TEAM_UPDATE_FAIL,
+  TEAM_DELETE,
+  TEAM_DELETE_FAIL
 } from './types';
 import setAuthToken from '../utils/setAuthToken';
 
-//Load Account
-export const loadAccount = () => async dispatch => {
+//Load Team
+export const loadTeam = () => async dispatch => {
   if (localStorage.token) {
     setAuthToken(localStorage.token);
   }
   try {
-    const res = await axios.get(
-      'http://localhost:8080/api/v1/accounts/account/all'
-    );
+    const res = await axios.get('http://localhost:8080/api/v1/users/listUsers');
     dispatch({
-      type: ACCOUNT_LOADED,
+      type: TEAM_LOADED,
       payload: res.data.payload
     });
   } catch (err) {
     dispatch({
-      type: ACCOUNT_FAIL
+      type: TEAM_FAIL
     });
   }
 };
 
-//Save Account
-export const saveAccount = (
+//Save Team
+export const saveTeam = (
   accountName,
   businessUnitId,
   userId
@@ -52,19 +50,19 @@ export const saveAccount = (
       config
     );
 
-    dispatch({ type: ACCOUNT_SAVE, payload: res.data });
-    dispatch(loadAccount());
+    dispatch({ type: TEAM_SAVE, payload: res.data });
+    dispatch(loadTeam());
   } catch (err) {
     const errors = err.response.data.errors;
     if (errors) {
       errors.array.forEach(error => dispatch(setAlert(error.msg, 'danger')));
     }
-    dispatch({ type: ACCOUNT_FAIL });
+    dispatch({ type: TEAM_FAIL });
   }
 };
 
-//Update Account
-export const updateAccount = (
+//Update Team
+export const updateTeam = (
   id,
   accountName,
   businessUnitId,
@@ -86,19 +84,19 @@ export const updateAccount = (
       body,
       config
     );
-    dispatch({ type: ACCOUNT_UPDATE, payload: res.data });
-    dispatch(loadAccount());
+    dispatch({ type: TEAM_UPDATE, payload: res.data });
+    dispatch(loadTeam());
   } catch (err) {
     const errors = err.response.data.errors;
     if (errors) {
       errors.array.forEach(error => dispatch(setAlert(error.msg, 'danger')));
     }
-    dispatch({ type: ACCOUNT_UPDATE_FAIL });
+    dispatch({ type: TEAM_UPDATE_FAIL });
   }
 };
 
-//Delete Account
-export const deleteAccount = id => async dispatch => {
+//Delete Team
+export const deleteTeam = id => async dispatch => {
   const config = {
     headers: { 'Content-Type': 'application/json' }
   };
@@ -108,13 +106,13 @@ export const deleteAccount = id => async dispatch => {
       `http://localhost:8080/api/v1/bu/${id}`,
       config
     );
-    dispatch({ type: ACCOUNT_DELETE, payload: res.data });
+    dispatch({ type: TEAM_DELETE, payload: res.data });
     dispatch(loadBusiness());
   } catch (err) {
     const errors = err.response.data.errors;
     if (errors) {
       errors.array.forEach(error => dispatch(setAlert(error.msg, 'danger')));
     }
-    dispatch({ type: ACCOUNT_DELETE_FAIL });
+    dispatch({ type: TEAM_DELETE_FAIL });
   }
 };

@@ -32,7 +32,8 @@ import {
   ChevronLeft as ChevronLeftIcon,
   ChevronRight as ChevronRightIcon,
   GroupWork as GroupWorkIcon,
-  Group as GroupIcon
+  Group as GroupIcon,
+  Telegram
 } from '@material-ui/icons';
 import NotificationsIcon from '@material-ui/icons/Notifications';
 import { logout } from '../../actions/auth';
@@ -49,6 +50,8 @@ import SignUp from '../auth/SignUp';
 import Dashboard from './Dashboard';
 import Business from '../business/Business';
 import Account from '../account/Account';
+import Program from '../program/Program';
+import Team from '../team/Team';
 
 const drawerWidth = 240;
 
@@ -413,6 +416,8 @@ const LandingPage = ({ isAuthenticated, logout }) => {
             <Route exact path='/dashboard' component={Dashboard} />
             <Route path='/business' component={Business} />
             <Route path='/account' component={Account} />
+            <Route path='/program' component={Program} />
+            <Route path='/team' component={Team} />
           </Switch>
         </main>
       </Router>

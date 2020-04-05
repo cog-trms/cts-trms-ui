@@ -34,6 +34,8 @@ const App = () => {
           <Route exact path='/dashboard' component={LandingPage} />
           <Route path='/business' component={LandingPage} />
           <Route path='/account' component={LandingPage} />
+          <Route path='/program' component={LandingPage} />
+          <Route path='/team' component={LandingPage} />
         </Switch>
       </Router>
     </Provider>

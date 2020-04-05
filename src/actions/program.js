@@ -1,120 +1,114 @@
 import axios from 'axios';
 import { setAlert } from './alert';
 import {
-  ACCOUNT_LOADED,
-  ACCOUNT_SAVE,
-  ACCOUNT_FAIL,
-  ACCOUNT_UPDATE,
-  ACCOUNT_UPDATE_FAIL,
-  ACCOUNT_DELETE,
-  ACCOUNT_DELETE_FAIL
+  PROGRAM_LOADED,
+  PROGRAM_SAVE,
+  PROGRAM_FAIL,
+  PROGRAM_UPDATE,
+  PROGRAM_UPDATE_FAIL,
+  PROGRAM_DELETE,
+  PROGRAM_DELETE_FAIL
 } from './types';
 import setAuthToken from '../utils/setAuthToken';
 
-//Load Account
-export const loadAccount = () => async dispatch => {
+//Load Program
+export const loadProgram = () => async dispatch => {
   if (localStorage.token) {
     setAuthToken(localStorage.token);
   }
   try {
-    const res = await axios.get(
-      'http://localhost:8080/api/v1/accounts/account/all'
-    );
+    const res = await axios.get('http://localhost:8080/api/v1/programs/all');
     dispatch({
-      type: ACCOUNT_LOADED,
+      type: PROGRAM_LOADED,
       payload: res.data.payload
     });
   } catch (err) {
     dispatch({
-      type: ACCOUNT_FAIL
+      type: PROGRAM_FAIL
     });
   }
 };
 
-//Save Account
-export const saveAccount = (
-  accountName,
-  businessUnitId,
-  userId
-) => async dispatch => {
+//Save Program
+export const saveProgram = (accountId, name, userId) => async dispatch => {
   const config = {
     headers: { 'Content-Type': 'application/json' }
   };
   const body = JSON.stringify({
-    accountName,
-    businessUnitId,
+    accountId,
+    name,
     userId
   });
   try {
     const res = await axios.post(
-      'http://localhost:8080/api/v1/accounts/account',
+      'http://localhost:8080/api/v1/programs/program',
       body,
       config
     );
 
-    dispatch({ type: ACCOUNT_SAVE, payload: res.data });
-    dispatch(loadAccount());
+    dispatch({ type: PROGRAM_SAVE, payload: res.data });
+    dispatch(loadProgram());
   } catch (err) {
     const errors = err.response.data.errors;
     if (errors) {
       errors.array.forEach(error => dispatch(setAlert(error.msg, 'danger')));
     }
-    dispatch({ type: ACCOUNT_FAIL });
+    dispatch({ type: PROGRAM_FAIL });
   }
 };
 
-//Update Account
-export const updateAccount = (
-  id,
-  accountName,
-  businessUnitId,
+//Update Program
+export const updateProgram = (
+  accountId,
+  name,
+  programId,
   userId
 ) => async dispatch => {
   const config = {
     headers: { 'Content-Type': 'application/json' }
   };
   const body = JSON.stringify({
-    id,
-    accountName,
-    businessUnitId,
+    accountId,
+    name,
+    programId,
     userId
   });
 
   try {
-    const res = await axios.put(
-      'http://localhost:8080/api/v1/accounts/account',
+    const res = await axios.patch(
+      'http://localhost:8080/api/v1/programs/program',
       body,
       config
     );
-    dispatch({ type: ACCOUNT_UPDATE, payload: res.data });
-    dispatch(loadAccount());
+    dispatch({ type: PROGRAM_UPDATE, payload: res.data });
+    dispatch(loadProgram());
   } catch (err) {
     const errors = err.response.data.errors;
     if (errors) {
       errors.array.forEach(error => dispatch(setAlert(error.msg, 'danger')));
     }
-    dispatch({ type: ACCOUNT_UPDATE_FAIL });
+    dispatch({ type: PROGRAM_UPDATE_FAIL });
   }
 };
 
-//Delete Account
-export const deleteAccount = id => async dispatch => {
+//Delete Program
+export const deleteProgram = id => async dispatch => {
   const config = {
     headers: { 'Content-Type': 'application/json' }
   };
 
   try {
     const res = await axios.delete(
-      `http://localhost:8080/api/v1/bu/${id}`,
+      `http://localhost:8080/api/v1/programs/program/${id}`,
       config
     );
-    dispatch({ type: ACCOUNT_DELETE, payload: res.data });
-    dispatch(loadBusiness());
+    dispatch({ type: PROGRAM_DELETE, payload: res.data });
+    dispatch(loadProgram());
   } catch (err) {
     const errors = err.response.data.errors;
     if (errors) {
       errors.array.forEach(error => dispatch(setAlert(error.msg, 'danger')));
     }
-    dispatch({ type: ACCOUNT_DELETE_FAIL });
+    dispatch({ type: PROGRAM_DELETE_FAIL });
   }
 };

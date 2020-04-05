@@ -36,7 +36,12 @@ import {
 } from '@material-ui/icons';
 import { fade, makeStyles } from '@material-ui/core/styles';
 import { connect } from 'react-redux';
-import { loadAccount, saveAccount, updateAccount } from '../../actions/account';
+import {
+  loadProgram,
+  saveProgram,
+  updateProgram,
+  deleteProgram
+} from '../../actions/program';
 import MaterialTable from 'material-table';
 
 const useStyles = makeStyles(theme => ({
@@ -67,7 +72,7 @@ const useStyles = makeStyles(theme => ({
   table: {
     minWidth: 650
   },
-  account: {
+  program: {
     width: 1100,
     fontWeight: 'bold'
   },
@@ -121,13 +126,19 @@ const useStyles = makeStyles(theme => ({
   }
 }));
 
-const Account = ({ account, loadAccount, saveAccount, updateAccount }) => {
-  const businessUnit = {};
-  const hiringManger = {};
+const Program = ({
+  program,
+  loadProgram,
+  saveProgram,
+  updateProgram,
+  deleteProgram
+}) => {
+  const account = {};
+  const programManager = {};
 
-  account.forEach(ele => {
-    businessUnit[ele.businessUnit.id] = ele.businessUnit.buName;
-    hiringManger[ele.hiringManger.id] = ele.hiringManger.fullName;
+  program.forEach(ele => {
+    account[ele.account.id] = ele.account.accountName;
+    programManager[ele.programManager.id] = ele.programManager.fullName;
   });
 
   const classes = useStyles();
@@ -138,12 +149,12 @@ const Account = ({ account, loadAccount, saveAccount, updateAccount }) => {
   const [selectedRow, setSelectedRow] = useState(null);
 
   useEffect(() => {
-    loadAccount();
+    loadProgram();
   }, []);
 
   useEffect(() => {
-    setState(state => ({ ...state, data: account }));
-  }, [account]);
+    setState(state => ({ ...state, data: program }));
+  }, [program]);
 
   const handleSearch = event => {
     event.preventDefault();
@@ -152,20 +163,20 @@ const Account = ({ account, loadAccount, saveAccount, updateAccount }) => {
   };
 
   const filterData = searchText => {
-    const result = account.filter(item => item.accountName === searchText);
+    const result = program.filter(item => item.programName === searchText);
     return result;
   };
 
-  const handleSave = ({ accountName, businessUnit, hiringManger }) => {
-    return saveAccount(accountName, businessUnit.id, hiringManger.id);
+  const handleSave = ({ account, programName, programManager }) => {
+    return saveProgram(account.id, programName, programManager.id);
   };
 
-  const handleUpdate = ({ id, accountName, businessUnit, hiringManger }) => {
-    return updateAccount(id, accountName, businessUnit.id, hiringManger.id);
+  const handleUpdate = ({ account, programName, id, programManager }) => {
+    return updateProgram(account.id, programName, id, programManager.id);
   };
 
   const handleDelete = ({ id }) => {
-    return deleteBusiness(id);
+    return deleteProgram(id);
   };
 
   const tableIcons = {
@@ -201,18 +212,18 @@ const Account = ({ account, loadAccount, saveAccount, updateAccount }) => {
       <div style={{ width: '100%' }}>
         <MaterialTable
           icons={tableIcons}
-          title='Account'
+          title='Program'
           columns={[
-            { title: 'Account', field: 'accountName' },
+            { title: 'Program', field: 'programName' },
             {
-              title: 'Business Unit',
-              field: 'businessUnit.id',
-              lookup: businessUnit
+              title: 'Account',
+              field: 'account.id',
+              lookup: account
             },
             {
-              title: 'Hiring Manager',
-              field: 'hiringManger.id',
-              lookup: hiringManger
+              title: 'Program Manager',
+              field: 'programManager.id',
+              lookup: programManager
             }
           ]}
           data={state.data}
@@ -263,18 +274,20 @@ const Account = ({ account, loadAccount, saveAccount, updateAccount }) => {
   );
 };
 
-Account.propTypes = {
-  loadAccount: PropTypes.func.isRequired,
-  saveAccount: PropTypes.func.isRequired,
-  updateAccount: PropTypes.func.isRequired
+Program.propTypes = {
+  loadProgram: PropTypes.func.isRequired,
+  saveProgram: PropTypes.func.isRequired,
+  updateProgram: PropTypes.func.isRequired,
+  deleteProgram: PropTypes.func.isRequired
 };
 
 const mapStateToProps = state => ({
-  account: state.account.account
+  program: state.program.program
 });
 
 export default connect(mapStateToProps, {
-  loadAccount,
-  saveAccount,
-  updateAccount
-})(Account);
+  loadProgram,
+  saveProgram,
+  updateProgram,
+  deleteProgram
+})(Program);

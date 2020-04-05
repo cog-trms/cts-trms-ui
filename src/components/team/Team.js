@@ -36,7 +36,7 @@ import {
 } from '@material-ui/icons';
 import { fade, makeStyles } from '@material-ui/core/styles';
 import { connect } from 'react-redux';
-import { loadAccount, saveAccount, updateAccount } from '../../actions/account';
+import { loadTeam, saveTeam, updateTeam } from '../../actions/team';
 import MaterialTable from 'material-table';
 
 const useStyles = makeStyles(theme => ({
@@ -67,7 +67,7 @@ const useStyles = makeStyles(theme => ({
   table: {
     minWidth: 650
   },
-  account: {
+  team: {
     width: 1100,
     fontWeight: 'bold'
   },
@@ -121,15 +121,13 @@ const useStyles = makeStyles(theme => ({
   }
 }));
 
-const Account = ({ account, loadAccount, saveAccount, updateAccount }) => {
-  const businessUnit = {};
-  const hiringManger = {};
+const Team = ({ team, loadTeam, saveTeam, updateTeam }) => {
+  const role = {};
 
-  account.forEach(ele => {
-    businessUnit[ele.businessUnit.id] = ele.businessUnit.buName;
-    hiringManger[ele.hiringManger.id] = ele.hiringManger.fullName;
+  team.forEach(ele => {
+    role[ele.roles.id] = ele.roles.role;
   });
-
+  console.log('role', role);
   const classes = useStyles();
   const [result, setResult] = useState([]);
   const [state, setState] = React.useState({
@@ -138,12 +136,12 @@ const Account = ({ account, loadAccount, saveAccount, updateAccount }) => {
   const [selectedRow, setSelectedRow] = useState(null);
 
   useEffect(() => {
-    loadAccount();
+    loadTeam();
   }, []);
 
   useEffect(() => {
-    setState(state => ({ ...state, data: account }));
-  }, [account]);
+    setState(state => ({ ...state, data: team }));
+  }, [team]);
 
   const handleSearch = event => {
     event.preventDefault();
@@ -152,16 +150,16 @@ const Account = ({ account, loadAccount, saveAccount, updateAccount }) => {
   };
 
   const filterData = searchText => {
-    const result = account.filter(item => item.accountName === searchText);
+    const result = team.filter(item => item.teamName === searchText);
     return result;
   };
 
-  const handleSave = ({ accountName, businessUnit, hiringManger }) => {
-    return saveAccount(accountName, businessUnit.id, hiringManger.id);
+  const handleSave = ({ teamName, businessUnit, hiringManger }) => {
+    return saveTeam(teamName, businessUnit.id, hiringManger.id);
   };
 
-  const handleUpdate = ({ id, accountName, businessUnit, hiringManger }) => {
-    return updateAccount(id, accountName, businessUnit.id, hiringManger.id);
+  const handleUpdate = ({ id, teamName, businessUnit, hiringManger }) => {
+    return updateTeam(id, teamName, businessUnit.id, hiringManger.id);
   };
 
   const handleDelete = ({ id }) => {
@@ -201,18 +199,17 @@ const Account = ({ account, loadAccount, saveAccount, updateAccount }) => {
       <div style={{ width: '100%' }}>
         <MaterialTable
           icons={tableIcons}
-          title='Account'
+          title='Team'
           columns={[
-            { title: 'Account', field: 'accountName' },
+            { title: 'First Name', field: 'firstName' },
+            { title: 'Last Name', field: 'lastName' },
+            { title: 'Email', field: 'email' },
+            { title: 'Mobile', field: 'mobileNumber' },
+            { title: 'Is Admin', field: 'admin' },
             {
-              title: 'Business Unit',
-              field: 'businessUnit.id',
-              lookup: businessUnit
-            },
-            {
-              title: 'Hiring Manager',
-              field: 'hiringManger.id',
-              lookup: hiringManger
+              title: 'Role',
+              field: 'role.id',
+              lookup: role
             }
           ]}
           data={state.data}
@@ -263,18 +260,18 @@ const Account = ({ account, loadAccount, saveAccount, updateAccount }) => {
   );
 };
 
-Account.propTypes = {
-  loadAccount: PropTypes.func.isRequired,
-  saveAccount: PropTypes.func.isRequired,
-  updateAccount: PropTypes.func.isRequired
+Team.propTypes = {
+  loadTeam: PropTypes.func.isRequired,
+  saveTeam: PropTypes.func.isRequired,
+  updateTeam: PropTypes.func.isRequired
 };
 
 const mapStateToProps = state => ({
-  account: state.account.account
+  team: state.team.team
 });
 
 export default connect(mapStateToProps, {
-  loadAccount,
-  saveAccount,
-  updateAccount
-})(Account);
+  loadTeam,
+  saveTeam,
+  updateTeam
+})(Team);
