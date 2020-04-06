@@ -4,7 +4,7 @@ import auth from './auth';
 import business from './business';
 import account from './account';
 import program from './program';
-import team from './team';
+import user from './user';
 import search from './search';
 
 export default combineReducers({
@@ -13,6 +13,6 @@ export default combineReducers({
   business,
   account,
   program,
-  team,
+  user,
   search
 });
