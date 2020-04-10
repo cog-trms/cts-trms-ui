@@ -37,6 +37,8 @@ import {
 import { fade, makeStyles } from '@material-ui/core/styles';
 import { connect } from 'react-redux';
 import { loadAccount, saveAccount, updateAccount } from '../../actions/account';
+import { loadBusiness } from '../../actions/business';
+import { loadUser } from '../../actions/user';
 import MaterialTable from 'material-table';
 
 const useStyles = makeStyles(theme => ({
@@ -121,13 +123,24 @@ const useStyles = makeStyles(theme => ({
   }
 }));
 
-const Account = ({ account, loadAccount, saveAccount, updateAccount }) => {
+const Account = ({
+  account,
+  loadAccount,
+  saveAccount,
+  updateAccount,
+  loadBusiness,
+  business,
+  loadUser,
+  user
+}) => {
   const businessUnit = {};
   const hiringManger = {};
 
-  account.forEach(ele => {
-    businessUnit[ele.businessUnit.id] = ele.businessUnit.buName;
-    hiringManger[ele.hiringManger.id] = ele.hiringManger.fullName;
+  business.forEach(ele => {
+    businessUnit[ele.id] = ele.buName;
+  });
+  user.forEach(ele => {
+    hiringManger[ele.id] = ele.fullName;
   });
 
   const classes = useStyles();
@@ -139,6 +152,8 @@ const Account = ({ account, loadAccount, saveAccount, updateAccount }) => {
 
   useEffect(() => {
     loadAccount();
+    loadBusiness();
+    loadUser();
   }, []);
 
   useEffect(() => {
@@ -266,15 +281,21 @@ const Account = ({ account, loadAccount, saveAccount, updateAccount }) => {
 Account.propTypes = {
   loadAccount: PropTypes.func.isRequired,
   saveAccount: PropTypes.func.isRequired,
-  updateAccount: PropTypes.func.isRequired
+  updateAccount: PropTypes.func.isRequired,
+  loadBusiness: PropTypes.func.isRequired,
+  loadUser: PropTypes.func.isRequired
 };
 
 const mapStateToProps = state => ({
-  account: state.account.account
+  account: state.account.account,
+  business: state.business.business,
+  user: state.user.user
 });
 
 export default connect(mapStateToProps, {
   loadAccount,
   saveAccount,
-  updateAccount
+  updateAccount,
+  loadBusiness,
+  loadUser
 })(Account);

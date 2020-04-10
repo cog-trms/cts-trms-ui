@@ -214,14 +214,6 @@ const User = ({ user, loadUser, saveUser, updateUser }) => {
           ]}
           data={state.data}
           editable={{
-            onRowAdd: newData =>
-              handleSave(newData).then(() => {
-                setState(prevState => {
-                  const data = [...prevState.data];
-                  data.push(newData);
-                  return { ...prevState, data };
-                });
-              }),
             onRowUpdate: (newData, oldData) =>
               handleUpdate(newData, oldData).then(() => {
                 if (oldData) {

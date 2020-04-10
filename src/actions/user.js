@@ -29,72 +29,6 @@ export const loadUser = () => async dispatch => {
   }
 };
 
-//Save User
-export const saveUser = (
-  accountName,
-  businessUnitId,
-  userId
-) => async dispatch => {
-  const config = {
-    headers: { 'Content-Type': 'application/json' }
-  };
-  const body = JSON.stringify({
-    accountName,
-    businessUnitId,
-    userId
-  });
-  try {
-    const res = await axios.post(
-      'http://localhost:8080/api/v1/accounts/account',
-      body,
-      config
-    );
-
-    dispatch({ type: USERS_SAVE, payload: res.data });
-    dispatch(loadUser());
-  } catch (err) {
-    const errors = err.response.data.errors;
-    if (errors) {
-      errors.array.forEach(error => dispatch(setAlert(error.msg, 'danger')));
-    }
-    dispatch({ type: USERS_FAIL });
-  }
-};
-
-//Update User
-export const updateUser = (
-  id,
-  accountName,
-  businessUnitId,
-  userId
-) => async dispatch => {
-  const config = {
-    headers: { 'Content-Type': 'application/json' }
-  };
-  const body = JSON.stringify({
-    id,
-    accountName,
-    businessUnitId,
-    userId
-  });
-
-  try {
-    const res = await axios.put(
-      'http://localhost:8080/api/v1/accounts/account',
-      body,
-      config
-    );
-    dispatch({ type: USERS_UPDATE, payload: res.data });
-    dispatch(loadUser());
-  } catch (err) {
-    const errors = err.response.data.errors;
-    if (errors) {
-      errors.array.forEach(error => dispatch(setAlert(error.msg, 'danger')));
-    }
-    dispatch({ type: USERS_UPDATE_FAIL });
-  }
-};
-
 //Delete User
 export const deleteUser = id => async dispatch => {
   const config = {
@@ -103,7 +37,7 @@ export const deleteUser = id => async dispatch => {
 
   try {
     const res = await axios.delete(
-      `http://localhost:8080/api/v1/bu/${id}`,
+      `http://localhost:8080/api/v1/users/profile/${id}`,
       config
     );
     dispatch({ type: USERS_DELETE, payload: res.data });

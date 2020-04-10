@@ -42,6 +42,9 @@ import {
   updateProgram,
   deleteProgram
 } from '../../actions/program';
+import { loadAccount } from '../../actions/account';
+import { loadUser } from '../../actions/user';
+
 import MaterialTable from 'material-table';
 
 const useStyles = makeStyles(theme => ({
@@ -131,14 +134,21 @@ const Program = ({
   loadProgram,
   saveProgram,
   updateProgram,
-  deleteProgram
+  deleteProgram,
+  loadAccount,
+  account,
+  loadUser,
+  user
 }) => {
-  const account = {};
+  const accountList = {};
   const programManager = {};
 
-  program.forEach(ele => {
-    account[ele.account.id] = ele.account.accountName;
-    programManager[ele.programManager.id] = ele.programManager.fullName;
+  account.forEach(ele => {
+    accountList[ele.id] = ele.accountName;
+  });
+
+  user.forEach(ele => {
+    programManager[ele.id] = ele.fullName;
   });
 
   const classes = useStyles();
@@ -150,6 +160,8 @@ const Program = ({
 
   useEffect(() => {
     loadProgram();
+    loadAccount();
+    loadUser();
   }, []);
 
   useEffect(() => {
@@ -218,7 +230,7 @@ const Program = ({
             {
               title: 'Account',
               field: 'account.id',
-              lookup: account
+              lookup: accountList
             },
             {
               title: 'Program Manager',
@@ -278,16 +290,22 @@ Program.propTypes = {
   loadProgram: PropTypes.func.isRequired,
   saveProgram: PropTypes.func.isRequired,
   updateProgram: PropTypes.func.isRequired,
-  deleteProgram: PropTypes.func.isRequired
+  deleteProgram: PropTypes.func.isRequired,
+  loadAccount: PropTypes.func.isRequired,
+  loadUser: PropTypes.func.isRequired
 };
 
 const mapStateToProps = state => ({
-  program: state.program.program
+  program: state.program.program,
+  account: state.account.account,
+  user: state.user.user
 });
 
 export default connect(mapStateToProps, {
   loadProgram,
   saveProgram,
   updateProgram,
-  deleteProgram
+  deleteProgram,
+  loadAccount,
+  loadUser
 })(Program);
