@@ -151,8 +151,6 @@ const Program = ({
     programManager[ele.id] = ele.fullName;
   });
 
-  const classes = useStyles();
-  const [result, setResult] = useState([]);
   const [state, setState] = React.useState({
     data: []
   });
@@ -167,17 +165,6 @@ const Program = ({
   useEffect(() => {
     setState(state => ({ ...state, data: program }));
   }, [program]);
-
-  const handleSearch = event => {
-    event.preventDefault();
-    const result = filterData(event.target.value);
-    setResult(result);
-  };
-
-  const filterData = searchText => {
-    const result = program.filter(item => item.programName === searchText);
-    return result;
-  };
 
   const handleSave = ({ account, programName, programManager }) => {
     return saveProgram(account.id, programName, programManager.id);

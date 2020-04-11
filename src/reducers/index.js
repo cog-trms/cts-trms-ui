@@ -5,7 +5,7 @@ import business from './business';
 import account from './account';
 import program from './program';
 import user from './user';
-import search from './search';
+import team from './team';
 
 export default combineReducers({
   alert,
@@ -14,5 +14,5 @@ export default combineReducers({
   account,
   program,
   user,
-  search
+  team
 });

@@ -426,6 +426,7 @@ const LandingPage = ({ isAuthenticated, logout }) => {
             <Route path='/program' component={Program} />
             <Route path='/team' component={Team} />
             <Route path='/user' component={User} />
+            <Route path='/serviceorder' component={User} />
           </Switch>
         </main>
       </Router>
