@@ -37,6 +37,7 @@ const App = () => {
           <Route path='/program' component={LandingPage} />
           <Route path='/team' component={LandingPage} />
           <Route path='/user' component={LandingPage} />
+          <Route path='/serviceorder' component={LandingPage} />
         </Switch>
       </Router>
     </Provider>

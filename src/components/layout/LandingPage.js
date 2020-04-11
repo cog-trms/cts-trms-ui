@@ -53,6 +53,7 @@ import Account from '../account/Account';
 import Program from '../program/Program';
 import User from '../user/User';
 import Team from '../team/Team';
+import ServiceOrder from '../so/ServiceOrder';
 
 const drawerWidth = 240;
 
@@ -410,6 +411,17 @@ const LandingPage = ({ isAuthenticated, logout }) => {
               </ListItemIcon>
               <ListItemText primary={'Users'} />
             </ListItem>
+            <ListItem
+              button={true}
+              key={'ServiceOrder'}
+              component={Link}
+              to='/serviceorder'
+            >
+              <ListItemIcon>
+                <AccountBoxIcon />
+              </ListItemIcon>
+              <ListItemText primary={'Service Order'} />
+            </ListItem>
           </List>
         </Drawer>
         <main
@@ -426,7 +438,7 @@ const LandingPage = ({ isAuthenticated, logout }) => {
             <Route path='/program' component={Program} />
             <Route path='/team' component={Team} />
             <Route path='/user' component={User} />
-            <Route path='/serviceorder' component={User} />
+            <Route path='/serviceorder' component={ServiceOrder} />
           </Switch>
         </main>
       </Router>

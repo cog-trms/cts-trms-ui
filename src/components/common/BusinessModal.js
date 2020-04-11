@@ -21,7 +21,7 @@ const useStyles = makeStyles(theme => ({
   paper: {
     position: 'absolute',
     width: 400,
-    backgroundColor: 'red',
+    backgroundColor: theme.palette.background.paper,
     border: '2px solid #000',
     boxShadow: theme.shadows[5],
     padding: theme.spacing(2, 4, 3)
@@ -98,30 +98,12 @@ const BusinessModal = ({ open, handleClose, businessName }) => {
   const [modalStyle] = React.useState(getModalStyle);
 
   const body = (
-    <Grid container spacing={3}>
-      <Grid item xs={12} sm={4}>
-        <TextField
-          required
-          id='businessName'
-          name='businessName'
-          label='Business name'
-          value={businessName}
-          fullWidth
-          autoComplete='businessName'
-        />
-      </Grid>
-      <Grid item xs={12} sm={4}>
-        <Button
-          type='button'
-          fullWidth
-          variant='contained'
-          color='primary'
-          className={classes.save}
-        >
-          Save
-        </Button>
-      </Grid>
-    </Grid>
+    <div style={modalStyle} className={classes.paper}>
+      <h2 id='simple-modal-title'>Text in a modal</h2>
+      <p id='simple-modal-description'>
+        Duis mollis, est non commodo luctus, nisi erat porttitor ligula.
+      </p>
+    </div>
   );
 
   return (
