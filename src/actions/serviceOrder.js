@@ -52,22 +52,20 @@ export const loadServiceOrderById = soId => async dispatch => {
 };
 
 //Save ServiceOrder
-export const saveServiceOrder = (
-  programId,
-  teamMembers1,
-  teamName
-) => async dispatch => {
+export const saveServiceOrder = (cases, details, teamId) => async dispatch => {
   const config = {
     headers: { 'Content-Type': 'application/json' }
   };
   const body = JSON.stringify({
-    programId,
-    teamMembers: [teamMembers1],
-    teamName
+    cases,
+    location: details.locationText,
+    positionCount: details.positionCountText,
+    serviceOrder: details.serviceOrderText,
+    teamId
   });
   try {
     const res = await axios.post(
-      'http://localhost:8080/api/v1/teams/team',
+      'http://localhost:8080/api/v1/sorders/',
       body,
       config
     );

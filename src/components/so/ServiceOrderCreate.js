@@ -1,7 +1,20 @@
 import React, { useState, useEffect, Fragment, forwardRef } from 'react';
+import PropTypes from 'prop-types';
+import { connect } from 'react-redux';
+
 import { fade, makeStyles } from '@material-ui/core/styles';
 import Modal from '@material-ui/core/Modal';
-import { Button, Grid, TextField, InputBase } from '@material-ui/core';
+import {
+  Button,
+  Grid,
+  TextField,
+  InputBase,
+  InputLabel,
+  Select,
+  FormControl,
+  FormHelperText,
+  MenuItem
+} from '@material-ui/core';
 import MaterialTable from 'material-table';
 import {
   AddBox,
@@ -20,6 +33,13 @@ import {
   Search,
   ViewColumn
 } from '@material-ui/icons';
+import {
+  loadServiceOrder,
+  loadServiceOrderById,
+  saveServiceOrder
+} from '../../actions/serviceOrder';
+
+import { loadTeam } from '../../actions/team';
 
 function rand() {
   return Math.round(Math.random() * 20) - 10;
@@ -56,7 +76,8 @@ const useStyles = makeStyles(theme => ({
   },
   save: {
     margin: theme.spacing(2, 0, 2),
-    width: 150
+    width: 150,
+    textAlign: 'right'
   },
   edit: {
     width: 20
@@ -112,24 +133,40 @@ const useStyles = makeStyles(theme => ({
   }
 }));
 
-const ServiceOrderById = ({ open, handleClose, businessName }) => {
+const ServiceOrderCreate = ({ saveServiceOrder, loadTeam, team }) => {
   const classes = useStyles();
   const [state, setState] = React.useState({
     data: []
   });
   const [selectedRow, setSelectedRow] = useState(null);
   const [modalStyle] = React.useState(getModalStyle);
-  const [formData, setFormData] = useState({
-    serviceOrder: '',
-    positionCount: '',
-    location: '',
-    team: '',
-    cases: []
-  });
-  const { serviceOrder, positionCount, location, team, cases } = formData;
 
-  const handleSave = ({ program, teamMembers, teamName }) => {
-    return saveTeam(program.id, teamMembers.id, teamName);
+  const [formData, setFormData] = useState({
+    serviceOrderText: '',
+    positionCountText: '',
+    locationText: ''
+  });
+  const { serviceOrderText, positionCountText, locationText } = formData;
+  const [drpTeam, setDrpTeam] = React.useState('');
+
+  useEffect(() => {
+    loadTeam();
+  }, []);
+
+  const handleChange = event => {
+    setDrpTeam(event.target.value);
+  };
+
+  const onChange = e => {
+    setFormData({ ...formData, [e.target.name]: e.target.value });
+  };
+
+  const handleSave = () => {
+    return saveServiceOrder(
+      state.data,
+      { locationText, positionCountText, serviceOrderText },
+      drpTeam
+    );
   };
 
   const handleUpdate = ({ account, programName, id, programManager }) => {
@@ -174,14 +211,15 @@ const ServiceOrderById = ({ open, handleClose, businessName }) => {
         <Grid item xs={12} sm={6}>
           <TextField
             autoComplete='sOrder'
-            name='serviceOrder'
-            value={serviceOrder}
+            name='serviceOrderText'
+            value={serviceOrderText}
             variant='outlined'
             required
             fullWidth
-            id='serviceOrder'
+            id='serviceOrderText'
             label='Service Order'
             autoFocus
+            onChange={e => onChange(e)}
           />
         </Grid>
         <Grid item xs={12} sm={6}>
@@ -189,11 +227,12 @@ const ServiceOrderById = ({ open, handleClose, businessName }) => {
             variant='outlined'
             required
             fullWidth
-            id='positionCount'
+            id='positionCountText'
             label='No of postion'
-            name='positionCount'
-            value={positionCount}
+            name='positionCountText'
+            value={positionCountText}
             autoComplete='positionCount'
+            onChange={e => onChange(e)}
           />
         </Grid>
         <Grid item xs={12} sm={6}>
@@ -201,107 +240,131 @@ const ServiceOrderById = ({ open, handleClose, businessName }) => {
             variant='outlined'
             required
             fullWidth
-            id='location'
-            label='Location'
-            name='location'
-            value={location}
+            id='locationText'
+            label='location'
+            name='locationText'
+            value={locationText}
             autoComplete='location'
+            onChange={e => onChange(e)}
           />
         </Grid>
         <Grid item xs={12} sm={6}>
-          <TextField
-            variant='outlined'
-            required
-            fullWidth
-            id='team'
-            label='Team'
-            name='team'
-            value={team}
-            autoComplete='team'
-          />
+          <FormControl className={classes.formControl}>
+            <InputLabel id='demo-simple-select-label'>Team</InputLabel>
+            <Select
+              labelId='demo-simple-select-label'
+              id='demo-simple-select'
+              value={drpTeam}
+              name={drpTeam}
+              onChange={handleChange}
+            >
+              {team.map((item, index) => {
+                return (
+                  <MenuItem key={index} value={item.id}>
+                    {item.teamName}
+                  </MenuItem>
+                );
+              })}
+            </Select>
+          </FormControl>
         </Grid>
-        <Grid item xs={12}>
+
+        <div style={{ width: '100%' }}>
+          <MaterialTable
+            icons={tableIcons}
+            title='Case'
+            columns={[
+              { title: 'Level', field: 'level' },
+              {
+                title: 'Number of position',
+                field: 'numberOfPosition'
+              },
+              {
+                title: 'Skill',
+                field: 'skill'
+              }
+            ]}
+            data={state.data}
+            editable={{
+              onRowAdd: newData =>
+                new Promise(resolve => {
+                  setTimeout(() => {
+                    resolve();
+                    setState(prevState => {
+                      const data = [...prevState.data];
+                      data.push(newData);
+                      return { ...prevState, data };
+                    });
+                  }, 300);
+                }),
+              onRowUpdate: (newData, oldData) =>
+                handleUpdate(newData, oldData).then(() => {
+                  if (oldData) {
+                    setState(prevState => {
+                      const data = [...prevState.data];
+                      data[data.indexOf(oldData)] = newData;
+                      return { ...prevState, data };
+                    });
+                  }
+                }),
+              onRowDelete: oldData =>
+                handleDelete(oldData).then(() => {
+                  setState(prevState => {
+                    const data = [...prevState.data];
+                    data.splice(data.indexOf(oldData), 1);
+                    return { ...prevState, data };
+                  });
+                })
+            }}
+            onRowClick={(evt, selectedRow) => setSelectedRow(selectedRow)}
+            options={{
+              headerStyle: {
+                backgroundColor: '#04A4F9',
+                color: '#FFF'
+              },
+              rowStyle: rowData => ({
+                backgroundColor:
+                  selectedRow && selectedRow.id === rowData.id
+                    ? '#DDF1FC'
+                    : '#FFF'
+              })
+            }}
+          />
+        </div>
+        <Grid item xs={12} sm={3}>
           <Button
-            type='submit'
+            type='button'
             fullWidth
             variant='contained'
             color='primary'
-            className={classes.submit}
+            className={classes.save}
+            onClick={handleSave}
           >
             Save
           </Button>
         </Grid>
       </Grid>
-      <div style={{ width: '100%' }}>
-        <MaterialTable
-          icons={tableIcons}
-          title='Team'
-          columns={[
-            { title: 'Team', field: 'teamName' },
-            {
-              title: 'Account',
-              field: 'account.id'
-            },
-            {
-              title: 'Program',
-              field: 'program.id'
-            },
-            {
-              title: 'Program Manager',
-              field: 'programManager.id'
-            },
-            {
-              title: 'Team Members',
-              field: 'teamMembers.id'
-            }
-          ]}
-          data={state.data}
-          editable={{
-            onRowAdd: newData =>
-              handleSave(newData).then(() => {
-                setState(prevState => {
-                  const data = [...prevState.data];
-                  data.push(newData);
-                  return { ...prevState, data };
-                });
-              }),
-            onRowUpdate: (newData, oldData) =>
-              handleUpdate(newData, oldData).then(() => {
-                if (oldData) {
-                  setState(prevState => {
-                    const data = [...prevState.data];
-                    data[data.indexOf(oldData)] = newData;
-                    return { ...prevState, data };
-                  });
-                }
-              }),
-            onRowDelete: oldData =>
-              handleDelete(oldData).then(() => {
-                setState(prevState => {
-                  const data = [...prevState.data];
-                  data.splice(data.indexOf(oldData), 1);
-                  return { ...prevState, data };
-                });
-              })
-          }}
-          onRowClick={(evt, selectedRow) => setSelectedRow(selectedRow)}
-          options={{
-            headerStyle: {
-              backgroundColor: '#04A4F9',
-              color: '#FFF'
-            },
-            rowStyle: rowData => ({
-              backgroundColor:
-                selectedRow && selectedRow.id === rowData.id
-                  ? '#DDF1FC'
-                  : '#FFF'
-            })
-          }}
-        />
-      </div>
     </Fragment>
   );
 
   return <div>{body}</div>;
 };
-export default ServiceOrderById;
+
+ServiceOrderCreate.propTypes = {
+  loadServiceOrder: PropTypes.func.isRequired,
+  loadServiceOrderById: PropTypes.func.isRequired,
+  saveServiceOrder: PropTypes.func.isRequired,
+  loadTeam: PropTypes.func.isRequired
+};
+
+const mapStateToProps = state => ({
+  serviceOrder: state.serviceOrder.serviceOrder,
+  team: state.team.team
+});
+
+export default connect(mapStateToProps, {
+  loadServiceOrder,
+  loadServiceOrderById,
+  saveServiceOrder,
+  loadTeam
+})(ServiceOrderCreate);

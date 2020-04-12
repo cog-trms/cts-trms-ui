@@ -4,12 +4,6 @@ import { BrowserRouter, Switch, Route } from 'react-router-dom';
 import LandingPage from './components/layout/LandingPage';
 import Login from './components/auth/SignIn';
 import SignUp from './components/auth/SignUp';
-import Dashboard from './components/layout/Dashboard';
-import Business from './components/business/Business';
-import Account from './components/account/Account';
-import Alert from './components/layout/Alert';
-import { loadUser } from './actions/auth';
-import ServiceOrderById from './components/so/ServiceOrderById';
 import Routes from './routes';
 
 //Redux

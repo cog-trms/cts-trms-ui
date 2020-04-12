@@ -10,7 +10,7 @@ import Team from '../components/team/Team';
 import User from '../components/user/User';
 import Alert from '../components/layout/Alert';
 import ServiceOrder from '../components/so/ServiceOrder';
-import ServiceOrderById from '../components/so/ServiceOrderById';
+import ServiceOrderCreate from '../components/so/ServiceOrderCreate';
 import {
   AccountCircle,
   AccountTree as AccountTreeIcon,
@@ -81,14 +81,14 @@ const Routes = [
   {
     path: '/serviceorder/add',
     sidebarName: 'Service Order',
-    component: ServiceOrderById,
+    component: ServiceOrderCreate,
     icon: AccountTreeIcon,
     isMenu: false
   },
   {
     path: '/serviceorder/:id',
     sidebarName: 'Service Order',
-    component: ServiceOrderById,
+    component: ServiceOrderCreate,
     icon: AccountTreeIcon,
     isMenu: false
   }
