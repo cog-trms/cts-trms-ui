@@ -34,10 +34,7 @@ import {
 import { fade, makeStyles } from '@material-ui/core/styles';
 import { connect } from 'react-redux';
 import { setAlert } from '../../actions/alert';
-import {
-  loadServiceOrder,
-  loadServiceOrderById
-} from '../../actions/serviceOrder';
+import { loadServiceOrder } from '../../actions/serviceOrder';
 import SearchIcon from '@material-ui/icons/Search';
 import { Redirect, useHistory, useRouteMatch } from 'react-router-dom';
 import CssBaseline from '@material-ui/core/CssBaseline';
@@ -140,7 +137,6 @@ const ServiceOrder = ({ serviceOrder, loadServiceOrder }) => {
     history.push('/serviceorder/add');
   };
   const handleEditClick = id => {
-    loadServiceOrderById(id);
     history.push(`/serviceorder/${id}`);
   };
   const onChange = e => {
@@ -296,8 +292,7 @@ const ServiceOrder = ({ serviceOrder, loadServiceOrder }) => {
 };
 
 ServiceOrder.propTypes = {
-  loadServiceOrder: PropTypes.func.isRequired,
-  loadServiceOrderById: PropTypes.func.isRequired
+  loadServiceOrder: PropTypes.func.isRequired
 };
 
 const mapStateToProps = state => ({
@@ -305,6 +300,5 @@ const mapStateToProps = state => ({
 });
 
 export default connect(mapStateToProps, {
-  loadServiceOrder,
-  loadServiceOrderById
+  loadServiceOrder
 })(ServiceOrder);

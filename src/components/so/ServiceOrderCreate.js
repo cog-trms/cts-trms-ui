@@ -1,4 +1,5 @@
 import React, { useState, useEffect, Fragment, forwardRef } from 'react';
+import { useLocation, useParams } from 'react-router-dom';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 
@@ -133,13 +134,19 @@ const useStyles = makeStyles(theme => ({
   }
 }));
 
-const ServiceOrderCreate = ({ saveServiceOrder, loadTeam, team }) => {
+const ServiceOrderCreate = ({
+  serviceOrderById,
+  saveServiceOrder,
+  loadServiceOrderById,
+  loadTeam,
+  team
+}) => {
+  const { soId } = useParams();
   const classes = useStyles();
   const [state, setState] = React.useState({
     data: []
   });
   const [selectedRow, setSelectedRow] = useState(null);
-  const [modalStyle] = React.useState(getModalStyle);
 
   const [formData, setFormData] = useState({
     serviceOrderText: '',
@@ -147,14 +154,17 @@ const ServiceOrderCreate = ({ saveServiceOrder, loadTeam, team }) => {
     locationText: ''
   });
   const { serviceOrderText, positionCountText, locationText } = formData;
-  const [drpTeam, setDrpTeam] = React.useState('');
+  const [teamId, setTeamId] = useState('');
 
   useEffect(() => {
     loadTeam();
+    if (soId) {
+      loadServiceOrderById(soId);
+    }
   }, []);
 
   const handleChange = event => {
-    setDrpTeam(event.target.value);
+    setTeamId(event.target.value);
   };
 
   const onChange = e => {
@@ -165,7 +175,7 @@ const ServiceOrderCreate = ({ saveServiceOrder, loadTeam, team }) => {
     return saveServiceOrder(
       state.data,
       { locationText, positionCountText, serviceOrderText },
-      drpTeam
+      teamId
     );
   };
 
@@ -207,6 +217,7 @@ const ServiceOrderCreate = ({ saveServiceOrder, loadTeam, team }) => {
 
   const body = (
     <Fragment>
+      <button onClick={() => history.push('/')}>Go to home</button>
       <Grid container spacing={3}>
         <Grid item xs={12} sm={6}>
           <TextField
@@ -254,8 +265,8 @@ const ServiceOrderCreate = ({ saveServiceOrder, loadTeam, team }) => {
             <Select
               labelId='demo-simple-select-label'
               id='demo-simple-select'
-              value={drpTeam}
-              name={drpTeam}
+              value={teamId}
+              name={teamId}
               onChange={handleChange}
             >
               {team.map((item, index) => {
@@ -359,6 +370,7 @@ ServiceOrderCreate.propTypes = {
 
 const mapStateToProps = state => ({
   serviceOrder: state.serviceOrder.serviceOrder,
+  serviceOrderById: state.serviceOrder.serviceOrderById,
   team: state.team.team
 });
 

@@ -1,11 +1,11 @@
 import axios from 'axios';
 import { setAlert } from './alert';
 import {
-  SERVICEORDER_LOADED,
+  SERVICE_ORDER_LOADED_BY_ID,
   SERVICEORDER_SAVE,
-  SERVICEORDER_FAIL,
-  SERVICEORDER_ALL_LOADED,
-  SERVICEORDER_ALL_FAIL,
+  SERVICE_ORDER_FAIL_BY_ID,
+  SERVICE_ORDER_ALL_LOADED,
+  SERVICE_ORDER_ALL_FAIL,
   SERVICEORDER_UPDATE,
   SERVICEORDER_UPDATE_FAIL,
   SERVICEORDER_DELETE,
@@ -13,7 +13,7 @@ import {
 } from './types';
 import setAuthToken from '../utils/setAuthToken';
 
-//Load All ServiceOrder
+//Load All Service Order
 export const loadServiceOrder = () => async dispatch => {
   if (localStorage.token) {
     setAuthToken(localStorage.token);
@@ -21,17 +21,17 @@ export const loadServiceOrder = () => async dispatch => {
   try {
     const res = await axios.get('http://localhost:8080/api/v1/sorders/so');
     dispatch({
-      type: SERVICEORDER_LOADED,
+      type: SERVICE_ORDER_ALL_LOADED,
       payload: res.data.payload
     });
   } catch (err) {
     dispatch({
-      type: SERVICEORDER_FAIL
+      type: SERVICE_ORDER_ALL_FAIL
     });
   }
 };
 
-//Load ServiceOrder
+//Load Service Order By Id
 export const loadServiceOrderById = soId => async dispatch => {
   if (localStorage.token) {
     setAuthToken(localStorage.token);
@@ -41,12 +41,12 @@ export const loadServiceOrderById = soId => async dispatch => {
       `http://localhost:8080/api/v1/sorders/so/${soId}/cases`
     );
     dispatch({
-      type: SERVICEORDER_LOADED,
+      type: SERVICE_ORDER_LOADED_BY_ID,
       payload: res.data.payload
     });
   } catch (err) {
     dispatch({
-      type: SERVICEORDER_FAIL
+      type: SERVICE_ORDER_FAIL_BY_ID
     });
   }
 };

@@ -5,7 +5,7 @@ import LandingPage from './components/layout/LandingPage';
 import Login from './components/auth/SignIn';
 import SignUp from './components/auth/SignUp';
 import Routes from './routes';
-
+import { loadUser } from './actions/user';
 //Redux
 import { Provider } from 'react-redux';
 import store from './store';
@@ -17,7 +17,7 @@ if (localStorage.token) {
 
 const App = () => {
   useEffect(() => {
-    // store.dispatch(loadUser());
+    store.dispatch(loadUser());
   }, []);
 
   const NotFoundPage = () => {

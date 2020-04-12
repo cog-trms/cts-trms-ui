@@ -86,7 +86,7 @@ const Routes = [
     isMenu: false
   },
   {
-    path: '/serviceorder/:id',
+    path: '/serviceorder/:soId',
     sidebarName: 'Service Order',
     component: ServiceOrderCreate,
     icon: AccountTreeIcon,
