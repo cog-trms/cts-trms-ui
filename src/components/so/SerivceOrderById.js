@@ -93,7 +93,7 @@ const useStyles = makeStyles(theme => ({
   }
 }));
 
-const BusinessModal = ({ open, handleClose, businessName }) => {
+const ServiceOrderById = ({ open, handleClose, businessName }) => {
   const classes = useStyles();
   // getModalStyle is not a pure function, we roll the style only on the first render
   const [modalStyle] = React.useState(getModalStyle);
@@ -172,17 +172,6 @@ const BusinessModal = ({ open, handleClose, businessName }) => {
     </div>
   );
 
-  return (
-    <div>
-      <Modal
-        open={open}
-        onClose={handleClose}
-        aria-labelledby='simple-modal-title'
-        aria-describedby='simple-modal-description'
-      >
-        {body}
-      </Modal>
-    </div>
-  );
+  return <div>{body}</div>;
 };
-export default BusinessModal;
+export default ServiceOrderById;

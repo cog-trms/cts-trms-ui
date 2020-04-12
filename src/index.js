@@ -1,6 +1,6 @@
 import React, { useEffect } from 'react';
 import ReactDOM from 'react-dom';
-import { BrowserRouter as Router, Switch, Route } from 'react-router-dom';
+import { BrowserRouter, Switch, Route } from 'react-router-dom';
 import LandingPage from './components/layout/LandingPage';
 import Login from './components/auth/SignIn';
 import SignUp from './components/auth/SignUp';
@@ -9,6 +9,10 @@ import Business from './components/business/Business';
 import Account from './components/account/Account';
 import Alert from './components/layout/Alert';
 import { loadUser } from './actions/auth';
+import ServiceOrderById from './components/so/SerivceOrderById';
+import AppRouter from './routes/AppRouter';
+import Routes from './routes';
+
 //Redux
 import { Provider } from 'react-redux';
 import store from './store';
@@ -23,23 +27,23 @@ const App = () => {
     // store.dispatch(loadUser());
   }, []);
 
+  const NotFoundPage = () => {
+    return <div>404!</div>;
+  };
   return (
     <Provider store={store}>
-      <Router>
-        <Alert />
+      <BrowserRouter>
+        <Route path='/signin' component={Login} />
+        <Route path='/signup' component={SignUp} />
+        <LandingPage />
         <Switch>
-          <Route path='/signin' component={Login} />
-          <Route path='/signup' component={SignUp} />
-          <Route exact path='/' component={LandingPage} />
-          <Route exact path='/dashboard' component={LandingPage} />
-          <Route path='/business' component={LandingPage} />
-          <Route path='/account' component={LandingPage} />
-          <Route path='/program' component={LandingPage} />
-          <Route path='/team' component={LandingPage} />
-          <Route path='/user' component={LandingPage} />
-          <Route path='/serviceorder' component={LandingPage} />
+          {Routes.map(route => (
+            <Route exact path={route.path} key={route.path}>
+              <route.component />
+            </Route>
+          ))}
         </Switch>
-      </Router>
+      </BrowserRouter>
     </Provider>
   );
 };

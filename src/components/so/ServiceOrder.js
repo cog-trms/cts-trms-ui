@@ -15,6 +15,7 @@ import {
 } from '@material-ui/core';
 import {
   AddBox,
+  AddCircle,
   ArrowDownward,
   Check,
   ChevronLeft,
@@ -36,6 +37,8 @@ import { setAlert } from '../../actions/alert';
 import { register } from '../../actions/auth';
 import SearchIcon from '@material-ui/icons/Search';
 import BusinessModal from '../common/BusinessModal';
+import MaterialTable from 'material-table';
+import { Redirect, useHistory, useRouteMatch } from 'react-router-dom';
 
 const useStyles = makeStyles(theme => ({
   root: {
@@ -54,9 +57,9 @@ const useStyles = makeStyles(theme => ({
   textField: {
     width: 300
   },
-  submit: {
+  add: {
     margin: theme.spacing(3, 0, 2),
-    width: 150,
+    width: 250,
     textAlign: 'right'
   },
   edit: {
@@ -109,7 +112,8 @@ const useStyles = makeStyles(theme => ({
   }
 }));
 
-const ServiceOrder = ({}) => {
+const ServiceOrder = props => {
+  let history = useHistory();
   const [state, setState] = React.useState({
     data: []
   });
@@ -127,8 +131,10 @@ const ServiceOrder = ({}) => {
   const handleClose = () => {
     setOpen(false);
   };
-  const handleEditClick = () => {
-    setOpen(true);
+  const handleEditClick = id => {
+    // setOpen(true);
+    // return <Redirect to={`/serviceorder/${id}`} />;
+    history.push(`/serviceorder/${id}`);
   };
   const onChange = e => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
@@ -183,6 +189,7 @@ const ServiceOrder = ({}) => {
   };
   const rows = [
     {
+      id: 1,
       serviceOrder: 'My SO1',
       teamId: '5e8a06e7cd3a7cb5d37dd0c3',
       positionCount: 2,
@@ -191,6 +198,7 @@ const ServiceOrder = ({}) => {
       soCandidates: []
     },
     {
+      id: 2,
       serviceOrder: 'My SO2',
       teamId: '5e8a06e7cd3a7cb5d37dd0c3',
       positionCount: 5,
@@ -199,6 +207,7 @@ const ServiceOrder = ({}) => {
       soCandidates: []
     },
     {
+      id: 3,
       serviceOrder: 'My SO3',
       teamId: '5e8a06e7cd3a7cb5d37dd0c3',
       positionCount: 3,
@@ -209,70 +218,17 @@ const ServiceOrder = ({}) => {
   ];
   return (
     <Grid container spacing={2}>
-      {/* <Grid item xs={12} sm={6}>
-        <TextField
-          autoComplete='sOrder'
-          name='serviceOrder'
-          value={serviceOrder}
-          variant='outlined'
-          required
-          fullWidth
-          id='serviceOrder'
-          label='Service Order'
-          autoFocus
-          onChange={e => onChange(e)}
-        />
-      </Grid>
-      <Grid item xs={12} sm={6}>
-        <TextField
-          variant='outlined'
-          required
-          fullWidth
-          id='positionCount'
-          label='No of postion'
-          name='positionCount'
-          value={positionCount}
-          autoComplete='positionCount'
-          onChange={e => onChange(e)}
-        />
-      </Grid>
-      <Grid item xs={12} sm={6}>
-        <TextField
-          variant='outlined'
-          required
-          fullWidth
-          id='location'
-          label='Location'
-          name='location'
-          value={location}
-          autoComplete='location'
-          onChange={e => onChange(e)}
-        />
-      </Grid>
-      <Grid item xs={12} sm={6}>
-        <TextField
-          variant='outlined'
-          required
-          fullWidth
-          id='team'
-          label='Team'
-          name='team'
-          value={team}
-          autoComplete='team'
-          onChange={e => onChange(e)}
-        />
-      </Grid>
       <Grid item xs={12}>
         <Button
-          type='submit'
+          type='button'
           fullWidth
           variant='contained'
           color='primary'
-          className={classes.submit}
+          className={classes.add}
         >
-          Save
+          Add Service Order
         </Button>
-      </Grid> */}
+      </Grid>
       <TableContainer component={Paper}>
         <Table className={classes.table} aria-label='simple table'>
           <TableHead>
@@ -331,7 +287,8 @@ const ServiceOrder = ({}) => {
                     variant='contained'
                     color='primary'
                     className={classes.edit}
-                    onClick={handleEditClick}
+                    // onClick={handleEditClick}
+                    onClick={() => handleEditClick(row.id)}
                   >
                     Edit
                   </Button>

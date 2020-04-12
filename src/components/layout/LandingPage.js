@@ -33,8 +33,10 @@ import {
   ChevronRight as ChevronRightIcon,
   GroupWork as GroupWorkIcon,
   Group as GroupIcon,
-  AccountBox as AccountBoxIcon
+  AccountBox as AccountBoxIcon,
+  Icon
 } from '@material-ui/icons';
+
 import NotificationsIcon from '@material-ui/icons/Notifications';
 import { logout } from '../../actions/auth';
 import PropTypes from 'prop-types';
@@ -54,6 +56,8 @@ import Program from '../program/Program';
 import User from '../user/User';
 import Team from '../team/Team';
 import ServiceOrder from '../so/ServiceOrder';
+import ServiceOrderById from '../so/SerivceOrderById';
+import Routes from '../../routes';
 
 const drawerWidth = 240;
 
@@ -231,6 +235,12 @@ const LandingPage = ({ isAuthenticated, logout }) => {
     </Menu>
   );
   const mobileMenuId = 'primary-search-account-menu-mobile';
+  const NotFoundPage = () => {
+    return <div>404!</div>;
+  };
+  const activeRoute = routeName => {
+    return props.location.pathname === routeName ? true : false;
+  };
   const renderMobileMenu = (
     <Menu
       anchorEl={mobileMoreAnchorEl}
@@ -339,98 +349,108 @@ const LandingPage = ({ isAuthenticated, logout }) => {
           </div>
         </Toolbar>
       </AppBar>
-      <Router>
-        <Drawer
-          className={classes.drawer}
-          variant='persistent'
-          anchor='left'
-          open={open}
-          classes={{
-            paper: classes.drawerPaper
-          }}
-        >
-          <div className={classes.drawerHeader}>
-            <IconButton onClick={handleDrawerClose}>
-              {theme.direction === 'ltr' ? (
-                <ChevronLeftIcon />
-              ) : (
-                <ChevronRightIcon />
-              )}
-            </IconButton>
-          </div>
-          <Divider />
-          <List>
-            <ListItem button={true} key={'Dashboard'} component={Link} to='/'>
-              <ListItemIcon>
-                <DashboardIcon />
-              </ListItemIcon>
-              <ListItemText primary={'Dashboard'} />
-            </ListItem>
-            <ListItem
-              button={true}
-              key={'Business'}
-              component={Link}
-              to='/business'
-            >
-              <ListItemIcon>
-                <BusinessCenterIcon />
-              </ListItemIcon>
-              <ListItemText primary={'Business'} />
-            </ListItem>
-            <ListItem
-              button={true}
-              key={'Account'}
-              component={Link}
-              to='/account'
-            >
-              <ListItemIcon>
-                <AccountTreeIcon />
-              </ListItemIcon>
-              <ListItemText primary={'Account'} />
-            </ListItem>
-            <ListItem
-              button={true}
-              key={'Program'}
-              component={Link}
-              to='/program'
-            >
-              <ListItemIcon>
-                <GroupWorkIcon />
-              </ListItemIcon>
-              <ListItemText primary={'Program'} />
-            </ListItem>
-            <ListItem button={true} key={'Team'} component={Link} to='/team'>
-              <ListItemIcon>
-                <GroupIcon />
-              </ListItemIcon>
-              <ListItemText primary={'Team'} />
-            </ListItem>
-            <ListItem button={true} key={'Users'} component={Link} to='/user'>
-              <ListItemIcon>
-                <AccountBoxIcon />
-              </ListItemIcon>
-              <ListItemText primary={'Users'} />
-            </ListItem>
-            <ListItem
-              button={true}
-              key={'ServiceOrder'}
-              component={Link}
-              to='/serviceorder'
-            >
-              <ListItemIcon>
-                <AccountBoxIcon />
-              </ListItemIcon>
-              <ListItemText primary={'Service Order'} />
-            </ListItem>
-          </List>
-        </Drawer>
-        <main
-          className={clsx(classes.content, {
-            [classes.contentShift]: open
+      {/* <Router> */}
+      <Drawer
+        className={classes.drawer}
+        variant='persistent'
+        anchor='left'
+        open={open}
+        classes={{
+          paper: classes.drawerPaper
+        }}
+      >
+        <div className={classes.drawerHeader}>
+          <IconButton onClick={handleDrawerClose}>
+            {theme.direction === 'ltr' ? (
+              <ChevronLeftIcon />
+            ) : (
+              <ChevronRightIcon />
+            )}
+          </IconButton>
+        </div>
+        <Divider />
+        {/* <List>
+          <ListItem button={true} key={'Dashboard'} component={Link} to='/'>
+            <ListItemIcon>
+              <DashboardIcon />
+            </ListItemIcon>
+            <ListItemText primary={'Dashboard'} />
+          </ListItem>
+          <ListItem
+            button={true}
+            key={'Business'}
+            component={Link}
+            to='/business'
+          >
+            <ListItemIcon>
+              <BusinessCenterIcon />
+            </ListItemIcon>
+            <ListItemText primary={'Business'} />
+          </ListItem>
+          <ListItem
+            button={true}
+            key={'Account'}
+            component={Link}
+            to='/account'
+          >
+            <ListItemIcon>
+              <AccountTreeIcon />
+            </ListItemIcon>
+            <ListItemText primary={'Account'} />
+          </ListItem>
+          <ListItem
+            button={true}
+            key={'Program'}
+            component={Link}
+            to='/program'
+          >
+            <ListItemIcon>
+              <GroupWorkIcon />
+            </ListItemIcon>
+            <ListItemText primary={'Program'} />
+          </ListItem>
+          <ListItem button={true} key={'Team'} component={Link} to='/team'>
+            <ListItemIcon>
+              <GroupIcon />
+            </ListItemIcon>
+            <ListItemText primary={'Team'} />
+          </ListItem>
+          <ListItem button={true} key={'Users'} component={Link} to='/user'>
+            <ListItemIcon>
+              <AccountBoxIcon />
+            </ListItemIcon>
+            <ListItemText primary={'Users'} />
+          </ListItem>
+          <ListItem
+            button={true}
+            key={'ServiceOrder'}
+            component={Link}
+            to='/serviceorder'
+          >
+            <ListItemIcon>
+              <AccountBoxIcon />
+            </ListItemIcon>
+            <ListItemText primary={'Service Order'} />
+          </ListItem>
+        </List> */}
+        <List>
+          {Routes.map((prop, key) => {
+            return (
+              <ListItem button={true} key={key} component={Link} to={prop.path}>
+                <ListItemIcon children={prop.icon}></ListItemIcon>
+                <ListItemText primary={prop.sidebarName} />
+              </ListItem>
+            );
           })}
-        >
-          <div className={classes.drawerHeader} />
-          <Switch>
+        </List>
+      </Drawer>
+      <main
+        className={clsx(classes.content, {
+          [classes.contentShift]: open
+        })}
+      >
+        <div className={classes.drawerHeader} />
+        {/* <Switch>
             <Route exact path='/' component={Dashboard} />
             <Route exact path='/dashboard' component={Dashboard} />
             <Route path='/business' component={Business} />
@@ -439,9 +459,11 @@ const LandingPage = ({ isAuthenticated, logout }) => {
             <Route path='/team' component={Team} />
             <Route path='/user' component={User} />
             <Route path='/serviceorder' component={ServiceOrder} />
-          </Switch>
-        </main>
-      </Router>
+            <Route path='/serviceorder/:id' component={ServiceOrderById} />
+            <Route component={NotFoundPage} />
+          </Switch> */}
+      </main>
+      {/* </Router> */}
 
       {renderMobileMenu}
       {renderMenu}
