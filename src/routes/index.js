@@ -10,7 +10,7 @@ import Team from '../components/team/Team';
 import User from '../components/user/User';
 import Alert from '../components/layout/Alert';
 import ServiceOrder from '../components/so/ServiceOrder';
-import ServiceOrderById from '../components/so/SerivceOrderById';
+import ServiceOrderById from '../components/so/ServiceOrderById';
 import {
   AccountCircle,
   AccountTree as AccountTreeIcon,
@@ -33,43 +33,64 @@ const Routes = [
     path: '/',
     sidebarName: 'Dashboard',
     component: Dashboard,
-    icon: DashboardIcon
+    icon: DashboardIcon,
+    isMenu: true
   },
   {
     path: '/business',
     sidebarName: 'Business',
     component: Business,
-    icon: BusinessCenterIcon
+    icon: BusinessCenterIcon,
+    isMenu: true
   },
   {
     path: '/account',
     sidebarName: 'Account',
     component: Account,
-    icon: AccountTreeIcon
+    icon: AccountTreeIcon,
+    isMenu: true
   },
   {
     path: '/program',
     sidebarName: 'Program',
     component: Program,
-    icon: GroupWorkIcon
+    icon: GroupWorkIcon,
+    isMenu: true
   },
   {
     path: '/team',
     sidebarName: 'Team',
     component: Team,
-    icon: GroupIcon
+    icon: GroupIcon,
+    isMenu: true
   },
   {
     path: '/user',
     sidebarName: 'User',
     component: User,
-    icon: AccountBoxIcon
+    icon: AccountBoxIcon,
+    isMenu: true
   },
   {
     path: '/serviceorder',
     sidebarName: 'Service Order',
     component: ServiceOrder,
-    icon: AccountTreeIcon
+    icon: AccountTreeIcon,
+    isMenu: true
+  },
+  {
+    path: '/serviceorder/add',
+    sidebarName: 'Service Order',
+    component: ServiceOrderById,
+    icon: AccountTreeIcon,
+    isMenu: false
+  },
+  {
+    path: '/serviceorder/:id',
+    sidebarName: 'Service Order',
+    component: ServiceOrderById,
+    icon: AccountTreeIcon,
+    isMenu: false
   }
 ];
 

@@ -34,25 +34,20 @@ import {
 import { fade, makeStyles } from '@material-ui/core/styles';
 import { connect } from 'react-redux';
 import { setAlert } from '../../actions/alert';
-import { register } from '../../actions/auth';
+import {
+  loadServiceOrder,
+  loadServiceOrderById
+} from '../../actions/serviceOrder';
 import SearchIcon from '@material-ui/icons/Search';
-import BusinessModal from '../common/BusinessModal';
-import MaterialTable from 'material-table';
 import { Redirect, useHistory, useRouteMatch } from 'react-router-dom';
+import CssBaseline from '@material-ui/core/CssBaseline';
 
 const useStyles = makeStyles(theme => ({
-  root: {
-    flexGrow: 1
-  },
   paper: {
     marginTop: theme.spacing(8),
     display: 'flex',
     flexDirection: 'column',
     alignItems: 'center'
-  },
-  form: {
-    width: '100%', // Fix IE 11 issue.
-    marginTop: theme.spacing(3)
   },
   textField: {
     width: 300
@@ -69,7 +64,7 @@ const useStyles = makeStyles(theme => ({
     width: 20
   },
   table: {
-    minWidth: 650
+    // minWidth: 650
   },
   search: {
     position: 'relative',
@@ -112,28 +107,40 @@ const useStyles = makeStyles(theme => ({
   }
 }));
 
-const ServiceOrder = props => {
+const ServiceOrder = ({ serviceOrder, loadServiceOrder }) => {
   let history = useHistory();
+  const [result, setResult] = useState([]);
   const [state, setState] = React.useState({
     data: []
   });
   const [selectedRow, setSelectedRow] = useState(null);
+  useEffect(() => {
+    loadServiceOrder();
+  }, []);
+
+  useEffect(() => {
+    setState(state => ({ ...state, data: serviceOrder }));
+  }, [serviceOrder]);
+
   const [open, setOpen] = React.useState(false);
   const [formData, setFormData] = useState({
-    serviceOrder: '',
+    serviceOrderText: '',
     positionCount: '',
     location: '',
     team: '',
     cases: []
   });
   const classes = useStyles();
-  const { serviceOrder, positionCount, location, team, cases } = formData;
+  const { serviceOrderText, positionCount, location, team, cases } = formData;
   const handleClose = () => {
     setOpen(false);
   };
+
+  const handleAdd = () => {
+    history.push('/serviceorder/add');
+  };
   const handleEditClick = id => {
-    // setOpen(true);
-    // return <Redirect to={`/serviceorder/${id}`} />;
+    loadServiceOrderById(id);
     history.push(`/serviceorder/${id}`);
   };
   const onChange = e => {
@@ -145,7 +152,7 @@ const ServiceOrder = props => {
     if (password !== password2) {
       setAlert('Password does not match', 'danger', 3000);
     } else {
-      register({ serviceOrder, positionCount, location, team, cases });
+      register({ serviceOrderText, positionCount, location, team, cases });
     }
   };
 
@@ -156,7 +163,9 @@ const ServiceOrder = props => {
   };
 
   const filterData = searchText => {
-    const result = business.filter(item => item.buName === searchText);
+    const result = serviceOrderText.filter(
+      item => item.serviceOrderText === searchText
+    );
     return result;
   };
 
@@ -187,35 +196,8 @@ const ServiceOrder = props => {
     )),
     ViewColumn: forwardRef((props, ref) => <ViewColumn {...props} ref={ref} />)
   };
-  const rows = [
-    {
-      id: 1,
-      serviceOrder: 'My SO1',
-      teamId: '5e8a06e7cd3a7cb5d37dd0c3',
-      positionCount: 2,
-      location: 'Denver',
-      createdBy: 'admin@gmail.com',
-      soCandidates: []
-    },
-    {
-      id: 2,
-      serviceOrder: 'My SO2',
-      teamId: '5e8a06e7cd3a7cb5d37dd0c3',
-      positionCount: 5,
-      location: 'Denver',
-      createdBy: 'admin@gmail.com',
-      soCandidates: []
-    },
-    {
-      id: 3,
-      serviceOrder: 'My SO3',
-      teamId: '5e8a06e7cd3a7cb5d37dd0c3',
-      positionCount: 3,
-      location: 'Denver',
-      createdBy: 'admin@gmail.com',
-      soCandidates: []
-    }
-  ];
+  const rows = result && result.length > 0 ? result : serviceOrder;
+
   return (
     <Grid container spacing={2}>
       <Grid item xs={12}>
@@ -225,6 +207,7 @@ const ServiceOrder = props => {
           variant='contained'
           color='primary'
           className={classes.add}
+          onClick={handleAdd}
         >
           Add Service Order
         </Button>
@@ -287,7 +270,6 @@ const ServiceOrder = props => {
                     variant='contained'
                     color='primary'
                     className={classes.edit}
-                    // onClick={handleEditClick}
                     onClick={() => handleEditClick(row.id)}
                   >
                     Edit
@@ -309,13 +291,20 @@ const ServiceOrder = props => {
           </TableBody>
         </Table>
       </TableContainer>
-      <BusinessModal open={open} handleClose={handleClose} />
     </Grid>
   );
 };
 
-ServiceOrder.propTypes = {};
+ServiceOrder.propTypes = {
+  loadServiceOrder: PropTypes.func.isRequired,
+  loadServiceOrderById: PropTypes.func.isRequired
+};
 
-const mapStateToProps = state => ({});
+const mapStateToProps = state => ({
+  serviceOrder: state.serviceOrder.serviceOrder
+});
 
-export default connect(mapStateToProps, {})(ServiceOrder);
+export default connect(mapStateToProps, {
+  loadServiceOrder,
+  loadServiceOrderById
+})(ServiceOrder);

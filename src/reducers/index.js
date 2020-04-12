@@ -6,6 +6,7 @@ import account from './account';
 import program from './program';
 import user from './user';
 import team from './team';
+import serviceOrder from './serviceOrder';
 
 export default combineReducers({
   alert,
@@ -14,5 +15,6 @@ export default combineReducers({
   account,
   program,
   user,
-  team
+  team,
+  serviceOrder
 });

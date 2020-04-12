@@ -1,36 +1,58 @@
 import axios from 'axios';
 import { setAlert } from './alert';
 import {
-  TEAM_LOADED,
-  TEAM_SAVE,
-  TEAM_FAIL,
-  TEAM_UPDATE,
-  TEAM_UPDATE_FAIL,
-  TEAM_DELETE,
-  TEAM_DELETE_FAIL
+  SERVICEORDER_LOADED,
+  SERVICEORDER_SAVE,
+  SERVICEORDER_FAIL,
+  SERVICEORDER_ALL_LOADED,
+  SERVICEORDER_ALL_FAIL,
+  SERVICEORDER_UPDATE,
+  SERVICEORDER_UPDATE_FAIL,
+  SERVICEORDER_DELETE,
+  SERVICEORDER_DELETE_FAIL
 } from './types';
 import setAuthToken from '../utils/setAuthToken';
 
-//Load Team
-export const loadTeam = () => async dispatch => {
+//Load All ServiceOrder
+export const loadServiceOrder = () => async dispatch => {
   if (localStorage.token) {
     setAuthToken(localStorage.token);
   }
   try {
-    const res = await axios.get('http://localhost:8080/api/v1/teams/team/all');
+    const res = await axios.get('http://localhost:8080/api/v1/sorders/so');
     dispatch({
-      type: TEAM_LOADED,
+      type: SERVICEORDER_LOADED,
       payload: res.data.payload
     });
   } catch (err) {
     dispatch({
-      type: TEAM_FAIL
+      type: SERVICEORDER_FAIL
     });
   }
 };
 
-//Save Team
-export const saveTeam = (
+//Load ServiceOrder
+export const loadServiceOrderById = soId => async dispatch => {
+  if (localStorage.token) {
+    setAuthToken(localStorage.token);
+  }
+  try {
+    const res = await axios.get(
+      `http://localhost:8080/api/v1/sorders/so/${soId}/cases`
+    );
+    dispatch({
+      type: SERVICEORDER_LOADED,
+      payload: res.data.payload
+    });
+  } catch (err) {
+    dispatch({
+      type: SERVICEORDER_FAIL
+    });
+  }
+};
+
+//Save ServiceOrder
+export const saveServiceOrder = (
   programId,
   teamMembers1,
   teamName
@@ -50,19 +72,19 @@ export const saveTeam = (
       config
     );
 
-    dispatch({ type: TEAM_SAVE, payload: res.data });
-    dispatch(loadTeam());
+    dispatch({ type: SERVICEORDER_SAVE, payload: res.data });
+    dispatch(loadServiceOrder());
   } catch (err) {
     const errors = err.response.data.errors;
     if (errors) {
       errors.array.forEach(error => dispatch(setAlert(error.msg, 'danger')));
     }
-    dispatch({ type: TEAM_FAIL });
+    dispatch({ type: SERVICEORDER_FAIL });
   }
 };
 
-//Update Team
-export const updateTeam = (
+//Update ServiceOrder
+export const updateServiceOrder = (
   accountId,
   name,
   programId,
@@ -84,19 +106,19 @@ export const updateTeam = (
       body,
       config
     );
-    dispatch({ type: TEAM_UPDATE, payload: res.data });
-    dispatch(loadTeam());
+    dispatch({ type: SERVICEORDER_UPDATE, payload: res.data });
+    dispatch(loadServiceOrder());
   } catch (err) {
     const errors = err.response.data.errors;
     if (errors) {
       errors.array.forEach(error => dispatch(setAlert(error.msg, 'danger')));
     }
-    dispatch({ type: TEAM_UPDATE_FAIL });
+    dispatch({ type: SERVICEORDER_UPDATE_FAIL });
   }
 };
 
-//Delete Team
-export const deleteTeam = id => async dispatch => {
+//Delete ServiceOrder
+export const deleteServiceOrder = id => async dispatch => {
   const config = {
     headers: { 'Content-Type': 'application/json' }
   };
@@ -106,13 +128,13 @@ export const deleteTeam = id => async dispatch => {
       `http://localhost:8080/api/v1/teams/team/${id}`,
       config
     );
-    dispatch({ type: TEAM_DELETE, payload: res.data });
-    dispatch(loadTeam());
+    dispatch({ type: SERVICEORDER_DELETE, payload: res.data });
+    dispatch(loadServiceOrder());
   } catch (err) {
     const errors = err.response.data.errors;
     if (errors) {
       errors.array.forEach(error => dispatch(setAlert(error.msg, 'danger')));
     }
-    dispatch({ type: TEAM_DELETE_FAIL });
+    dispatch({ type: SERVICEORDER_DELETE_FAIL });
   }
 };

@@ -9,8 +9,7 @@ import Business from './components/business/Business';
 import Account from './components/account/Account';
 import Alert from './components/layout/Alert';
 import { loadUser } from './actions/auth';
-import ServiceOrderById from './components/so/SerivceOrderById';
-import AppRouter from './routes/AppRouter';
+import ServiceOrderById from './components/so/ServiceOrderById';
 import Routes from './routes';
 
 //Redux

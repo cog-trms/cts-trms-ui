@@ -2,6 +2,7 @@ import React from 'react';
 import clsx from 'clsx';
 import { connect } from 'react-redux';
 import { fade, makeStyles, useTheme } from '@material-ui/core/styles';
+import { BrowserRouter, Switch, Route } from 'react-router-dom';
 import {
   AppBar,
   Badge,
@@ -9,7 +10,6 @@ import {
   Divider,
   Drawer,
   IconButton,
-  InputBase,
   MenuItem,
   Menu,
   List,
@@ -21,42 +21,16 @@ import {
 } from '@material-ui/core';
 import {
   AccountCircle,
-  AccountTree as AccountTreeIcon,
-  BarChart as BarChartIcon,
-  BusinessCenter as BusinessCenterIcon,
-  Dashboard as DashboardIcon,
   Menu as MenuIcon,
   Mail as MailIcon,
-  MoveToInbox as InboxIcon,
   MoreVert as MoreIcon,
   ChevronLeft as ChevronLeftIcon,
-  ChevronRight as ChevronRightIcon,
-  GroupWork as GroupWorkIcon,
-  Group as GroupIcon,
-  AccountBox as AccountBoxIcon,
-  Icon
+  ChevronRight as ChevronRightIcon
 } from '@material-ui/icons';
-
 import NotificationsIcon from '@material-ui/icons/Notifications';
 import { logout } from '../../actions/auth';
 import PropTypes from 'prop-types';
-import {
-  BrowserRouter as Router,
-  Switch,
-  Route,
-  Redirect,
-  Link
-} from 'react-router-dom';
-import Login from '../auth/SignIn';
-import SignUp from '../auth/SignUp';
-import Dashboard from './Dashboard';
-import Business from '../business/Business';
-import Account from '../account/Account';
-import Program from '../program/Program';
-import User from '../user/User';
-import Team from '../team/Team';
-import ServiceOrder from '../so/ServiceOrder';
-import ServiceOrderById from '../so/SerivceOrderById';
+import { Redirect, Link } from 'react-router-dom';
 import Routes from '../../routes';
 
 const drawerWidth = 240;
@@ -349,7 +323,6 @@ const LandingPage = ({ isAuthenticated, logout }) => {
           </div>
         </Toolbar>
       </AppBar>
-      {/* <Router> */}
       <Drawer
         className={classes.drawer}
         variant='persistent'
@@ -369,78 +342,21 @@ const LandingPage = ({ isAuthenticated, logout }) => {
           </IconButton>
         </div>
         <Divider />
-        {/* <List>
-          <ListItem button={true} key={'Dashboard'} component={Link} to='/'>
-            <ListItemIcon>
-              <DashboardIcon />
-            </ListItemIcon>
-            <ListItemText primary={'Dashboard'} />
-          </ListItem>
-          <ListItem
-            button={true}
-            key={'Business'}
-            component={Link}
-            to='/business'
-          >
-            <ListItemIcon>
-              <BusinessCenterIcon />
-            </ListItemIcon>
-            <ListItemText primary={'Business'} />
-          </ListItem>
-          <ListItem
-            button={true}
-            key={'Account'}
-            component={Link}
-            to='/account'
-          >
-            <ListItemIcon>
-              <AccountTreeIcon />
-            </ListItemIcon>
-            <ListItemText primary={'Account'} />
-          </ListItem>
-          <ListItem
-            button={true}
-            key={'Program'}
-            component={Link}
-            to='/program'
-          >
-            <ListItemIcon>
-              <GroupWorkIcon />
-            </ListItemIcon>
-            <ListItemText primary={'Program'} />
-          </ListItem>
-          <ListItem button={true} key={'Team'} component={Link} to='/team'>
-            <ListItemIcon>
-              <GroupIcon />
-            </ListItemIcon>
-            <ListItemText primary={'Team'} />
-          </ListItem>
-          <ListItem button={true} key={'Users'} component={Link} to='/user'>
-            <ListItemIcon>
-              <AccountBoxIcon />
-            </ListItemIcon>
-            <ListItemText primary={'Users'} />
-          </ListItem>
-          <ListItem
-            button={true}
-            key={'ServiceOrder'}
-            component={Link}
-            to='/serviceorder'
-          >
-            <ListItemIcon>
-              <AccountBoxIcon />
-            </ListItemIcon>
-            <ListItemText primary={'Service Order'} />
-          </ListItem>
-        </List> */}
         <List>
           {Routes.map((prop, key) => {
-            return (
-              <ListItem button={true} key={key} component={Link} to={prop.path}>
-                <ListItemIcon children={prop.icon}></ListItemIcon>
-                <ListItemText primary={prop.sidebarName} />
-              </ListItem>
-            );
+            if (prop.isMenu) {
+              return (
+                <ListItem
+                  button={true}
+                  key={key}
+                  component={Link}
+                  to={prop.path}
+                >
+                  {/* <ListItemIcon>{prop.icon}</ListItemIcon> */}
+                  <ListItemText primary={prop.sidebarName} />
+                </ListItem>
+              );
+            }
           })}
         </List>
       </Drawer>
@@ -450,23 +366,16 @@ const LandingPage = ({ isAuthenticated, logout }) => {
         })}
       >
         <div className={classes.drawerHeader} />
-        {/* <Switch>
-            <Route exact path='/' component={Dashboard} />
-            <Route exact path='/dashboard' component={Dashboard} />
-            <Route path='/business' component={Business} />
-            <Route path='/account' component={Account} />
-            <Route path='/program' component={Program} />
-            <Route path='/team' component={Team} />
-            <Route path='/user' component={User} />
-            <Route path='/serviceorder' component={ServiceOrder} />
-            <Route path='/serviceorder/:id' component={ServiceOrderById} />
-            <Route component={NotFoundPage} />
-          </Switch> */}
+        <BrowserRouter>
+          <Switch>
+            {Routes.map(route => (
+              <Route exact path={route.path} key={route.path}>
+                <route.component />
+              </Route>
+            ))}
+          </Switch>
+        </BrowserRouter>
       </main>
-      {/* </Router> */}
-
-      {renderMobileMenu}
-      {renderMenu}
     </div>
   );
 };

@@ -1,22 +1,8 @@
-import React, { useState, useEffect, forwardRef } from 'react';
-import PropTypes from 'prop-types';
-import {
-  Button,
-  Grid,
-  TextField,
-  Table,
-  TableBody,
-  TableCell,
-  TableContainer,
-  TableHead,
-  TableRow,
-  Paper,
-  MenuItem,
-  Select,
-  FormControl,
-  InputLabel,
-  InputBase
-} from '@material-ui/core';
+import React, { useState, useEffect, Fragment, forwardRef } from 'react';
+import { fade, makeStyles } from '@material-ui/core/styles';
+import Modal from '@material-ui/core/Modal';
+import { Button, Grid, TextField, InputBase } from '@material-ui/core';
+import MaterialTable from 'material-table';
 import {
   AddBox,
   ArrowDownward,
@@ -34,17 +20,31 @@ import {
   Search,
   ViewColumn
 } from '@material-ui/icons';
-import { fade, makeStyles } from '@material-ui/core/styles';
-import { connect } from 'react-redux';
-import { loadUser, saveUser, updateUser } from '../../actions/user';
-import MaterialTable from 'material-table';
+
+function rand() {
+  return Math.round(Math.random() * 20) - 10;
+}
+
+function getModalStyle() {
+  const top = 50 + rand();
+  const left = 50 + rand();
+
+  return {
+    top: `${top}%`,
+    left: `${left}%`,
+    transform: `translate(-${top}%, -${left}%)`
+  };
+}
 
 const useStyles = makeStyles(theme => ({
   paper: {
-    marginTop: theme.spacing(8),
-    display: 'flex',
-    flexDirection: 'column',
-    alignItems: 'center'
+    position: 'absolute',
+    height: 500,
+    width: 900,
+    backgroundColor: theme.palette.background.paper,
+    border: '2px solid #000',
+    boxShadow: theme.shadows[5],
+    padding: theme.spacing(2, 4, 3)
   },
   avatar: {
     margin: theme.spacing(1),
@@ -67,18 +67,9 @@ const useStyles = makeStyles(theme => ({
   table: {
     minWidth: 650
   },
-  user: {
+  business: {
     width: 1100,
     fontWeight: 'bold'
-  },
-  description: {
-    minWidth: 700
-  },
-  formControl: {
-    width: 260
-  },
-  selectEmpty: {
-    marginTop: theme.spacing(2)
   },
   search: {
     position: 'relative',
@@ -121,49 +112,32 @@ const useStyles = makeStyles(theme => ({
   }
 }));
 
-const User = ({ user, loadUser }) => {
-  const role = {};
-
-  user.forEach(ele => {
-    role[ele.roles.id] = ele.roles.role;
-  });
-  console.log('role', role);
+const ServiceOrderById = ({ open, handleClose, businessName }) => {
   const classes = useStyles();
-  const [result, setResult] = useState([]);
   const [state, setState] = React.useState({
     data: []
   });
   const [selectedRow, setSelectedRow] = useState(null);
+  const [modalStyle] = React.useState(getModalStyle);
+  const [formData, setFormData] = useState({
+    serviceOrder: '',
+    positionCount: '',
+    location: '',
+    team: '',
+    cases: []
+  });
+  const { serviceOrder, positionCount, location, team, cases } = formData;
 
-  useEffect(() => {
-    loadUser();
-  }, []);
-
-  useEffect(() => {
-    setState(state => ({ ...state, data: user }));
-  }, [user]);
-
-  const handleSearch = event => {
-    event.preventDefault();
-    const result = filterData(event.target.value);
-    setResult(result);
+  const handleSave = ({ program, teamMembers, teamName }) => {
+    return saveTeam(program.id, teamMembers.id, teamName);
   };
 
-  const filterData = searchText => {
-    const result = user.filter(item => item.userName === searchText);
-    return result;
+  const handleUpdate = ({ account, programName, id, programManager }) => {
+    return updateTeam(account.id, programName, id, programManager.id);
   };
-
-  // const handleSave = ({ userName, businessUnit, hiringManger }) => {
-  //   return saveUser(userName, businessUnit.id, hiringManger.id);
-  // };
-
-  // const handleUpdate = ({ id, userName, businessUnit, hiringManger }) => {
-  //   return updateUser(id, userName, businessUnit.id, hiringManger.id);
-  // };
 
   const handleDelete = ({ id }) => {
-    return deleteBusiness(id);
+    return deleteTeam(id);
   };
 
   const tableIcons = {
@@ -194,26 +168,103 @@ const User = ({ user, loadUser }) => {
     ViewColumn: forwardRef((props, ref) => <ViewColumn {...props} ref={ref} />)
   };
 
-  return (
-    <Grid container spacing={3}>
+  const body = (
+    <Fragment>
+      <Grid container spacing={3}>
+        <Grid item xs={12} sm={6}>
+          <TextField
+            autoComplete='sOrder'
+            name='serviceOrder'
+            value={serviceOrder}
+            variant='outlined'
+            required
+            fullWidth
+            id='serviceOrder'
+            label='Service Order'
+            autoFocus
+          />
+        </Grid>
+        <Grid item xs={12} sm={6}>
+          <TextField
+            variant='outlined'
+            required
+            fullWidth
+            id='positionCount'
+            label='No of postion'
+            name='positionCount'
+            value={positionCount}
+            autoComplete='positionCount'
+          />
+        </Grid>
+        <Grid item xs={12} sm={6}>
+          <TextField
+            variant='outlined'
+            required
+            fullWidth
+            id='location'
+            label='Location'
+            name='location'
+            value={location}
+            autoComplete='location'
+          />
+        </Grid>
+        <Grid item xs={12} sm={6}>
+          <TextField
+            variant='outlined'
+            required
+            fullWidth
+            id='team'
+            label='Team'
+            name='team'
+            value={team}
+            autoComplete='team'
+          />
+        </Grid>
+        <Grid item xs={12}>
+          <Button
+            type='submit'
+            fullWidth
+            variant='contained'
+            color='primary'
+            className={classes.submit}
+          >
+            Save
+          </Button>
+        </Grid>
+      </Grid>
       <div style={{ width: '100%' }}>
         <MaterialTable
           icons={tableIcons}
-          title='User'
+          title='Team'
           columns={[
-            { title: 'First Name', field: 'firstName' },
-            { title: 'Last Name', field: 'lastName' },
-            { title: 'Email', field: 'email' },
-            { title: 'Mobile', field: 'mobileNumber' },
-            { title: 'Is Admin', field: 'admin' },
+            { title: 'Team', field: 'teamName' },
             {
-              title: 'Role',
-              field: 'role.id',
-              lookup: role
+              title: 'Account',
+              field: 'account.id'
+            },
+            {
+              title: 'Program',
+              field: 'program.id'
+            },
+            {
+              title: 'Program Manager',
+              field: 'programManager.id'
+            },
+            {
+              title: 'Team Members',
+              field: 'teamMembers.id'
             }
           ]}
           data={state.data}
           editable={{
+            onRowAdd: newData =>
+              handleSave(newData).then(() => {
+                setState(prevState => {
+                  const data = [...prevState.data];
+                  data.push(newData);
+                  return { ...prevState, data };
+                });
+              }),
             onRowUpdate: (newData, oldData) =>
               handleUpdate(newData, oldData).then(() => {
                 if (oldData) {
@@ -248,22 +299,9 @@ const User = ({ user, loadUser }) => {
           }}
         />
       </div>
-    </Grid>
+    </Fragment>
   );
+
+  return <div>{body}</div>;
 };
-
-User.propTypes = {
-  loadUser: PropTypes.func.isRequired
-  // saveUser: PropTypes.func.isRequired,
-  // updateUser: PropTypes.func.isRequired
-};
-
-const mapStateToProps = state => ({
-  user: state.user.user
-});
-
-export default connect(mapStateToProps, {
-  loadUser
-  // saveUser,
-  // updateUser
-})(User);
+export default ServiceOrderById;
