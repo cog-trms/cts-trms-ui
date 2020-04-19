@@ -84,14 +84,14 @@ const Routes = [
     component: ServiceOrderCreate,
     icon: AccountTreeIcon,
     isMenu: false
-  },
-  {
-    path: '/serviceorder/:soId',
-    sidebarName: 'Service Order',
-    component: ServiceOrderCreate,
-    icon: AccountTreeIcon,
-    isMenu: false
   }
+  // {
+  //   path: '/serviceorder/:soId',
+  //   sidebarName: 'Service Order',
+  //   component: ServiceOrderCreate,
+  //   icon: AccountTreeIcon,
+  //   isMenu: false
+  // }
 ];
 
 export default Routes;
