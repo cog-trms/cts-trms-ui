@@ -63,15 +63,18 @@ function getModalStyle() {
 }
 
 const useStyles = makeStyles(theme => ({
-  paper: {
-    position: 'absolute',
-    height: 500,
-    width: 900,
-    backgroundColor: theme.palette.background.paper,
-    border: '2px solid #000',
-    boxShadow: theme.shadows[5],
-    padding: theme.spacing(2, 4, 3)
+  root: {
+    width: '100%'
   },
+  // paper: {
+  //   position: 'absolute',
+  //   height: 500,
+  //   width: 900,
+  //   backgroundColor: theme.palette.background.paper,
+  //   border: '2px solid #000',
+  //   boxShadow: theme.shadows[5],
+  //   padding: theme.spacing(2, 4, 3)
+  // },
   avatar: {
     margin: theme.spacing(1),
     backgroundColor: theme.palette.secondary.main
@@ -241,7 +244,7 @@ const ServiceOrderCreate = forwardRef(
     const body = (
       <Fragment>
         <Grid container spacing={3}>
-          <Grid item xs={12} sm={6}>
+          <Grid item xs={12} sm={3}>
             <TextField
               autoComplete='sOrder'
               name='serviceOrderText'
@@ -255,7 +258,7 @@ const ServiceOrderCreate = forwardRef(
               onChange={e => onChange(e)}
             />
           </Grid>
-          <Grid item xs={12} sm={6}>
+          <Grid item xs={12} sm={3}>
             <TextField
               variant='outlined'
               required
@@ -268,7 +271,7 @@ const ServiceOrderCreate = forwardRef(
               onChange={e => onChange(e)}
             />
           </Grid>
-          <Grid item xs={12} sm={6}>
+          <Grid item xs={12} sm={3}>
             <TextField
               variant='outlined'
               required
@@ -281,8 +284,8 @@ const ServiceOrderCreate = forwardRef(
               onChange={e => onChange(e)}
             />
           </Grid>
-          <Grid item xs={12} sm={6}>
-            <FormControl className={classes.formControl}>
+          <Grid item xs={12} sm={3}>
+            <FormControl className={classes.formControl} fullWidth>
               <InputLabel id='demo-simple-select-label'>Team</InputLabel>
               <Select
                 labelId='demo-simple-select-label'
@@ -301,86 +304,75 @@ const ServiceOrderCreate = forwardRef(
               </Select>
             </FormControl>
           </Grid>
-
-          <div style={{ width: '100%' }}>
-            <MaterialTable
-              icons={tableIcons}
-              title='Case'
-              columns={[
-                { title: 'Level', field: 'level' },
-                {
-                  title: 'Number of position',
-                  field: 'numberOfPosition'
-                },
-                {
-                  title: 'Skill',
-                  field: 'skill'
-                }
-              ]}
-              data={state.data}
-              editable={{
-                onRowAdd: newData =>
-                  new Promise(resolve => {
-                    setTimeout(() => {
-                      resolve();
+          <Grid item xs={12} sm={12}>
+            <div style={{ width: '100%', margin: '10px auto' }}>
+              <MaterialTable
+                icons={tableIcons}
+                title='Case'
+                columns={[
+                  { title: 'Level', field: 'level' },
+                  {
+                    title: 'Number of position',
+                    field: 'numberOfPosition'
+                  },
+                  {
+                    title: 'Skill',
+                    field: 'skill'
+                  }
+                ]}
+                data={state.data}
+                editable={{
+                  onRowAdd: newData =>
+                    new Promise(resolve => {
+                      setTimeout(() => {
+                        resolve();
+                        setState(prevState => {
+                          const data = [...prevState.data];
+                          data.push(newData);
+                          return { ...prevState, data };
+                        });
+                      }, 300);
+                    }),
+                  onRowUpdate: (newData, oldData) =>
+                    handleUpdate(newData, oldData).then(() => {
+                      if (oldData) {
+                        setState(prevState => {
+                          const data = [...prevState.data];
+                          data[data.indexOf(oldData)] = newData;
+                          return { ...prevState, data };
+                        });
+                      }
+                    }),
+                  onRowDelete: oldData =>
+                    handleDelete(oldData).then(() => {
                       setState(prevState => {
                         const data = [...prevState.data];
-                        data.push(newData);
+                        data.splice(data.indexOf(oldData), 1);
                         return { ...prevState, data };
                       });
-                    }, 300);
-                  }),
-                onRowUpdate: (newData, oldData) =>
-                  handleUpdate(newData, oldData).then(() => {
-                    if (oldData) {
-                      setState(prevState => {
-                        const data = [...prevState.data];
-                        data[data.indexOf(oldData)] = newData;
-                        return { ...prevState, data };
-                      });
-                    }
-                  }),
-                onRowDelete: oldData =>
-                  handleDelete(oldData).then(() => {
-                    setState(prevState => {
-                      const data = [...prevState.data];
-                      data.splice(data.indexOf(oldData), 1);
-                      return { ...prevState, data };
-                    });
+                    })
+                }}
+                onRowClick={(evt, selectedRow) => setSelectedRow(selectedRow)}
+                options={{
+                  headerStyle: {
+                    backgroundColor: '#04A4F9',
+                    color: '#FFF'
+                  },
+                  rowStyle: rowData => ({
+                    backgroundColor:
+                      selectedRow && selectedRow.id === rowData.id
+                        ? '#DDF1FC'
+                        : '#FFF'
                   })
-              }}
-              onRowClick={(evt, selectedRow) => setSelectedRow(selectedRow)}
-              options={{
-                headerStyle: {
-                  backgroundColor: '#04A4F9',
-                  color: '#FFF'
-                },
-                rowStyle: rowData => ({
-                  backgroundColor:
-                    selectedRow && selectedRow.id === rowData.id
-                      ? '#DDF1FC'
-                      : '#FFF'
-                })
-              }}
-            />
-          </div>
-          {/* <Grid item xs={12} sm={3}>
-            <Button
-              type='button'
-              fullWidth
-              variant='contained'
-              color='primary'
-              className={classes.save}
-              onClick={handleSave}
-            >
-              Save
-            </Button>
-          </Grid> */}
+                }}
+              />
+            </div>
+          </Grid>
         </Grid>
       </Fragment>
     );
 
-    return <div>{body}</div>;
+    return <div className={classes.root}>{body}</div>;
   }
 );
 

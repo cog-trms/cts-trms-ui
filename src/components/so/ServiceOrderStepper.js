@@ -11,9 +11,11 @@ import {
   Stepper,
   Step,
   StepLabel,
-  Typography
+  Typography,
+  Grid
 } from '@material-ui/core';
 import ServiceOrderCreate from './ServiceOrderCreate';
+import Interview from '../interview/Interview';
 
 const useStyles = makeStyles(theme => ({
   root: {
@@ -25,6 +27,10 @@ const useStyles = makeStyles(theme => ({
   instructions: {
     marginTop: theme.spacing(1),
     marginBottom: theme.spacing(1)
+  },
+  content: {
+    width: '100%',
+    margin: theme.spacing(3)
   }
 }));
 
@@ -44,7 +50,7 @@ const getStepContent = (step, handleNext, childRef) => {
         <ServiceOrderCreate forwardedRef={childRef} handleNext={handleNext} />
       );
     case 1:
-      return 'dummy1';
+      return <Interview forwardedRef={childRef} handleNext={handleNext} />;
     case 2:
       return 'dummy2';
     default:
@@ -73,8 +79,11 @@ const ServiceOrderStepper = () => {
 
   const handleNext = () => {
     if (activeStep === 0) {
-      childRef.current.handleSave();
+      //senthil - need to uncommend it back
+      // childRef.current.handleSave();
+    } else if (activeStep === 1) {
     }
+
     let newSkipped = skipped;
     if (isStepSkipped(activeStep)) {
       newSkipped = new Set(newSkipped.values());
@@ -141,7 +150,9 @@ const ServiceOrderStepper = () => {
           </div>
         ) : (
           <div>
-            {getStepContent(activeStep, handleNext, childRef)}
+            <div className={classes.content}>
+              {getStepContent(activeStep, handleNext, childRef)}
+            </div>
             <div>
               <Button
                 disabled={activeStep === 0}
