@@ -59,7 +59,7 @@ const Routes = [
     component: Program,
     icon: GroupWorkIcon,
     isMenu: true,
-    access: ['admin']
+    access: ['admin', 'hiring_manager']
   },
   {
     path: '/team',
@@ -67,7 +67,7 @@ const Routes = [
     component: Team,
     icon: GroupIcon,
     isMenu: true,
-    access: ['admin']
+    access: ['admin', 'hiring_manager']
   },
   {
     path: '/user',
@@ -79,7 +79,7 @@ const Routes = [
   },
   {
     path: '/serviceorder',
-    sidebarName: 'Service Order',
+    sidebarName: 'Opportunities',
     component: ServiceOrder,
     icon: AccountTreeIcon,
     isMenu: true,

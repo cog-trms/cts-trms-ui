@@ -146,8 +146,7 @@ const LandingPage = ({ isAuthenticated, loginUser, logout }) => {
   if (!isAuthenticated) {
     return <Redirect to='/signin' />;
   }
-  const userRole =
-    loginUser && loginUser.authorities ? loginUser.authorities[0] : '';
+  const userRoles = (loginUser && loginUser.authorities) || [];
   const classes = useStyles();
   const theme = useTheme();
   const [open, setOpen] = React.useState(false);
@@ -313,7 +312,7 @@ const LandingPage = ({ isAuthenticated, loginUser, logout }) => {
             </IconButton>
           </div>
           <Typography variant='h6' noWrap={true}>
-            {userRole}
+            {userRoles}
           </Typography>
           <div className={classes.sectionMobile}>
             <IconButton
@@ -349,8 +348,10 @@ const LandingPage = ({ isAuthenticated, loginUser, logout }) => {
         <Divider />
         <List>
           {Routes.map((prop, key) => {
-            console.log(prop.access);
-            if (prop.isMenu && prop.access.includes(userRole.toLowerCase())) {
+            const found = prop.access.some(role => {
+              return userRoles.includes(role.toUpperCase());
+            });
+            if (prop.isMenu && found) {
               return (
                 <ListItem
                   button={true}
