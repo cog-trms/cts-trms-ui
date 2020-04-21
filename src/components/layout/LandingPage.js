@@ -141,12 +141,13 @@ const useStyles = makeStyles(theme => ({
   }
 }));
 
-const LandingPage = ({ isAuthenticated, logout }) => {
+const LandingPage = ({ isAuthenticated, loginUser, logout }) => {
   //if not authenticated, then redirect to login
   if (!isAuthenticated) {
     return <Redirect to='/signin' />;
   }
-
+  const userRole =
+    loginUser && loginUser.authorities ? loginUser.authorities[0] : '';
   const classes = useStyles();
   const theme = useTheme();
   const [open, setOpen] = React.useState(false);
@@ -287,6 +288,7 @@ const LandingPage = ({ isAuthenticated, logout }) => {
           <Typography variant='h6' noWrap={true}>
             Demand Portal
           </Typography>
+
           <div className={classes.grow} />
           <div className={classes.sectionDesktop}>
             <IconButton aria-label='show 4 new mails' color='inherit'>
@@ -310,6 +312,9 @@ const LandingPage = ({ isAuthenticated, logout }) => {
               <AccountCircle />
             </IconButton>
           </div>
+          <Typography variant='h6' noWrap={true}>
+            {userRole}
+          </Typography>
           <div className={classes.sectionMobile}>
             <IconButton
               aria-label='show more'
@@ -344,7 +349,8 @@ const LandingPage = ({ isAuthenticated, logout }) => {
         <Divider />
         <List>
           {Routes.map((prop, key) => {
-            if (prop.isMenu) {
+            console.log(prop.access);
+            if (prop.isMenu && prop.access.includes(userRole.toLowerCase())) {
               return (
                 <ListItem
                   button={true}
@@ -382,10 +388,12 @@ const LandingPage = ({ isAuthenticated, logout }) => {
 
 LandingPage.propTypes = {
   logout: PropTypes.func.isRequired,
-  isAuthenticated: PropTypes.bool
+  isAuthenticated: PropTypes.bool,
+  loginUser: PropTypes.object
 };
 
 const mapStateToProps = state => ({
-  isAuthenticated: state.auth.isAuthenticated
+  isAuthenticated: state.auth.isAuthenticated,
+  loginUser: state.auth.loginUser
 });
 export default connect(mapStateToProps, { logout })(LandingPage);

@@ -34,56 +34,64 @@ const Routes = [
     sidebarName: 'Dashboard',
     component: Dashboard,
     icon: DashboardIcon,
-    isMenu: true
+    isMenu: true,
+    access: ['admin']
   },
   {
     path: '/business',
     sidebarName: 'Business',
     component: Business,
     icon: BusinessCenterIcon,
-    isMenu: true
+    isMenu: true,
+    access: ['admin']
   },
   {
     path: '/account',
     sidebarName: 'Account',
     component: Account,
     icon: AccountTreeIcon,
-    isMenu: true
+    isMenu: true,
+    access: ['admin']
   },
   {
     path: '/program',
     sidebarName: 'Program',
     component: Program,
     icon: GroupWorkIcon,
-    isMenu: true
+    isMenu: true,
+    access: ['admin']
   },
   {
     path: '/team',
     sidebarName: 'Team',
     component: Team,
     icon: GroupIcon,
-    isMenu: true
+    isMenu: true,
+    access: ['admin']
   },
   {
     path: '/user',
     sidebarName: 'User',
     component: User,
     icon: AccountBoxIcon,
-    isMenu: true
+    isMenu: true,
+    access: ['admin']
   },
   {
     path: '/serviceorder',
     sidebarName: 'Service Order',
     component: ServiceOrder,
     icon: AccountTreeIcon,
-    isMenu: true
+    isMenu: true,
+    access: ['hiring_manager']
   },
   {
     path: '/serviceorder/add',
     sidebarName: 'Service Order',
     component: ServiceOrderCreate,
     icon: AccountTreeIcon,
-    isMenu: false
+    isMenu: false,
+    access: ['hiring_manager']
   }
   // {
   //   path: '/serviceorder/:soId',

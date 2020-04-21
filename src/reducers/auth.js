@@ -1,7 +1,7 @@
 import {
   SIGNUP_SUCCESS,
   SIGNUP_FAIL,
-  USER_LOADED,
+  LOGIN_USER_LOADED,
   AUTH_ERROR,
   LOGIN_SUCCESS,
   LOGIN_FAIL,
@@ -13,17 +13,17 @@ const initialState = {
   isAuthenticated: null,
   loading: true,
   isSignedUp: false,
-  user: null
+  loginUser: null
 };
 export default function(state = initialState, action) {
   const { type, payload } = action;
   switch (type) {
-    case USER_LOADED:
+    case LOGIN_USER_LOADED:
       return {
         ...state,
         isAuthenticated: true,
         loading: false,
-        user: payload
+        loginUser: payload
       };
     case SIGNUP_SUCCESS:
       return {

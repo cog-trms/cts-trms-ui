@@ -3,7 +3,7 @@ import { setAlert } from './alert';
 import {
   SIGNUP_SUCCESS,
   SIGNUP_FAIL,
-  USER_LOADED,
+  LOGIN_USER_LOADED,
   AUTH_ERROR,
   LOGIN_SUCCESS,
   LOGIN_FAIL,
@@ -11,18 +11,19 @@ import {
 } from './types';
 import setAuthToken from '../utils/setAuthToken';
 
-//Load User
-export const loadUser = () => async dispatch => {
+//Load Login User
+export const loadLoginUser = () => async dispatch => {
   if (localStorage.token) {
     setAuthToken(localStorage.token);
   }
   try {
     const res = await axios.get(
-      'http://localhost:8080/api/v1/user/getTokenDetails'
+      'http://localhost:8080/api/v1/users/getTokenDetails'
     );
+
     dispatch({
-      type: USER_LOADED,
-      payload: res.data
+      type: LOGIN_USER_LOADED,
+      payload: res.data.payload
     });
   } catch (err) {
     dispatch({
@@ -58,7 +59,7 @@ export const register = ({
     );
 
     dispatch({ type: SIGNUP_SUCCESS, payload: res.data });
-    // dispatch(loadUser());
+    dispatch(loadLoginUser());
   } catch (err) {
     const errors = err.response.data.errors;
     if (errors) {
@@ -81,7 +82,7 @@ export const login = ({ email, password }) => async dispatch => {
       config
     );
     dispatch({ type: LOGIN_SUCCESS, payload: res.data });
-    // dispatch(loadUser());
+    dispatch(loadLoginUser());
   } catch (err) {
     console.log(err);
     const errors = err.response.data.errors;

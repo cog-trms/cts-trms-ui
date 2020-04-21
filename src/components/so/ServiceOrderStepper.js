@@ -29,8 +29,9 @@ const useStyles = makeStyles(theme => ({
     marginBottom: theme.spacing(1)
   },
   content: {
-    width: '100%',
-    margin: theme.spacing(3)
+    width: '80%',
+    margin: theme.spacing(3),
+    alignItems: 'center'
   }
 }));
 
