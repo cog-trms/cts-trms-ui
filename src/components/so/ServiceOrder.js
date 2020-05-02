@@ -17,10 +17,14 @@ import { fade, makeStyles } from '@material-ui/core/styles';
 import { connect } from 'react-redux';
 import { setAlert } from '../../actions/alert';
 import { loadServiceOrder } from '../../actions/serviceOrder';
+import { loadTeam } from '../../actions/team';
 import { Redirect, useHistory, useRouteMatch } from 'react-router-dom';
 import ServiceOrderStepper from './ServiceOrderStepper';
 
 const useStyles = makeStyles(theme => ({
+  root: {
+    display: 'flex'
+  },
   paper: {
     marginTop: theme.spacing(8),
     display: 'flex',
@@ -85,37 +89,41 @@ const useStyles = makeStyles(theme => ({
   }
 }));
 
-const ServiceOrder = ({ serviceOrder, loadServiceOrder }) => {
+const ServiceOrder = ({ serviceOrder, loadServiceOrder, team, loadTeam }) => {
   let history = useHistory();
   const [result, setResult] = useState([]);
   const [state, setState] = useState({
     data: []
   });
+  const [teamData, setTeamData] = useState([]);
+
   useEffect(() => {
     loadServiceOrder();
+    loadTeam();
   }, []);
 
   useEffect(() => {
     setState(state => ({ ...state, data: serviceOrder }));
-  }, [serviceOrder]);
+    setTeamData(team);
+  }, [serviceOrder, team]);
 
   const [showStepper, setShowStepper] = useState(false);
   const [formData, setFormData] = useState({
     serviceOrderText: '',
     positionCount: '',
     location: '',
-    team: '',
+    teamId: '',
     cases: []
   });
   const classes = useStyles();
-  const { serviceOrderText, positionCount, location, team, cases } = formData;
+  const { serviceOrderText, positionCount, location, teamId, cases } = formData;
   const handleClose = () => {
     setOpen(false);
   };
 
   const handleAdd = () => {
-    // history.push('/serviceorder/add');
-    setShowStepper(true);
+    history.push('/serviceorder/add');
+    // setShowStepper(true);
   };
   const handleEditClick = id => {
     history.push(`/serviceorder/${id}`);
@@ -129,7 +137,7 @@ const ServiceOrder = ({ serviceOrder, loadServiceOrder }) => {
     if (password !== password2) {
       setAlert('Password does not match', 'danger', 3000);
     } else {
-      register({ serviceOrderText, positionCount, location, team, cases });
+      register({ serviceOrderText, positionCount, location, teamId, cases });
     }
   };
 
@@ -146,13 +154,19 @@ const ServiceOrder = ({ serviceOrder, loadServiceOrder }) => {
     return result;
   };
 
+  const getTeamName = id => {
+    const result = teamData.filter(item => item.id === id);
+    return result && result.length > 0 && result[0].teamName;
+  };
+
   const rows = result && result.length > 0 ? result : serviceOrder;
 
   return (
-    <Fragment>
-      {showStepper ? (
+    <div className={classes.root}>
+      <Fragment>
+        {/* {showStepper ? (
         <ServiceOrderStepper />
-      ) : (
+      ) : ( */}
         <Grid container spacing={2}>
           <Grid item xs={12}>
             <Button
@@ -163,7 +177,7 @@ const ServiceOrder = ({ serviceOrder, loadServiceOrder }) => {
               className={classes.add}
               onClick={handleAdd}
             >
-              Add Service Order
+              Create Opportunity
             </Button>
           </Grid>
           <TableContainer component={Paper}>
@@ -209,7 +223,7 @@ const ServiceOrder = ({ serviceOrder, loadServiceOrder }) => {
                       {row.location}
                     </TableCell>
                     <TableCell component='th' scope='row'>
-                      {row.teamId}
+                      {getTeamName(row.teamId)}
                     </TableCell>
                     <TableCell component='th' scope='row'>
                       {row.createdBy}
@@ -246,19 +260,23 @@ const ServiceOrder = ({ serviceOrder, loadServiceOrder }) => {
             </Table>
           </TableContainer>
         </Grid>
-      )}
-    </Fragment>
+        {/* )} */}
+      </Fragment>
+    </div>
   );
 };
 
 ServiceOrder.propTypes = {
-  loadServiceOrder: PropTypes.func.isRequired
+  loadServiceOrder: PropTypes.func.isRequired,
+  loadTeam: PropTypes.func.isRequired
 };
 
 const mapStateToProps = state => ({
-  serviceOrder: state.serviceOrder.serviceOrder
+  serviceOrder: state.serviceOrder.serviceOrder,
+  team: state.team.team
 });
 
 export default connect(mapStateToProps, {
-  loadServiceOrder
+  loadServiceOrder,
+  loadTeam
 })(ServiceOrder);

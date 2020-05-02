@@ -199,6 +199,13 @@ const ServiceOrderCreate = forwardRef(
     handleNext = () => {
       // handleSave();
     };
+    const handleSave = () => {
+      return saveServiceOrder(
+        state.data,
+        { locationText, positionCountText, serviceOrderText },
+        teamId
+      );
+    };
     const handleUpdate = ({ account, programName, id, programManager }) => {
       return updateTeam(account.id, programName, id, programManager.id);
     };
@@ -367,6 +374,18 @@ const ServiceOrderCreate = forwardRef(
                 }}
               />
             </div>
+          </Grid>
+          <Grid item xs={12} sm={3}>
+            <Button
+              type='button'
+              fullWidth
+              variant='contained'
+              color='primary'
+              className={classes.save}
+              onClick={handleSave}
+            >
+              Save
+            </Button>
           </Grid>
         </Grid>
       </Fragment>
