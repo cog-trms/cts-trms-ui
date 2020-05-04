@@ -92,14 +92,15 @@ const Routes = [
     icon: AccountTreeIcon,
     isMenu: false,
     access: ['hiring_manager']
+  },
+  {
+    path: '/serviceorder/:soId',
+    sidebarName: 'Service Order',
+    component: ServiceOrderCreate,
+    icon: AccountTreeIcon,
+    isMenu: false,
+    access: ['hiring_manager']
   }
-  // {
-  //   path: '/serviceorder/:soId',
-  //   sidebarName: 'Service Order',
-  //   component: ServiceOrderCreate,
-  //   icon: AccountTreeIcon,
-  //   isMenu: false
-  // }
 ];
 
 export default Routes;

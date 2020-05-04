@@ -167,12 +167,12 @@ const ServiceOrderCreate = forwardRef(
       }
     }));
     const { soId } = useParams();
+    debugger;
     const classes = useStyles();
     const [state, setState] = useState({
       data: []
     });
     const [selectedRow, setSelectedRow] = useState(null);
-
     const [formData, setFormData] = useState({
       serviceOrderText: '',
       positionCountText: '',
@@ -187,6 +187,17 @@ const ServiceOrderCreate = forwardRef(
         loadServiceOrderById(soId);
       }
     }, []);
+
+    useEffect(() => {
+      setFormData({
+        ...formData,
+        serviceOrderText: serviceOrderById && serviceOrderById.serviceOrder,
+        positionCountText: serviceOrderById && serviceOrderById.positionCount,
+        locationText: serviceOrderById && serviceOrderById.location
+      });
+      setTeamId(serviceOrderById && serviceOrderById.teamId);
+      setState(state => ({ ...state, data: serviceOrderById.cases }));
+    }, [serviceOrderById]);
 
     const handleChange = event => {
       setTeamId(event.target.value);
