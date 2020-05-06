@@ -28,7 +28,7 @@ import {
   AccountBox as AccountBoxIcon
 } from '@material-ui/icons';
 
-const Routes = [
+const routes = [
   {
     path: '/',
     sidebarName: 'Dashboard',
@@ -103,4 +103,4 @@ const Routes = [
   }
 ];
 
-export default Routes;
+export default routes;

@@ -7,6 +7,7 @@ import { BrowserRouter, Switch, Route } from 'react-router-dom';
 import {
   AppBar,
   Badge,
+  Button,
   CssBaseline,
   Divider,
   Drawer,
@@ -32,7 +33,8 @@ import NotificationsIcon from '@material-ui/icons/Notifications';
 import { logout } from '../../actions/auth';
 import PropTypes from 'prop-types';
 import { Redirect, Link } from 'react-router-dom';
-import Routes from '../../routes';
+import routes from '../../routes';
+import logo from '../../images/logo.svg';
 
 const drawerWidth = 240;
 
@@ -43,6 +45,10 @@ const useStyles = makeStyles(theme => ({
   grow: {
     flexGrow: 1
   },
+  logoContainer: {
+    padding: 0
+  },
+  logo: { height: '7em' },
   appBar: {
     transition: theme.transitions.create(['margin', 'width'], {
       easing: theme.transitions.easing.sharp,
@@ -161,7 +167,6 @@ const Header = ({ isAuthenticated, loginUser, logout }) => {
   debugger;
   const classes = useStyles();
   const theme = useTheme();
-  // const iOS = process.browser && /iPad|iPhone|iPod/.test(navigator.userAgent);
 
   const [openDrawer, setOpenDrawer] = useState(false);
   const [value, setValue] = useState(0);
@@ -174,6 +179,20 @@ const Header = ({ isAuthenticated, loginUser, logout }) => {
   const [menu, setMenu] = useState('dashboard');
 
   useEffect(() => {
+    [...routes].forEach(route => {
+      switch (window.location.pathname) {
+        case `${route.path}`:
+          if (value !== route.activeIndex) {
+            setValue(route.activeIndex);
+            if (route.selectedIndex && route.selectedIndex !== selectedIndex) {
+              setSelectedIndex(route.selectedIndex);
+            }
+          }
+          break;
+        default:
+          break;
+      }
+    });
     if (window.location.pathname === '/' && value !== 0) {
       setValue(0);
     } else if (window.location.pathname === '/business' && value !== 1) {
