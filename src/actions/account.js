@@ -109,7 +109,7 @@ export const deleteAccount = id => async dispatch => {
       config
     );
     dispatch({ type: ACCOUNT_DELETE, payload: res.data });
-    dispatch(loadBusiness());
+    dispatch(loadAccount());
   } catch (err) {
     const errors = err.response.data.errors;
     if (errors) {
