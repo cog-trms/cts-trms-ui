@@ -167,7 +167,6 @@ const ServiceOrderCreate = forwardRef(
       }
     }));
     const { soId } = useParams();
-    debugger;
     const classes = useStyles();
     const [state, setState] = useState({
       data: []

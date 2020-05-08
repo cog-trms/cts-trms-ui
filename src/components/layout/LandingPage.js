@@ -356,7 +356,7 @@ const LandingPage = ({ isAuthenticated, loginUser, logout }) => {
                   to={prop.path}
                 >
                   {/* <ListItemIcon>{prop.icon}</ListItemIcon> */}
-                  <ListItemText primary={prop.sidebarName} />
+                  <ListItemText primary={prop.name} />
                 </ListItem>
               );
             }

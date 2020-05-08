@@ -30,72 +30,81 @@ import {
 
 const routes = [
   {
+    activeIndex: 0,
     path: '/',
-    sidebarName: 'Dashboard',
+    name: 'Dashboard',
     component: Dashboard,
     icon: DashboardIcon,
     isMenu: true,
     access: ['admin']
   },
   {
+    activeIndex: 1,
     path: '/business',
-    sidebarName: 'Business',
+    name: 'Business',
     component: Business,
     icon: BusinessCenterIcon,
     isMenu: true,
     access: ['admin']
   },
   {
+    activeIndex: 2,
     path: '/account',
-    sidebarName: 'Account',
+    name: 'Account',
     component: Account,
     icon: AccountTreeIcon,
     isMenu: true,
     access: ['admin']
   },
   {
+    activeIndex: 3,
     path: '/program',
-    sidebarName: 'Program',
+    name: 'Program',
     component: Program,
     icon: GroupWorkIcon,
     isMenu: true,
     access: ['admin', 'hiring_manager']
   },
   {
+    activeIndex: 4,
     path: '/team',
-    sidebarName: 'Team',
+    name: 'Team',
     component: Team,
     icon: GroupIcon,
     isMenu: true,
     access: ['admin', 'hiring_manager']
   },
   {
+    activeIndex: 5,
     path: '/user',
-    sidebarName: 'User',
+    name: 'User',
     component: User,
     icon: AccountBoxIcon,
     isMenu: true,
     access: ['admin']
   },
   {
+    activeIndex: 6,
     path: '/serviceorder',
-    sidebarName: 'Opportunities',
+    name: 'Opportunities',
     component: ServiceOrder,
     icon: AccountTreeIcon,
     isMenu: true,
     access: ['hiring_manager']
   },
   {
+    activeIndex: 7,
     path: '/serviceorder/add',
-    sidebarName: 'Service Order',
+    name: 'Service Order',
     component: ServiceOrderCreate,
     icon: AccountTreeIcon,
     isMenu: false,
     access: ['hiring_manager']
   },
   {
+    activeIndex: 8,
     path: '/serviceorder/:soId',
-    sidebarName: 'Service Order',
+    name: 'Service Order',
     component: ServiceOrderCreate,
     icon: AccountTreeIcon,
     isMenu: false,

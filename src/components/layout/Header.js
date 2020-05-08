@@ -164,7 +164,6 @@ const Header = ({ isAuthenticated, loginUser, logout }) => {
   //   return <Redirect to='/signin' />;
   // }
   const userRoles = (loginUser && loginUser.authorities) || [];
-  debugger;
   const classes = useStyles();
   const theme = useTheme();
 
@@ -184,22 +183,22 @@ const Header = ({ isAuthenticated, loginUser, logout }) => {
         case `${route.path}`:
           if (value !== route.activeIndex) {
             setValue(route.activeIndex);
-            if (route.selectedIndex && route.selectedIndex !== selectedIndex) {
-              setSelectedIndex(route.selectedIndex);
-            }
+            // if (route.selectedIndex && route.selectedIndex !== selectedIndex) {
+            //   setSelectedIndex(route.selectedIndex);
+            // }
           }
           break;
         default:
           break;
       }
     });
-    if (window.location.pathname === '/' && value !== 0) {
-      setValue(0);
-    } else if (window.location.pathname === '/business' && value !== 1) {
-      setValue(1);
-    } else if (window.location.pathname === '/account' && value !== 2) {
-      setValue(2);
-    }
+    // if (window.location.pathname === '/' && value !== 0) {
+    //   setValue(0);
+    // } else if (window.location.pathname === '/business' && value !== 1) {
+    //   setValue(1);
+    // } else if (window.location.pathname === '/account' && value !== 2) {
+    //   setValue(2);
+    // }
   });
   const handleChange = (e, newValue) => {
     setValue(newValue);
@@ -280,72 +279,30 @@ const Header = ({ isAuthenticated, loginUser, logout }) => {
         </div>
         <Divider />
         <List disablePadding>
-          <ListItem
-            onClick={() => {
-              setOpenDrawer(false);
-              setValue(0);
-            }}
-            divider
-            button
-            component={Link}
-            to='/'
-            selected={value === 0}
-          >
-            <ListItemText
-              className={
-                value === 0
-                  ? [classes.drawerItem, classes.drawerSelectedItem]
-                  : classes.drawerItem
-              }
-              disableTypography
+          {routes.map((route, index) => (
+            <ListItem
+              onClick={() => {
+                setOpenDrawer(false);
+                setValue(route.activeIndex);
+              }}
+              divider
+              button
+              component={Link}
+              to={route.path}
+              selected={value === route.activeIndex}
             >
-              Dashboard
-            </ListItemText>
-          </ListItem>
-          <ListItem
-            onClick={() => {
-              setOpenDrawer(false);
-              setValue(1);
-            }}
-            divider
-            button
-            component={Link}
-            to='/business'
-            selected={value === 1}
-          >
-            <ListItemText
-              className={
-                value === 1
-                  ? [classes.drawerItem, classes.drawerSelectedItem]
-                  : classes.drawerItem
-              }
-              disableTypography
-            >
-              Business
-            </ListItemText>
-          </ListItem>
-          <ListItem
-            onClick={() => {
-              setOpenDrawer(false);
-              setValue(2);
-            }}
-            divider
-            button
-            component={Link}
-            to='/account'
-            selected={value === 2}
-          >
-            <ListItemText
-              className={
-                value === 2
-                  ? [classes.drawerItem, classes.drawerSelectedItem]
-                  : classes.drawerItem
-              }
-              disableTypography
-            >
-              Account
-            </ListItemText>
-          </ListItem>
+              <ListItemText
+                disableTypography
+                className={
+                  value === route.activeIndex
+                    ? [classes.drawerItem, classes.drawerSelectedItem]
+                    : classes.drawerItem
+                }
+              >
+                {route.name}
+              </ListItemText>
+            </ListItem>
+          ))}
         </List>
       </Drawer>
     </Fragment>
