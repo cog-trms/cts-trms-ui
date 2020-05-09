@@ -208,7 +208,7 @@ const Program = ({
 
   return (
     <Grid container spacing={3}>
-      <div style={{ width: '100%' }}>
+      <div>
         <MaterialTable
           icons={tableIcons}
           title='Program'

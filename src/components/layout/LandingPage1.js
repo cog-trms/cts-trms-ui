@@ -1,13 +1,11 @@
-import React, { useState, useEffect, Fragment } from 'react';
+import React, { useState } from 'react';
 import clsx from 'clsx';
 import { connect } from 'react-redux';
-import SwipeableDrawer from '@material-ui/core/SwipeableDrawer';
 import { fade, makeStyles, useTheme } from '@material-ui/core/styles';
 import { BrowserRouter, Switch, Route } from 'react-router-dom';
 import {
   AppBar,
   Badge,
-  Button,
   CssBaseline,
   Divider,
   Drawer,
@@ -33,8 +31,7 @@ import NotificationsIcon from '@material-ui/icons/Notifications';
 import { logout } from '../../actions/auth';
 import PropTypes from 'prop-types';
 import { Redirect, Link } from 'react-router-dom';
-import routes from '../../routes';
-import logo from '../../images/logo.svg';
+import Routes from '../../routes';
 
 const drawerWidth = 240;
 
@@ -45,27 +42,12 @@ const useStyles = makeStyles(theme => ({
   grow: {
     flexGrow: 1
   },
-  logoContainer: {
-    padding: 0
-  },
-  logo: { height: '7em' },
-  toolbarMargin: {
-    ...theme.mixins.toolbar,
-    marginBottom: '3em',
-    [theme.breakpoints.down('md')]: {
-      marginBottom: '2em'
-    },
-    [theme.breakpoints.down('xs')]: {
-      marginBottom: '1.25em'
-    }
-  },
   appBar: {
     transition: theme.transitions.create(['margin', 'width'], {
       easing: theme.transitions.easing.sharp,
       duration: theme.transitions.duration.leavingScreen
     }),
     backgroundColor: theme.palette.secondary
-    // zIndex: theme.zIndex.modal + 1
   },
   appBarShift: {
     width: `calc(100% - ${drawerWidth}px)`,
@@ -85,18 +67,7 @@ const useStyles = makeStyles(theme => ({
     width: drawerWidth,
     flexShrink: 0
   },
-  drawerItem: {
-    ...theme.typography.tab,
-    color: 'white',
-    opacity: 0.7
-  },
-  drawerItemSelected: {
-    '& .MuiListItemText-root': {
-      opacity: 1
-    }
-  },
   drawerPaper: {
-    backgroundColor: theme.palette.common.blue,
     width: drawerWidth
   },
   drawerHeader: {
@@ -171,60 +142,27 @@ const useStyles = makeStyles(theme => ({
   }
 }));
 
-const Header = props => {
+const LandingPage = ({ isAuthenticated, loginUser, logout }) => {
+  //if not authenticated, then redirect to login
+  // if (!isAuthenticated) {
+  //   return <Redirect to='/signin' />;
+  // }
+  const userRoles = (loginUser && loginUser.authorities) || [];
   const classes = useStyles();
   const theme = useTheme();
-
-  // const [openDrawer, setOpenDrawer] = useState(false);
-  const [openMenu, setOpenMenu] = useState(false);
+  const [open, setOpen] = useState(false);
   const [anchorEl, setAnchorEl] = useState(null);
   const [mobileMoreAnchorEl, setMobileMoreAnchorEl] = useState(null);
   const isMenuOpen = Boolean(anchorEl);
   const isMobileMenuOpen = Boolean(mobileMoreAnchorEl);
   const [menu, setMenu] = useState('dashboard');
 
-  useEffect(() => {
-    [...routes].forEach(route => {
-      switch (window.location.pathname) {
-        case `${route.path}`:
-          if (props.value !== route.activeIndex) {
-            props.setValue(route.activeIndex);
-            // if (route.selectedIndex && route.selectedIndex !== selectedIndex) {
-            //   props.setSelectedIndex(route.selectedIndex);
-            // }
-          }
-          break;
-        default:
-          break;
-      }
-    });
-  }, [props.value, props.selectedIndex, routes, props]);
-  const handleChange = (e, newValue) => {
-    props.setValue(newValue);
-  };
-
-  const handleClick = e => {
-    setAnchorEl(e.currentTarget);
-    setOpenMenu(true);
-  };
-
-  const handleMenuItemClick = (e, i) => {
-    setAnchorEl(null);
-    setOpenMenu(false);
-    props.setSelectedIndex(i);
-  };
-
-  const handleClose = event => {
-    setAnchorEl(null);
-    setOpenMenu(false);
-  };
-
   const handleDrawerOpen = () => {
-    props.setOpenDrawer(true);
+    setOpen(true);
   };
 
   const handleDrawerClose = () => {
-    props.setOpenDrawer(false);
+    setOpen(false);
   };
   const handleMenuClick = menu => {
     setMenu(menu);
@@ -250,76 +188,95 @@ const Header = props => {
   };
 
   const menuId = 'primary-search-account-menu';
-
+  const renderMenu = (
+    <Menu
+      anchorEl={anchorEl}
+      anchorOrigin={{ vertical: 'top', horizontal: 'right' }}
+      id={menuId}
+      keepMounted
+      transformOrigin={{ vertical: 'top', horizontal: 'right' }}
+      open={isMenuOpen}
+      onClose={handleMenuClose}
+    >
+      <MenuItem id={'profile'} onClick={handleMenuClose}>
+        Profile
+      </MenuItem>
+      <MenuItem id={'account'} onClick={handleMenuClose}>
+        My account
+      </MenuItem>
+      <MenuItem id={'logout'} onClick={handleMenuClose}>
+        Logout
+      </MenuItem>
+    </Menu>
+  );
   const mobileMenuId = 'primary-search-account-menu-mobile';
   const NotFoundPage = () => {
     return <div>404!</div>;
   };
-
-  const drawer = (
-    <Fragment>
-      <Drawer
-        className={classes.drawer}
-        variant='persistent'
-        anchor='left'
-        open={props.openDrawer}
-        classes={{
-          paper: classes.drawerPaper
-        }}
-      >
-        <div className={classes.drawerHeader}>
-          <IconButton onClick={handleDrawerClose}>
-            {theme.direction === 'ltr' ? (
-              <ChevronLeftIcon />
-            ) : (
-              <ChevronRightIcon />
-            )}
-          </IconButton>
-        </div>
-        <Divider />
-        <List disablePadding>
-          {routes.map((route, index) => (
-            <ListItem
-              key={`${route}${index}`}
-              onClick={() => {
-                props.setOpenDrawer(false);
-                props.setValue(route.activeIndex);
-              }}
-              divider
-              button
-              component={Link}
-              to={route.path}
-              selected={props.value === route.activeIndex}
-              classes={{ selected: classes.drawerItemSelected }}
-            >
-              <ListItemText disableTypography className={classes.drawerItem}>
-                {route.name}
-              </ListItemText>
-            </ListItem>
-          ))}
-        </List>
-      </Drawer>
-    </Fragment>
+  // const activeRoute = routeName => {
+  //   return props.location.pathname === routeName ? true : false;
+  // };
+  const renderMobileMenu = (
+    <Menu
+      anchorEl={mobileMoreAnchorEl}
+      anchorOrigin={{ vertical: 'top', horizontal: 'right' }}
+      id={mobileMenuId}
+      keepMounted
+      transformOrigin={{ vertical: 'top', horizontal: 'right' }}
+      open={isMobileMenuOpen}
+      onClose={handleMobileMenuClose}
+    >
+      <MenuItem>
+        <IconButton aria-label='show 4 new mails' color='inherit'>
+          <Badge badgeContent={4} color='secondary'>
+            <MailIcon />
+          </Badge>
+        </IconButton>
+        <p>Messages</p>
+      </MenuItem>
+      <MenuItem>
+        <IconButton aria-label='show 11 new notifications' color='inherit'>
+          <Badge badgeContent={11} color='secondary'>
+            <NotificationsIcon />
+          </Badge>
+        </IconButton>
+        <p>Notifications</p>
+      </MenuItem>
+      <MenuItem onClick={handleProfileMenuOpen}>
+        <IconButton
+          aria-label='account of current user'
+          aria-controls='primary-search-account-menu'
+          aria-haspopup='true'
+          color='inherit'
+        >
+          <AccountCircle />
+        </IconButton>
+        <p>Profile</p>
+      </MenuItem>
+    </Menu>
   );
+  const renderContent = () => {
+    if (menu === 'dashboard') {
+      return <div>dashboard</div>;
+    }
+    if (menu === 'business') {
+      return <div>business</div>;
+    }
+    if (menu === 'account') {
+      return <div>business</div>;
+    }
+  };
   return (
     <div className={classes.root}>
       <CssBaseline />
-      <AppBar
-        position='fixed'
-        className={clsx(classes.appBar, {
-          [classes.appBarShift]: props.openDrawer
-        })}
-      >
+      <AppBar position='fixed' className={classes.appBar}>
         <Toolbar>
           <IconButton
             color='inherit'
             aria-label='open drawer'
             onClick={handleDrawerOpen}
             edge='start'
-            className={clsx(
-              classes.menuButton,
-              props.openDrawer && classes.hide
-            )}
+            className={clsx(classes.menuButton, open && classes.hide)}
           >
             <MenuIcon />
           </IconButton>
@@ -350,6 +307,9 @@ const Header = props => {
               <AccountCircle />
             </IconButton>
           </div>
+          <Typography variant='h6' noWrap={true}>
+            {userRoles}
+          </Typography>
           <div className={classes.sectionMobile}>
             <IconButton
               aria-label='show more'
@@ -363,9 +323,73 @@ const Header = props => {
           </div>
         </Toolbar>
       </AppBar>
-      {drawer}
+      <Drawer
+        className={classes.drawer}
+        variant='persistent'
+        anchor='left'
+        open={open}
+        classes={{
+          paper: classes.drawerPaper
+        }}
+      >
+        <div className={classes.drawerHeader}>
+          <IconButton onClick={handleDrawerClose}>
+            {theme.direction === 'ltr' ? (
+              <ChevronLeftIcon />
+            ) : (
+              <ChevronRightIcon />
+            )}
+          </IconButton>
+        </div>
+        <Divider />
+        <List>
+          {Routes.map((prop, key) => {
+            const found = prop.access.some(role => {
+              return userRoles.includes(role.toUpperCase());
+            });
+            if (prop.isMenu && found) {
+              return (
+                <ListItem
+                  button={true}
+                  key={key}
+                  component={Link}
+                  to={prop.path}
+                >
+                  <ListItemText primary={prop.name} />
+                </ListItem>
+              );
+            }
+          })}
+        </List>
+      </Drawer>
+      <main
+        className={clsx(classes.content, {
+          [classes.contentShift]: open
+        })}
+      >
+        {/* <div className={classes.drawerHeader} /> */}
+        <BrowserRouter>
+          <Switch>
+            {Routes.map(route => (
+              <Route exact path={route.path} key={route.path}>
+                <route.component />
+              </Route>
+            ))}
+          </Switch>
+        </BrowserRouter>
+      </main>
     </div>
   );
 };
 
-export default Header;
+LandingPage.propTypes = {
+  logout: PropTypes.func.isRequired,
+  isAuthenticated: PropTypes.bool,
+  loginUser: PropTypes.object
+};
+
+const mapStateToProps = state => ({
+  isAuthenticated: state.auth.isAuthenticated,
+  loginUser: state.auth.loginUser
+});
+export default connect(mapStateToProps, { logout })(LandingPage);

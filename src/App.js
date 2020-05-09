@@ -1,10 +1,11 @@
-import React, { useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 import { makeStyles, ThemeProvider } from '@material-ui/core/styles';
 import logo from './logo.svg';
 import './App.css';
 import { BrowserRouter, Switch, Route } from 'react-router-dom';
 import Header from './components/layout/Header';
-import LandingPage from './components/layout/LandingPage';
+import Footer from './components/layout/Footer';
+import LandingPage from './components/layout/LandingPage1';
 import Login from './components/auth/SignIn';
 import SignUp from './components/auth/SignUp';
 import Routes from './routes';
@@ -20,6 +21,9 @@ if (localStorage.token) {
 }
 
 function App() {
+  const [selectedIndex, setSelectedIndex] = useState(0);
+  const [value, setValue] = useState(0);
+  const [openDrawer, setOpenDrawer] = useState(false);
   useEffect(() => {
     store.dispatch(loadUser());
   }, []);
@@ -34,14 +38,31 @@ function App() {
         <BrowserRouter>
           <Route path='/signin' component={Login} />
           <Route path='/signup' component={SignUp} />
-          <Header />
+          <Header
+            value={value}
+            setValue={setValue}
+            selectedIndex={selectedIndex}
+            setSelectedIndex={setSelectedIndex}
+            openDrawer={openDrawer}
+            setOpenDrawer={setOpenDrawer}
+          />
           <Switch>
-            {Routes.map(route => (
-              <Route exact path={route.path} key={route.path}>
-                <route.component />
-              </Route>
-            ))}
+            <main>
+              {Routes.map(route => (
+                <Route exact path={route.path} key={route.path}>
+                  <route.component />
+                </Route>
+              ))}
+            </main>
           </Switch>
+          {/* <LandingPage /> */}
+          <Footer
+            openDrawer={openDrawer}
+            value={value}
+            setValue={setValue}
+            selectedIndex={selectedIndex}
+            setSelectedIndex={setSelectedIndex}
+          />
         </BrowserRouter>
       </ThemeProvider>
     </Provider>
