@@ -213,7 +213,7 @@ const Account = ({
 
   return (
     <Grid container spacing={3}>
-      <div>
+      <div style={{ width: '100%' }}>
         <MaterialTable
           icons={tableIcons}
           title='Account'

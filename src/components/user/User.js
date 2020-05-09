@@ -125,7 +125,7 @@ const User = ({ user, loadUser }) => {
   const role = {};
 
   user.forEach(ele => {
-    role[ele.roles.id] = ele.roles.role;
+    // role[ele.roles.id] = ele.roles.role;
   });
   console.log('role', role);
   const classes = useStyles();

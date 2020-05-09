@@ -185,17 +185,19 @@ const Header = props => {
 
   useEffect(() => {
     [...routes].forEach(route => {
-      switch (window.location.pathname) {
-        case `${route.path}`:
-          if (props.value !== route.activeIndex) {
-            props.setValue(route.activeIndex);
-            // if (route.selectedIndex && route.selectedIndex !== selectedIndex) {
-            //   props.setSelectedIndex(route.selectedIndex);
-            // }
-          }
-          break;
-        default:
-          break;
+      if (route.isMenu) {
+        switch (window.location.pathname) {
+          case `${route.path}`:
+            if (props.value !== route.activeIndex) {
+              props.setValue(route.activeIndex);
+              // if (route.selectedIndex && route.selectedIndex !== selectedIndex) {
+              //   props.setSelectedIndex(route.selectedIndex);
+              // }
+            }
+            break;
+          default:
+            break;
+        }
       }
     });
   }, [props.value, props.selectedIndex, routes, props]);
@@ -278,25 +280,31 @@ const Header = props => {
         </div>
         <Divider />
         <List disablePadding>
-          {routes.map((route, index) => (
-            <ListItem
-              key={`${route}${index}`}
-              onClick={() => {
-                props.setOpenDrawer(false);
-                props.setValue(route.activeIndex);
-              }}
-              divider
-              button
-              component={Link}
-              to={route.path}
-              selected={props.value === route.activeIndex}
-              classes={{ selected: classes.drawerItemSelected }}
-            >
-              <ListItemText disableTypography className={classes.drawerItem}>
-                {route.name}
-              </ListItemText>
-            </ListItem>
-          ))}
+          {routes.map(
+            (route, index) =>
+              route.isMenu && (
+                <ListItem
+                  key={`${route}${index}`}
+                  onClick={() => {
+                    props.setOpenDrawer(false);
+                    props.setValue(route.activeIndex);
+                  }}
+                  divider
+                  button
+                  component={Link}
+                  to={route.path}
+                  selected={props.value === route.activeIndex}
+                  classes={{ selected: classes.drawerItemSelected }}
+                >
+                  <ListItemText
+                    disableTypography
+                    className={classes.drawerItem}
+                  >
+                    {route.name}
+                  </ListItemText>
+                </ListItem>
+              )
+          )}
         </List>
       </Drawer>
     </Fragment>
