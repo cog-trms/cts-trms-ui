@@ -144,7 +144,7 @@ const ServiceOrder = ({ serviceOrder, loadServiceOrder, team, loadTeam }) => {
   };
 
   const handleAdd = () => {
-    history.push('/serviceorder/add');
+    history.push('/serviceorder/create');
     // setShowStepper(true);
   };
   const handleEditClick = id => {

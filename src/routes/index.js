@@ -94,17 +94,8 @@ const routes = [
   },
   {
     activeIndex: 7,
-    path: '/serviceorder/add',
-    name: 'Service Order',
-    component: ServiceOrderCreate,
-    icon: AccountTreeIcon,
-    isMenu: false,
-    access: ['hiring_manager']
-  },
-  {
-    activeIndex: 8,
-    path: '/serviceorder/:soId',
-    name: 'Service Order',
+    path: '/serviceorder/:create?/:soId',
+    name: 'Service Order Add',
     component: ServiceOrderCreate,
     icon: AccountTreeIcon,
     isMenu: false,

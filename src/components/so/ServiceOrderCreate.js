@@ -182,12 +182,6 @@ const ServiceOrderCreate = forwardRef(
 
     useEffect(() => {
       loadTeam();
-      if (soId) {
-        loadServiceOrderById(soId);
-      }
-    }, []);
-
-    useEffect(() => {
       setFormData({
         ...formData,
         serviceOrderText: serviceOrderById && serviceOrderById.serviceOrder,
@@ -196,7 +190,21 @@ const ServiceOrderCreate = forwardRef(
       });
       setTeamId(serviceOrderById && serviceOrderById.teamId);
       setState(state => ({ ...state, data: serviceOrderById.cases }));
+      if (soId) {
+        loadServiceOrderById(soId);
+      }
     }, [serviceOrderById]);
+
+    // useEffect(() => {
+    //   setFormData({
+    //     ...formData,
+    //     serviceOrderText: serviceOrderById && serviceOrderById.serviceOrder,
+    //     positionCountText: serviceOrderById && serviceOrderById.positionCount,
+    //     locationText: serviceOrderById && serviceOrderById.location
+    //   });
+    //   setTeamId(serviceOrderById && serviceOrderById.teamId);
+    //   setState(state => ({ ...state, data: serviceOrderById.cases }));
+    // }, [serviceOrderById]);
 
     const handleChange = event => {
       setTeamId(event.target.value);
@@ -258,150 +266,150 @@ const ServiceOrderCreate = forwardRef(
       ))
     };
 
-    const body = (
-      <Fragment>
-        <Grid container spacing={3}>
-          <Grid item xs={12} sm={3}>
-            <TextField
-              autoComplete='sOrder'
-              name='serviceOrderText'
-              value={serviceOrderText}
-              variant='outlined'
-              required
-              fullWidth
-              id='serviceOrderText'
-              label='Service Order'
-              autoFocus
-              onChange={e => onChange(e)}
-            />
-          </Grid>
-          <Grid item xs={12} sm={3}>
-            <TextField
-              variant='outlined'
-              required
-              fullWidth
-              id='positionCountText'
-              label='No of postion'
-              name='positionCountText'
-              value={positionCountText}
-              autoComplete='positionCount'
-              onChange={e => onChange(e)}
-            />
-          </Grid>
-          <Grid item xs={12} sm={3}>
-            <TextField
-              variant='outlined'
-              required
-              fullWidth
-              id='locationText'
-              label='location'
-              name='locationText'
-              value={locationText}
-              autoComplete='location'
-              onChange={e => onChange(e)}
-            />
-          </Grid>
-          <Grid item xs={12} sm={3}>
-            <FormControl className={classes.formControl} fullWidth>
-              <InputLabel id='demo-simple-select-label'>Team</InputLabel>
-              <Select
-                labelId='demo-simple-select-label'
-                id='demo-simple-select'
-                value={teamId}
-                name={teamId}
-                onChange={handleChange}
-              >
-                {team.map((item, index) => {
-                  return (
-                    <MenuItem key={index} value={item.id}>
-                      {item.teamName}
-                    </MenuItem>
-                  );
-                })}
-              </Select>
-            </FormControl>
-          </Grid>
-          <Grid item xs={12} sm={12}>
-            <div style={{ width: '100%', margin: '10px auto' }}>
-              <MaterialTable
-                icons={tableIcons}
-                title='Case'
-                columns={[
-                  { title: 'Level', field: 'level' },
-                  {
-                    title: 'Number of position',
-                    field: 'numberOfPosition'
-                  },
-                  {
-                    title: 'Skill',
-                    field: 'skill'
-                  }
-                ]}
-                data={state.data}
-                editable={{
-                  onRowAdd: newData =>
-                    new Promise(resolve => {
-                      setTimeout(() => {
-                        resolve();
-                        setState(prevState => {
-                          const data = [...prevState.data];
-                          data.push(newData);
-                          return { ...prevState, data };
-                        });
-                      }, 300);
-                    }),
-                  onRowUpdate: (newData, oldData) =>
-                    handleUpdate(newData, oldData).then(() => {
-                      if (oldData) {
-                        setState(prevState => {
-                          const data = [...prevState.data];
-                          data[data.indexOf(oldData)] = newData;
-                          return { ...prevState, data };
-                        });
-                      }
-                    }),
-                  onRowDelete: oldData =>
-                    handleDelete(oldData).then(() => {
-                      setState(prevState => {
-                        const data = [...prevState.data];
-                        data.splice(data.indexOf(oldData), 1);
-                        return { ...prevState, data };
-                      });
-                    })
-                }}
-                onRowClick={(evt, selectedRow) => setSelectedRow(selectedRow)}
-                options={{
-                  headerStyle: {
-                    backgroundColor: '#04A4F9',
-                    color: '#FFF'
-                  },
-                  rowStyle: rowData => ({
-                    backgroundColor:
-                      selectedRow && selectedRow.id === rowData.id
-                        ? '#DDF1FC'
-                        : '#FFF'
-                  })
-                }}
+    return (
+      <div className={classes.root}>
+        <Fragment>
+          <Grid container spacing={3}>
+            <Grid item xs={12} sm={3}>
+              <TextField
+                autoComplete='sOrder'
+                name='serviceOrderText'
+                value={serviceOrderText}
+                variant='outlined'
+                required
+                fullWidth
+                id='serviceOrderText'
+                label='Service Order'
+                autoFocus
+                onChange={e => onChange(e)}
               />
-            </div>
+            </Grid>
+            <Grid item xs={12} sm={3}>
+              <TextField
+                variant='outlined'
+                required
+                fullWidth
+                id='positionCountText'
+                label='No of postion'
+                name='positionCountText'
+                value={positionCountText}
+                autoComplete='positionCount'
+                onChange={e => onChange(e)}
+              />
+            </Grid>
+            <Grid item xs={12} sm={3}>
+              <TextField
+                variant='outlined'
+                required
+                fullWidth
+                id='locationText'
+                label='location'
+                name='locationText'
+                value={locationText}
+                autoComplete='location'
+                onChange={e => onChange(e)}
+              />
+            </Grid>
+            <Grid item xs={12} sm={3}>
+              <FormControl className={classes.formControl} fullWidth>
+                <InputLabel id='demo-simple-select-label'>Team</InputLabel>
+                <Select
+                  labelId='demo-simple-select-label'
+                  id='demo-simple-select'
+                  value={teamId}
+                  name={teamId}
+                  onChange={handleChange}
+                >
+                  {team.map((item, index) => {
+                    return (
+                      <MenuItem key={index} value={item.id}>
+                        {item.teamName}
+                      </MenuItem>
+                    );
+                  })}
+                </Select>
+              </FormControl>
+            </Grid>
+            <Grid item xs={12} sm={12}>
+              <div style={{ width: '100%', margin: '10px auto' }}>
+                <MaterialTable
+                  icons={tableIcons}
+                  title='Case'
+                  columns={[
+                    { title: 'Level', field: 'level' },
+                    {
+                      title: 'Number of position',
+                      field: 'numberOfPosition'
+                    },
+                    {
+                      title: 'Skill',
+                      field: 'skill'
+                    }
+                  ]}
+                  data={state.data}
+                  editable={{
+                    onRowAdd: newData =>
+                      new Promise(resolve => {
+                        setTimeout(() => {
+                          resolve();
+                          setState(prevState => {
+                            const data = [...prevState.data];
+                            data.push(newData);
+                            return { ...prevState, data };
+                          });
+                        }, 300);
+                      }),
+                    onRowUpdate: (newData, oldData) =>
+                      handleUpdate(newData, oldData).then(() => {
+                        if (oldData) {
+                          setState(prevState => {
+                            const data = [...prevState.data];
+                            data[data.indexOf(oldData)] = newData;
+                            return { ...prevState, data };
+                          });
+                        }
+                      }),
+                    onRowDelete: oldData =>
+                      handleDelete(oldData).then(() => {
+                        setState(prevState => {
+                          const data = [...prevState.data];
+                          data.splice(data.indexOf(oldData), 1);
+                          return { ...prevState, data };
+                        });
+                      })
+                  }}
+                  onRowClick={(evt, selectedRow) => setSelectedRow(selectedRow)}
+                  options={{
+                    headerStyle: {
+                      backgroundColor: '#04A4F9',
+                      color: '#FFF'
+                    },
+                    rowStyle: rowData => ({
+                      backgroundColor:
+                        selectedRow && selectedRow.id === rowData.id
+                          ? '#DDF1FC'
+                          : '#FFF'
+                    })
+                  }}
+                />
+              </div>
+            </Grid>
+            <Grid item xs={12} sm={3}>
+              <Button
+                type='button'
+                fullWidth
+                variant='contained'
+                color='primary'
+                className={classes.save}
+                onClick={handleSave}
+              >
+                Save
+              </Button>
+            </Grid>
           </Grid>
-          <Grid item xs={12} sm={3}>
-            <Button
-              type='button'
-              fullWidth
-              variant='contained'
-              color='primary'
-              className={classes.save}
-              onClick={handleSave}
-            >
-              Save
-            </Button>
-          </Grid>
-        </Grid>
-      </Fragment>
+        </Fragment>
+      </div>
     );
-
-    return <div className={classes.root}>{body}</div>;
   }
 );
 
