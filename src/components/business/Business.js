@@ -46,10 +46,12 @@ import { Modal, IconButton } from '@material-ui/core';
 
 const useStyles = makeStyles(theme => ({
   paper: {
-    marginTop: theme.spacing(8),
+    margin: theme.spacing(8),
     display: 'flex',
-    flexDirection: 'column',
-    alignItems: 'center'
+    direction: 'column',
+    justify: 'center',
+    alignItems: 'center',
+    width: 600
   },
   avatar: {
     margin: theme.spacing(1),
@@ -209,57 +211,55 @@ const Business = ({
 
   return (
     <Grid container spacing={3}>
-      <Grid item>
-        <div style={{ width: '100%' }}>
-          <MaterialTable
-            icons={tableIcons}
-            title='Business Unit'
-            columns={state.columns}
-            data={state.data}
-            editable={{
-              onRowAdd: newData =>
-                handleSave(newData).then(() => {
+      <div style={{ width: '100%' }}>
+        <MaterialTable
+          icons={tableIcons}
+          title='Business Unit'
+          columns={state.columns}
+          data={state.data}
+          editable={{
+            onRowAdd: newData =>
+              handleSave(newData).then(() => {
+                setState(prevState => {
+                  const data = [...prevState.data];
+                  data.push(newData);
+                  return { ...prevState, data };
+                });
+              }),
+            onRowUpdate: (newData, oldData) =>
+              handleUpdate(newData, oldData).then(() => {
+                if (oldData) {
                   setState(prevState => {
                     const data = [...prevState.data];
-                    data.push(newData);
+                    data[data.indexOf(oldData)] = newData;
                     return { ...prevState, data };
                   });
-                }),
-              onRowUpdate: (newData, oldData) =>
-                handleUpdate(newData, oldData).then(() => {
-                  if (oldData) {
-                    setState(prevState => {
-                      const data = [...prevState.data];
-                      data[data.indexOf(oldData)] = newData;
-                      return { ...prevState, data };
-                    });
-                  }
-                }),
-              onRowDelete: oldData =>
-                handleDelete(oldData).then(() => {
-                  setState(prevState => {
-                    const data = [...prevState.data];
-                    data.splice(data.indexOf(oldData), 1);
-                    return { ...prevState, data };
-                  });
-                })
-            }}
-            onRowClick={(evt, selectedRow) => setSelectedRow(selectedRow)}
-            options={{
-              headerStyle: {
-                backgroundColor: '#04A4F9',
-                color: '#FFF'
-              },
-              rowStyle: rowData => ({
-                backgroundColor:
-                  selectedRow && selectedRow.id === rowData.id
-                    ? '#DDF1FC'
-                    : '#FFF'
+                }
+              }),
+            onRowDelete: oldData =>
+              handleDelete(oldData).then(() => {
+                setState(prevState => {
+                  const data = [...prevState.data];
+                  data.splice(data.indexOf(oldData), 1);
+                  return { ...prevState, data };
+                });
               })
-            }}
-          />
-        </div>
-      </Grid>
+          }}
+          onRowClick={(evt, selectedRow) => setSelectedRow(selectedRow)}
+          options={{
+            headerStyle: {
+              backgroundColor: '#04A4F9',
+              color: '#FFF'
+            },
+            rowStyle: rowData => ({
+              backgroundColor:
+                selectedRow && selectedRow.id === rowData.id
+                  ? '#DDF1FC'
+                  : '#FFF'
+            })
+          }}
+        />
+      </div>
     </Grid>
   );
 };

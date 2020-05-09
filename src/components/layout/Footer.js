@@ -6,7 +6,7 @@ import { makeStyles } from '@material-ui/core/styles';
 import footerAdornment from '../../images/Footer Adornment.svg';
 import { fontWeight, grid } from '@material-ui/system';
 
-const drawerWidth = 240;
+const drawerWidth = 140;
 
 const useStyles = makeStyles(theme => ({
   footer: {
@@ -30,7 +30,7 @@ const useStyles = makeStyles(theme => ({
     position: 'absolute'
   },
   link: {
-    color: 'white',
+    color: theme.palette.common.blue,
     fontFamily: 'Arial',
     fontSize: '0.75em',
     fontWeight: 'bold',
@@ -136,7 +136,6 @@ const Footer = props => {
           </Grid>
         </Grid>
       </Hidden>
-      <img alt='footer' src={footerAdornment} className={classes.footerImg} />
     </footer>
   );
 };
