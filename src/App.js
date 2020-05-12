@@ -8,8 +8,9 @@ import Footer from './components/layout/Footer';
 import LandingPage from './components/layout/LandingPage';
 import Login from './components/auth/SignIn';
 import SignUp from './components/auth/SignUp';
-import Routes from './routes';
+import routes from './routes';
 import { loadUser } from './actions/user';
+import { loadLoginUser } from './actions/auth';
 //Redux
 import { Provider } from 'react-redux';
 import store from './store';
@@ -25,7 +26,7 @@ function App() {
   const [value, setValue] = useState(0);
   const [openDrawer, setOpenDrawer] = useState(false);
   useEffect(() => {
-    store.dispatch(loadUser());
+    store.dispatch(loadLoginUser());
   }, []);
 
   const NotFoundPage = () => {
@@ -38,22 +39,14 @@ function App() {
         <BrowserRouter>
           <Route path='/signin' component={Login} />
           <Route path='/signup' component={SignUp} />
-          <Header
-            value={value}
-            setValue={setValue}
-            selectedIndex={selectedIndex}
-            setSelectedIndex={setSelectedIndex}
-            openDrawer={openDrawer}
-            setOpenDrawer={setOpenDrawer}
-          />
-          <LandingPage openDrawer={openDrawer} />
-          <Footer
-            openDrawer={openDrawer}
-            value={value}
-            setValue={setValue}
-            selectedIndex={selectedIndex}
-            setSelectedIndex={setSelectedIndex}
-          />
+          <LandingPage />
+          <Switch>
+            {routes.map(route => (
+              <Route exact path={route.path} key={route.path}>
+                <route.component />
+              </Route>
+            ))}
+          </Switch>
         </BrowserRouter>
       </ThemeProvider>
     </Provider>
