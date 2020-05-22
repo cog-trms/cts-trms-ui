@@ -142,8 +142,7 @@ const useStyles = makeStyles(theme => ({
   }
 }));
 
-const ServiceOrderCreate = forwardRef(
-  (
+const ServiceOrderEdit = (
     {
       serviceOrderById,
       saveServiceOrder,
@@ -151,21 +150,9 @@ const ServiceOrderCreate = forwardRef(
       loadTeam,
       team,
       handleNext
-    },
-    ref
+    }
+    
   ) => {
-    useImperativeHandle(ref, () => ({
-      // getAlert() {
-      //   alert('getAlert from Child');
-      // }
-      // handleSave() {
-      //   return saveServiceOrder(
-      //     state.data,
-      //     { locationText, positionCountText, serviceOrderText },
-      //     teamId
-      //   );
-      // }
-    }));
     const { soId } = useParams();
     const classes = useStyles();
     const [state, setState] = useState({
@@ -182,21 +169,28 @@ const ServiceOrderCreate = forwardRef(
 
     useEffect(() => {
       loadTeam();
-    }, []);
+      setFormData({
+        ...formData,
+        serviceOrderText: serviceOrderById && serviceOrderById.serviceOrder,
+        positionCountText: serviceOrderById && serviceOrderById.positionCount,
+        locationText: serviceOrderById && serviceOrderById.location
+      });
+      setTeamId(serviceOrderById && serviceOrderById.teamId);
+      setState(state => ({ ...state, data: serviceOrderById.cases }));
+      if (soId) {
+        loadServiceOrderById(soId);
+      }
+    }, [serviceOrderById]);
 
     // useEffect(() => {
-      // loadTeam();
-      // setFormData({
-      //   ...formData,
-      //   serviceOrderText: serviceOrderById && serviceOrderById.serviceOrder,
-      //   positionCountText: serviceOrderById && serviceOrderById.positionCount,
-      //   locationText: serviceOrderById && serviceOrderById.location
-      // });
-      // setTeamId(serviceOrderById && serviceOrderById.teamId);
-      // setState(state => ({ ...state, data: serviceOrderById.cases }));
-      // if (soId) {
-      //   loadServiceOrderById(soId);
-      // }
+    //   setFormData({
+    //     ...formData,
+    //     serviceOrderText: serviceOrderById && serviceOrderById.serviceOrder,
+    //     positionCountText: serviceOrderById && serviceOrderById.positionCount,
+    //     locationText: serviceOrderById && serviceOrderById.location
+    //   });
+    //   setTeamId(serviceOrderById && serviceOrderById.teamId);
+    //   setState(state => ({ ...state, data: serviceOrderById.cases }));
     // }, [serviceOrderById]);
 
     const handleChange = event => {
@@ -406,10 +400,9 @@ const ServiceOrderCreate = forwardRef(
         </Fragment>
       </div>
     );
-  }
-);
+  };
 
-ServiceOrderCreate.propTypes = {
+ServiceOrderEdit.propTypes = {
   loadServiceOrder: PropTypes.func.isRequired,
   loadServiceOrderById: PropTypes.func.isRequired,
   saveServiceOrder: PropTypes.func.isRequired,
@@ -428,4 +421,4 @@ export default connect(mapStateToProps, {
   loadServiceOrderById,
   saveServiceOrder,
   loadTeam
-})(ServiceOrderCreate);
+})(ServiceOrderEdit);

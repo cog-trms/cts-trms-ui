@@ -27,6 +27,7 @@ import {
   Group as GroupIcon,
   AccountBox as AccountBoxIcon
 } from '@material-ui/icons';
+import ServiceOrderEdit from '../components/so/ServiceOrderEdit';
 
 const routes = [
   {
@@ -94,9 +95,18 @@ const routes = [
   },
   {
     activeIndex: 7,
-    path: '/serviceorder/:create?/:soId',
+    path: '/serviceorder/create',
     name: 'Service Order Add',
     component: ServiceOrderCreate,
+    icon: AccountTreeIcon,
+    isMenu: false,
+    access: ['hiring_manager']
+  },
+  {
+    activeIndex: 8,
+    path: '/serviceorder/:soId',
+    name: 'Service Order Add',
+    component: ServiceOrderEdit,
     icon: AccountTreeIcon,
     isMenu: false,
     access: ['hiring_manager']
