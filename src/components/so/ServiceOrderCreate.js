@@ -158,15 +158,24 @@ const ServiceOrderCreate = forwardRef(
       // getAlert() {
       //   alert('getAlert from Child');
       // }
-      // handleSave() {
-      //   return saveServiceOrder(
-      //     state.data,
-      //     { locationText, positionCountText, serviceOrderText },
-      //     teamId
-      //   );
-      // }
+
+      handleSave() {
+        if (
+          state.data &&
+          locationText &&
+          positionCountText &&
+          serviceOrderText &&
+          teamId
+        ) {
+          return saveServiceOrder(
+            state.data,
+            { locationText, positionCountText, serviceOrderText },
+            teamId
+          );
+        }
+        return false;
+      }
     }));
-    const { soId } = useParams();
     const classes = useStyles();
     const [state, setState] = useState({
       data: []
@@ -184,21 +193,6 @@ const ServiceOrderCreate = forwardRef(
       loadTeam();
     }, []);
 
-    // useEffect(() => {
-      // loadTeam();
-      // setFormData({
-      //   ...formData,
-      //   serviceOrderText: serviceOrderById && serviceOrderById.serviceOrder,
-      //   positionCountText: serviceOrderById && serviceOrderById.positionCount,
-      //   locationText: serviceOrderById && serviceOrderById.location
-      // });
-      // setTeamId(serviceOrderById && serviceOrderById.teamId);
-      // setState(state => ({ ...state, data: serviceOrderById.cases }));
-      // if (soId) {
-      //   loadServiceOrderById(soId);
-      // }
-    // }, [serviceOrderById]);
-
     const handleChange = event => {
       setTeamId(event.target.value);
     };
@@ -210,16 +204,22 @@ const ServiceOrderCreate = forwardRef(
     handleNext = () => {
       // handleSave();
     };
-    const handleSave = () => {
-      if (state.data && locationText && positionCountText && serviceOrderText && teamId){
-        return saveServiceOrder(
-          state.data,
-          { locationText, positionCountText, serviceOrderText },
-          teamId
-        );
-      }
-      return false;
-    };
+    // const handleSave = () => {
+    //   if (
+    //     state.data &&
+    //     locationText &&
+    //     positionCountText &&
+    //     serviceOrderText &&
+    //     teamId
+    //   ) {
+    //     return saveServiceOrder(
+    //       state.data,
+    //       { locationText, positionCountText, serviceOrderText },
+    //       teamId
+    //     );
+    //   }
+    //   return false;
+    // };
     const handleUpdate = ({ account, programName, id, programManager }) => {
       // return updateTeam(account.id, programName, id, programManager.id);
     };
@@ -390,7 +390,7 @@ const ServiceOrderCreate = forwardRef(
                 />
               </div>
             </Grid>
-            <Grid item xs={12} sm={3}>
+            {/* <Grid item xs={12} sm={3}>
               <Button
                 type='button'
                 fullWidth
@@ -401,7 +401,7 @@ const ServiceOrderCreate = forwardRef(
               >
                 Save
               </Button>
-            </Grid>
+            </Grid> */}
           </Grid>
         </Fragment>
       </div>

@@ -81,7 +81,7 @@ const ServiceOrderStepper = () => {
   const handleNext = () => {
     if (activeStep === 0) {
       //senthil - need to uncommend it back
-      // childRef.current.handleSave();
+      childRef.current.handleSave();
     } else if (activeStep === 1) {
     }
 

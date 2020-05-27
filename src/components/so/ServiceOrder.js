@@ -1,4 +1,4 @@
-import React, { useState, useEffect, forwardRef } from 'react';
+import React, { useState, useEffect, forwardRef, Fragment } from 'react';
 import clsx from 'clsx';
 import PropTypes from 'prop-types';
 import {
@@ -144,8 +144,8 @@ const ServiceOrder = ({ serviceOrder, loadServiceOrder, team, loadTeam }) => {
   };
 
   const handleAdd = () => {
-    history.push('/serviceorder/create');
-    // setShowStepper(true);
+    // history.push('/serviceorder/create');
+    setShowStepper(true);
   };
   const handleEditClick = id => {
     history.push(`/serviceorder/${id}`);
@@ -175,99 +175,105 @@ const ServiceOrder = ({ serviceOrder, loadServiceOrder, team, loadTeam }) => {
   const rows = result && result.length > 0 ? result : serviceOrder;
 
   return (
-    <Grid container spacing={2}>
-      <Grid item xs={12}>
-        <Button
-          type='button'
-          fullWidth
-          variant='contained'
-          color='primary'
-          className={classes.add}
-          onClick={handleAdd}
-        >
-          Create Opportunity
-        </Button>
-      </Grid>
-      <TableContainer className={classes.paper} component={Paper}>
-        <Table className={classes.table} aria-label='simple table'>
-          <TableHead>
-            <TableRow>
-              <TableCell className={classes.business} align='left'>
-                Service Order
-              </TableCell>
-              <TableCell align='center'>No of position</TableCell>
-              <TableCell align='center'>Location</TableCell>
-              <TableCell align='center'>Team</TableCell>
-              <TableCell align='center'>Created By</TableCell>
-              <TableCell align='center'>Candidates</TableCell>
-              <TableCell align='center'>
-                <div className={classes.search}>
-                  <div className={classes.searchIcon}>
-                    <Search />
-                  </div>
-                  <InputBase
-                    placeholder='Search…'
-                    classes={{
-                      root: classes.inputRoot,
-                      input: classes.inputInput
-                    }}
-                    inputProps={{ 'aria-label': 'search' }}
-                    onChange={handleSearch}
-                  />
-                </div>
-              </TableCell>
-            </TableRow>
-          </TableHead>
-          <TableBody>
-            {rows.map((row, index) => (
-              <TableRow key={index}>
-                <TableCell component='th' scope='row'>
-                  {row.serviceOrder}
-                </TableCell>
-                <TableCell component='th' scope='row'>
-                  {row.positionCount}
-                </TableCell>
-                <TableCell component='th' scope='row'>
-                  {row.location}
-                </TableCell>
-                <TableCell component='th' scope='row'>
-                  {getTeamName(row.teamId)}
-                </TableCell>
-                <TableCell component='th' scope='row'>
-                  {row.createUser}
-                </TableCell>
-                <TableCell component='th' scope='row'>
-                  {row.soCandidates}
-                </TableCell>
-                <TableCell align='center'>
-                  <Button
-                    type='button'
-                    fullWidth
-                    variant='contained'
-                    color='primary'
-                    className={classes.edit}
-                    onClick={() => handleEditClick(row.id)}
-                  >
-                    Edit
-                  </Button>
-                </TableCell>
-                <TableCell align='right'>
-                  <Button
-                    type='button'
-                    fullWidth
-                    variant='contained'
-                    color='primary'
-                    className={classes.delete}
-                  >
-                    Delete
-                  </Button>
-                </TableCell>
-              </TableRow>
-            ))}
-          </TableBody>
-        </Table>
-      </TableContainer>
-    </Grid>
+    <Fragment>
+      {showStepper ? (
+        <ServiceOrderStepper />
+      ) : (
+        <Grid container spacing={2}>
+          <Grid item xs={12}>
+            <Button
+              type='button'
+              fullWidth
+              variant='contained'
+              color='primary'
+              className={classes.add}
+              onClick={handleAdd}
+            >
+              Create Opportunity
+            </Button>
+          </Grid>
+          <TableContainer className={classes.paper} component={Paper}>
+            <Table className={classes.table} aria-label='simple table'>
+              <TableHead>
+                <TableRow>
+                  <TableCell className={classes.business} align='left'>
+                    Service Order
+                  </TableCell>
+                  <TableCell align='center'>No of position</TableCell>
+                  <TableCell align='center'>Location</TableCell>
+                  <TableCell align='center'>Team</TableCell>
+                  <TableCell align='center'>Created By</TableCell>
+                  <TableCell align='center'>Candidates</TableCell>
+                  <TableCell align='center'>
+                    <div className={classes.search}>
+                      <div className={classes.searchIcon}>
+                        <Search />
+                      </div>
+                      <InputBase
+                        placeholder='Search…'
+                        classes={{
+                          root: classes.inputRoot,
+                          input: classes.inputInput
+                        }}
+                        inputProps={{ 'aria-label': 'search' }}
+                        onChange={handleSearch}
+                      />
+                    </div>
+                  </TableCell>
+                </TableRow>
+              </TableHead>
+              <TableBody>
+                {rows.map((row, index) => (
+                  <TableRow key={index}>
+                    <TableCell component='th' scope='row'>
+                      {row.serviceOrder}
+                    </TableCell>
+                    <TableCell component='th' scope='row'>
+                      {row.positionCount}
+                    </TableCell>
+                    <TableCell component='th' scope='row'>
+                      {row.location}
+                    </TableCell>
+                    <TableCell component='th' scope='row'>
+                      {getTeamName(row.teamId)}
+                    </TableCell>
+                    <TableCell component='th' scope='row'>
+                      {row.createUser}
+                    </TableCell>
+                    <TableCell component='th' scope='row'>
+                      {row.soCandidates}
+                    </TableCell>
+                    <TableCell align='center'>
+                      <Button
+                        type='button'
+                        fullWidth
+                        variant='contained'
+                        color='primary'
+                        className={classes.edit}
+                        onClick={() => handleEditClick(row.id)}
+                      >
+                        Edit
+                      </Button>
+                    </TableCell>
+                    <TableCell align='right'>
+                      <Button
+                        type='button'
+                        fullWidth
+                        variant='contained'
+                        color='primary'
+                        className={classes.delete}
+                      >
+                        Delete
+                      </Button>
+                    </TableCell>
+                  </TableRow>
+                ))}
+              </TableBody>
+            </Table>
+          </TableContainer>
+        </Grid>
+      )}
+    </Fragment>
   );
 };
 
