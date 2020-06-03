@@ -9,8 +9,11 @@ import Program from '../components/program/Program';
 import Team from '../components/team/Team';
 import User from '../components/user/User';
 import Alert from '../components/layout/Alert';
+import ServiceOrders from '../components/so/ServiceOrders';
 import ServiceOrder from '../components/so/ServiceOrder';
 import ServiceOrderCreate from '../components/so/ServiceOrderCreate';
+import ServiceOrderEdit from '../components/so/ServiceOrderEdit';
+
 import {
   AccountCircle,
   AccountTree as AccountTreeIcon,
@@ -27,7 +30,6 @@ import {
   Group as GroupIcon,
   AccountBox as AccountBoxIcon
 } from '@material-ui/icons';
-import ServiceOrderEdit from '../components/so/ServiceOrderEdit';
 
 const routes = [
   {
@@ -88,7 +90,7 @@ const routes = [
     activeIndex: 6,
     path: '/serviceorder',
     name: 'Opportunities',
-    component: ServiceOrder,
+    component: ServiceOrders,
     icon: AccountTreeIcon,
     isMenu: true,
     access: ['hiring_manager']
@@ -104,9 +106,18 @@ const routes = [
   },
   {
     activeIndex: 8,
-    path: '/serviceorder/:soId',
-    name: 'Service Order Add',
+    path: '/serviceorder/:soId/edit',
+    name: 'Service Order Edit',
     component: ServiceOrderEdit,
+    icon: AccountTreeIcon,
+    isMenu: false,
+    access: ['hiring_manager']
+  },
+  {
+    activeIndex: 9,
+    path: '/serviceorder/:soId',
+    name: 'Service Order',
+    component: ServiceOrder,
     icon: AccountTreeIcon,
     isMenu: false,
     access: ['hiring_manager']

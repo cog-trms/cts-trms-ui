@@ -1,48 +1,91 @@
-import React, { useState, useEffect, forwardRef, Fragment } from 'react';
-import clsx from 'clsx';
+import React, {
+  useState,
+  useEffect,
+  Fragment,
+  forwardRef,
+  useRef,
+  useImperativeHandle
+} from 'react';
+import { useLocation, useParams } from 'react-router-dom';
 import PropTypes from 'prop-types';
+import { connect } from 'react-redux';
+import { fade, makeStyles } from '@material-ui/core/styles';
 import {
   Button,
   Grid,
-  Table,
-  TableBody,
-  TableCell,
-  TableContainer,
-  TableHead,
-  TableRow,
-  Paper,
-  InputBase
+  TextField,
+  InputBase,
+  InputLabel,
+  Select,
+  FormControl,
+  FormHelperText,
+  MenuItem
 } from '@material-ui/core';
-import { Search } from '@material-ui/icons';
-import { fade, makeStyles } from '@material-ui/core/styles';
-import { connect } from 'react-redux';
-import { setAlert } from '../../actions/alert';
-import { loadServiceOrder } from '../../actions/serviceOrder';
-import { loadTeam } from '../../actions/team';
-import { Redirect, useHistory, useRouteMatch } from 'react-router-dom';
-import ServiceOrderStepper from './ServiceOrderStepper';
+import MaterialTable from 'material-table';
+import {
+  AddBox,
+  ArrowDownward,
+  Check,
+  ChevronLeft,
+  ChevronRight,
+  Clear,
+  DeleteOutline,
+  Edit,
+  FilterList,
+  FirstPage,
+  LastPage,
+  Remove,
+  SaveAlt,
+  Search,
+  ViewColumn
+} from '@material-ui/icons';
+import {
+  loadServiceOrder,
+  loadServiceOrderById,
+  saveServiceOrder
+} from '../../actions/serviceOrder';
 
-const drawerWidth = 240;
+import { loadTeam } from '../../actions/team';
+
+function rand() {
+  return Math.round(Math.random() * 20) - 10;
+}
+
+function getModalStyle() {
+  const top = 50 + rand();
+  const left = 50 + rand();
+
+  return {
+    top: `${top}%`,
+    left: `${left}%`,
+    transform: `translate(-${top}%, -${left}%)`
+  };
+}
 
 const useStyles = makeStyles(theme => ({
   root: {
-    display: 'flex'
+    width: '100%'
   },
-  grow: {
-    flexGrow: 1
+  // paper: {
+  //   position: 'absolute',
+  //   height: 500,
+  //   width: 900,
+  //   backgroundColor: theme.palette.background.paper,
+  //   border: '2px solid #000',
+  //   boxShadow: theme.shadows[5],
+  //   padding: theme.spacing(2, 4, 3)
+  // },
+  avatar: {
+    margin: theme.spacing(1),
+    backgroundColor: theme.palette.secondary.main
   },
-  paper: {
-    marginTop: theme.spacing(2),
-    display: 'flex',
-    flexDirection: 'column',
-    alignItems: 'center'
+  form: {
+    width: '100%', // Fix IE 11 issue.
+    marginTop: theme.spacing(3)
   },
-  textField: {
-    width: 300
-  },
-  add: {
-    margin: theme.spacing(3, 0, 2),
-    width: 250,
+  save: {
+    margin: theme.spacing(2, 0, 2),
+    width: 150,
     textAlign: 'right'
   },
   edit: {
@@ -53,6 +96,10 @@ const useStyles = makeStyles(theme => ({
   },
   table: {
     minWidth: 650
+  },
+  business: {
+    width: 1100,
+    fontWeight: 'bold'
   },
   search: {
     position: 'relative',
@@ -92,202 +139,285 @@ const useStyles = makeStyles(theme => ({
         width: '20ch'
       }
     }
-  },
-  content: {
-    flexGrow: 1,
-    padding: theme.spacing(3),
-    transition: theme.transitions.create('margin', {
-      easing: theme.transitions.easing.sharp,
-      duration: theme.transitions.duration.leavingScreen
-    }),
-    marginLeft: -drawerWidth
-  },
-  contentShift: {
-    transition: theme.transitions.create('margin', {
-      easing: theme.transitions.easing.easeOut,
-      duration: theme.transitions.duration.enteringScreen
-    }),
-    marginLeft: 0
   }
 }));
 
-const ServiceOrder = ({ serviceOrder, loadServiceOrder, team, loadTeam }) => {
-  let history = useHistory();
-  const [result, setResult] = useState([]);
+const ServiceOrder = ({
+  serviceOrderById,
+  saveServiceOrder,
+  loadServiceOrderById,
+  loadTeam,
+  team,
+  handleNext
+}) => {
+  const _params = useLocation();
+  debugger;
+  const { soId } = useParams();
+  const classes = useStyles();
   const [state, setState] = useState({
     data: []
   });
-  const [teamData, setTeamData] = useState([]);
-
-  useEffect(() => {
-    loadServiceOrder();
-    loadTeam();
-  }, []);
-
-  useEffect(() => {
-    setState(state => ({ ...state, data: serviceOrder }));
-    setTeamData(team);
-  }, [serviceOrder, team]);
-
-  const [showStepper, setShowStepper] = useState(false);
+  const [selectedRow, setSelectedRow] = useState(null);
   const [formData, setFormData] = useState({
     serviceOrderText: '',
-    positionCount: '',
-    location: '',
-    teamId: '',
-    cases: []
+    positionCountText: '',
+    locationText: ''
   });
-  const classes = useStyles();
-  const { serviceOrderText, positionCount, location, teamId, cases } = formData;
-  const handleClose = () => {
-    // setOpen(false);
+  const { serviceOrderText, positionCountText, locationText } = formData;
+  const [teamId, setTeamId] = useState('');
+
+  useEffect(() => {
+    loadTeam();
+    setFormData({
+      ...formData,
+      serviceOrderText: serviceOrderById && serviceOrderById.serviceOrder,
+      positionCountText: serviceOrderById && serviceOrderById.positionCount,
+      locationText: serviceOrderById && serviceOrderById.location
+    });
+    setTeamId(serviceOrderById && serviceOrderById.teamId);
+    setState(state => ({ ...state, data: serviceOrderById.cases }));
+    if (soId) {
+      loadServiceOrderById(soId);
+    }
+  }, [serviceOrderById]);
+
+  // useEffect(() => {
+  //   setFormData({
+  //     ...formData,
+  //     serviceOrderText: serviceOrderById && serviceOrderById.serviceOrder,
+  //     positionCountText: serviceOrderById && serviceOrderById.positionCount,
+  //     locationText: serviceOrderById && serviceOrderById.location
+  //   });
+  //   setTeamId(serviceOrderById && serviceOrderById.teamId);
+  //   setState(state => ({ ...state, data: serviceOrderById.cases }));
+  // }, [serviceOrderById]);
+
+  const handleChange = event => {
+    setTeamId(event.target.value);
   };
 
-  const handleAdd = () => {
-    // history.push('/serviceorder/create');
-    setShowStepper(true);
-  };
-  const handleEditClick = id => {
-    history.push(`/serviceorder/${id}`);
-  };
   const onChange = e => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
 
-  const handleSearch = event => {
-    event.preventDefault();
-    const result = filterData(event.target.value);
-    setResult(result);
+  handleNext = () => {
+    // handleSave();
+  };
+  const handleSave = () => {
+    if (
+      state.data &&
+      locationText &&
+      positionCountText &&
+      serviceOrderText &&
+      teamId
+    ) {
+      return saveServiceOrder(
+        state.data,
+        { locationText, positionCountText, serviceOrderText },
+        teamId
+      );
+    }
+    return false;
+  };
+  const handleUpdate = ({ account, programName, id, programManager }) => {
+    // return updateTeam(account.id, programName, id, programManager.id);
   };
 
-  const filterData = searchText => {
-    const result = serviceOrderText.filter(
-      item => item.serviceOrderText === searchText
-    );
-    return result;
+  const handleDelete = ({ id }) => {
+    // return deleteTeam(id);
   };
 
-  const getTeamName = id => {
-    const result = teamData.filter(item => item.id === id);
-    return result && result.length > 0 && result[0].teamName;
+  const tableIcons = {
+    Add: forwardRef((props, ref) => <AddBox {...props} ref={ref} />),
+    Check: forwardRef((props, ref) => <Check {...props} ref={ref} />),
+    Clear: forwardRef((props, ref) => <Clear {...props} ref={ref} />),
+    Delete: forwardRef((props, ref) => <DeleteOutline {...props} ref={ref} />),
+    DetailPanel: forwardRef((props, ref) => (
+      <ChevronRight {...props} ref={ref} />
+    )),
+    Edit: forwardRef((props, ref) => <Edit {...props} ref={ref} />),
+    Export: forwardRef((props, ref) => <SaveAlt {...props} ref={ref} />),
+    Filter: forwardRef((props, ref) => <FilterList {...props} ref={ref} />),
+    FirstPage: forwardRef((props, ref) => <FirstPage {...props} ref={ref} />),
+    LastPage: forwardRef((props, ref) => <LastPage {...props} ref={ref} />),
+    NextPage: forwardRef((props, ref) => <ChevronRight {...props} ref={ref} />),
+    PreviousPage: forwardRef((props, ref) => (
+      <ChevronLeft {...props} ref={ref} />
+    )),
+    ResetSearch: forwardRef((props, ref) => <Clear {...props} ref={ref} />),
+    Search: forwardRef((props, ref) => <Search {...props} ref={ref} />),
+    SortArrow: forwardRef((props, ref) => (
+      <ArrowDownward {...props} ref={ref} />
+    )),
+    ThirdStateCheck: forwardRef((props, ref) => (
+      <Remove {...props} ref={ref} />
+    )),
+    ViewColumn: forwardRef((props, ref) => <ViewColumn {...props} ref={ref} />)
   };
-
-  const rows = result && result.length > 0 ? result : serviceOrder;
 
   return (
-    <Fragment>
-      {showStepper ? (
-        <ServiceOrderStepper />
-      ) : (
-        <Grid container spacing={2}>
-          <Grid item xs={12}>
+    <div className={classes.root}>
+      <Fragment>
+        <Grid container spacing={3}>
+          <Grid item xs={12} sm={3}>
+            <TextField
+              autoComplete='sOrder'
+              name='serviceOrderText'
+              value={serviceOrderText}
+              variant='outlined'
+              required
+              fullWidth
+              id='serviceOrderText'
+              label='Service Order'
+              autoFocus
+              onChange={e => onChange(e)}
+            />
+          </Grid>
+          <Grid item xs={12} sm={3}>
+            <TextField
+              variant='outlined'
+              required
+              fullWidth
+              id='positionCountText'
+              label='No of postion'
+              name='positionCountText'
+              value={positionCountText}
+              autoComplete='positionCount'
+              onChange={e => onChange(e)}
+            />
+          </Grid>
+          <Grid item xs={12} sm={3}>
+            <TextField
+              variant='outlined'
+              required
+              fullWidth
+              id='locationText'
+              label='location'
+              name='locationText'
+              value={locationText}
+              autoComplete='location'
+              onChange={e => onChange(e)}
+            />
+          </Grid>
+          <Grid item xs={12} sm={3}>
+            <FormControl className={classes.formControl} fullWidth>
+              <InputLabel id='demo-simple-select-label'>Team</InputLabel>
+              <Select
+                labelId='demo-simple-select-label'
+                id='demo-simple-select'
+                value={teamId}
+                name={teamId}
+                onChange={handleChange}
+              >
+                {team.map((item, index) => {
+                  return (
+                    <MenuItem key={index} value={item.id}>
+                      {item.teamName}
+                    </MenuItem>
+                  );
+                })}
+              </Select>
+            </FormControl>
+          </Grid>
+          <Grid item xs={12} sm={12}>
+            <div style={{ width: '100%', margin: '10px auto' }}>
+              <MaterialTable
+                icons={tableIcons}
+                title='Case'
+                columns={[
+                  { title: 'Level', field: 'level' },
+                  {
+                    title: 'Number of position',
+                    field: 'numberOfPosition'
+                  },
+                  {
+                    title: 'Skill',
+                    field: 'skill'
+                  }
+                ]}
+                data={state.data}
+                editable={{
+                  onRowAdd: newData =>
+                    new Promise(resolve => {
+                      setTimeout(() => {
+                        resolve();
+                        setState(prevState => {
+                          const data = [...prevState.data];
+                          data.push(newData);
+                          return { ...prevState, data };
+                        });
+                      }, 300);
+                    }),
+                  onRowUpdate: (newData, oldData) =>
+                    handleUpdate(newData, oldData).then(() => {
+                      if (oldData) {
+                        setState(prevState => {
+                          const data = [...prevState.data];
+                          data[data.indexOf(oldData)] = newData;
+                          return { ...prevState, data };
+                        });
+                      }
+                    }),
+                  onRowDelete: oldData =>
+                    handleDelete(oldData).then(() => {
+                      setState(prevState => {
+                        const data = [...prevState.data];
+                        data.splice(data.indexOf(oldData), 1);
+                        return { ...prevState, data };
+                      });
+                    })
+                }}
+                onRowClick={(evt, selectedRow) => setSelectedRow(selectedRow)}
+                options={{
+                  headerStyle: {
+                    backgroundColor: '#04A4F9',
+                    color: '#FFF'
+                  },
+                  rowStyle: rowData => ({
+                    backgroundColor:
+                      selectedRow && selectedRow.id === rowData.id
+                        ? '#DDF1FC'
+                        : '#FFF'
+                  })
+                }}
+              />
+            </div>
+          </Grid>
+          <Grid item xs={12} sm={3}>
             <Button
               type='button'
               fullWidth
               variant='contained'
               color='primary'
-              className={classes.add}
-              onClick={handleAdd}
+              className={classes.save}
+              onClick={handleSave}
             >
-              Create Opportunity
+              Save
             </Button>
           </Grid>
-          <TableContainer className={classes.paper} component={Paper}>
-            <Table className={classes.table} aria-label='simple table'>
-              <TableHead>
-                <TableRow>
-                  <TableCell className={classes.business} align='left'>
-                    Service Order
-                  </TableCell>
-                  <TableCell align='center'>No of position</TableCell>
-                  <TableCell align='center'>Location</TableCell>
-                  <TableCell align='center'>Team</TableCell>
-                  <TableCell align='center'>Created By</TableCell>
-                  <TableCell align='center'>Candidates</TableCell>
-                  <TableCell align='center'>
-                    <div className={classes.search}>
-                      <div className={classes.searchIcon}>
-                        <Search />
-                      </div>
-                      <InputBase
-                        placeholder='Search…'
-                        classes={{
-                          root: classes.inputRoot,
-                          input: classes.inputInput
-                        }}
-                        inputProps={{ 'aria-label': 'search' }}
-                        onChange={handleSearch}
-                      />
-                    </div>
-                  </TableCell>
-                </TableRow>
-              </TableHead>
-              <TableBody>
-                {rows.map((row, index) => (
-                  <TableRow key={index}>
-                    <TableCell component='th' scope='row'>
-                      {row.serviceOrder}
-                    </TableCell>
-                    <TableCell component='th' scope='row'>
-                      {row.positionCount}
-                    </TableCell>
-                    <TableCell component='th' scope='row'>
-                      {row.location}
-                    </TableCell>
-                    <TableCell component='th' scope='row'>
-                      {getTeamName(row.teamId)}
-                    </TableCell>
-                    <TableCell component='th' scope='row'>
-                      {row.createUser}
-                    </TableCell>
-                    <TableCell component='th' scope='row'>
-                      {row.soCandidates}
-                    </TableCell>
-                    <TableCell align='center'>
-                      <Button
-                        type='button'
-                        fullWidth
-                        variant='contained'
-                        color='primary'
-                        className={classes.edit}
-                        onClick={() => handleEditClick(row.id)}
-                      >
-                        Edit
-                      </Button>
-                    </TableCell>
-                    <TableCell align='right'>
-                      <Button
-                        type='button'
-                        fullWidth
-                        variant='contained'
-                        color='primary'
-                        className={classes.delete}
-                      >
-                        Delete
-                      </Button>
-                    </TableCell>
-                  </TableRow>
-                ))}
-              </TableBody>
-            </Table>
-          </TableContainer>
         </Grid>
-      )}
-    </Fragment>
+      </Fragment>
+    </div>
   );
 };
 
 ServiceOrder.propTypes = {
   loadServiceOrder: PropTypes.func.isRequired,
-  loadTeam: PropTypes.func.isRequired
+  loadServiceOrderById: PropTypes.func.isRequired,
+  saveServiceOrder: PropTypes.func.isRequired,
+  loadTeam: PropTypes.func.isRequired,
+  handleNext: PropTypes.func
 };
 
 const mapStateToProps = state => ({
   serviceOrder: state.serviceOrder.serviceOrder,
+  serviceOrderById: state.serviceOrder.serviceOrderById,
   team: state.team.team
 });
 
 export default connect(mapStateToProps, {
   loadServiceOrder,
+  loadServiceOrderById,
+  saveServiceOrder,
   loadTeam
 })(ServiceOrder);

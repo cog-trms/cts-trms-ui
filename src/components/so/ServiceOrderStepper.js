@@ -16,6 +16,7 @@ import {
 } from '@material-ui/core';
 import ServiceOrderCreate from './ServiceOrderCreate';
 import Interview from '../interview/Interview';
+import Candidate from '../candidate/Candidate';
 
 const useStyles = makeStyles(theme => ({
   root: {
@@ -38,6 +39,7 @@ const useStyles = makeStyles(theme => ({
 const getSteps = () => {
   return [
     'Create a service order',
+    'Map case to the candidates',
     'Schedule an interview',
     'Provide interview feedback',
     'Decision making'
@@ -51,8 +53,10 @@ const getStepContent = (step, handleNext, childRef) => {
         <ServiceOrderCreate forwardedRef={childRef} handleNext={handleNext} />
       );
     case 1:
-      return <Interview forwardedRef={childRef} handleNext={handleNext} />;
+      return <Candidate forwardedRef={childRef} handleNext={handleNext} />;
     case 2:
+      return <Interview forwardedRef={childRef} handleNext={handleNext} />;
+    case 3:
       return 'dummy2';
     default:
       return 'Unknown step';
